@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component name="dataSourceStorage">
+  <data-source name="MySQL - fbSchedule@localhost" uuid="b110ea38-afed-442d-b190-a3aa8210807d">
+    <database-info product="MySQL" version="5.6.24" jdbc-version="4.0" driver-name="MySQL Connector Java" driver-version="mysql-connector-java-5.1.35 ( Revision: 5fb9c5849535c13917c2cf9baaece6ef9693ef27 )">
+      <extra-name-characters>#@</extra-name-characters>
+      <identifier-quote-string>`</identifier-quote-string>
+    </database-info>
+    <case-sensitivity plain-identifiers="mixed" quoted-identifiers="upper"/>
+    <schema name="" catalog="fbSchedule"/>
+    <table name="course" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="VARCHAR" precision="7" scale="0" nullable="false" jdbcType="12"/>
+      <column name="title" sqlType="TEXT" precision="65535" scale="0" nullable="false" jdbcType="-1"/>
+      <column name="period" sqlType="FLOAT" precision="12" scale="0" nullable="false" jdbcType="7"/>
+      <column name="credits" sqlType="FLOAT" precision="12" scale="0" nullable="false" jdbcType="7"/>
+      <column name="courseExamTypeID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="course_ibfk_1" columns="courseExamTypeID" ref-table="courseExamType" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="impcourse_ibfk_5" table="impCourse" schema="" catalog="fbSchedule" columns="courseID"/>
+      <exported-key name="plancourse_ibfk_7" table="planCourse" schema="" catalog="fbSchedule" columns="courseID"/>
+    </table>
+    <table name="courseClass" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="title" sqlType="TEXT" precision="65535" scale="0" nullable="false" jdbcType="-1"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="coursetype_ibfk_1" table="courseType" schema="" catalog="fbSchedule" columns="courseClassID"/>
+      <exported-key name="impcourse_ibfk_2" table="impCourse" schema="" catalog="fbSchedule" columns="courseClassID"/>
+      <exported-key name="plancourse_ibfk_2" table="planCourse" schema="" catalog="fbSchedule" columns="courseClassID"/>
+      <exported-key name="planspec_ibfk_3" table="planSpec" schema="" catalog="fbSchedule" columns="courseClassID"/>
+    </table>
+    <table name="courseExamType" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="title" sqlType="TEXT" precision="65535" scale="0" nullable="false" jdbcType="-1"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="course_ibfk_1" table="course" schema="" catalog="fbSchedule" columns="courseExamTypeID"/>
+    </table>
+    <table name="courseSeries" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="title" sqlType="TEXT" precision="65535" scale="0" nullable="false" jdbcType="-1"/>
+      <column name="courseTypeID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="courseseries_ibfk_1" columns="courseTypeID" ref-table="courseType" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="impcourse_ibfk_4" table="impCourse" schema="" catalog="fbSchedule" columns="courseSeriesID"/>
+      <exported-key name="plancourse_ibfk_4" table="planCourse" schema="" catalog="fbSchedule" columns="courseSeriesID"/>
+    </table>
+    <table name="courseType" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="title" sqlType="TEXT" precision="65535" scale="0" nullable="false" jdbcType="-1"/>
+      <column name="courseClassID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="coursetype_ibfk_1" columns="courseClassID" ref-table="courseClass" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="courseseries_ibfk_1" table="courseSeries" schema="" catalog="fbSchedule" columns="courseTypeID"/>
+      <exported-key name="impcourse_ibfk_3" table="impCourse" schema="" catalog="fbSchedule" columns="courseTypeID"/>
+      <exported-key name="plancourse_ibfk_3" table="planCourse" schema="" catalog="fbSchedule" columns="courseTypeID"/>
+      <exported-key name="planspec_ibfk_2" table="planSpec" schema="" catalog="fbSchedule" columns="courseTypeID"/>
+    </table>
+    <table name="fullPlan" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="termPlanID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="fullplan_ibfk_1" columns="termPlanID" ref-table="termPlan" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="plancourse_ibfk_5" table="planCourse" schema="" catalog="fbSchedule" columns="fullPlanID"/>
+      <index name="partialPlanID" unique="false" columns="termPlanID"/>
+    </table>
+    <table name="imp" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="majorID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="term" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="termPlanID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="comment" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="imp_ibfk_1" columns="termPlanID" ref-table="termPlan" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="imp_ibfk_2" columns="majorID" ref-table="major" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="partialPlanID" unique="false" columns="termPlanID"/>
+    </table>
+    <table name="impCourse" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="courseID" sqlType="VARCHAR" precision="7" scale="0" nullable="false" jdbcType="12"/>
+      <column name="courseClassID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="courseTypeID" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="courseSeriesID" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="periodInWeek" sqlType="FLOAT" precision="12" scale="0" nullable="false" jdbcType="7"/>
+      <column name="periodHPerWeek" sqlType="FLOAT" precision="12" scale="0" nullable="false" jdbcType="7"/>
+      <column name="isDegCourse" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="comment" sqlType="LONGTEXT" precision="2147483647" scale="0" nullable="true" jdbcType="-1"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="impcourse_ibfk_2" columns="courseClassID" ref-table="courseClass" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="impcourse_ibfk_3" columns="courseTypeID" ref-table="courseType" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="impcourse_ibfk_4" columns="courseSeriesID" ref-table="courseSeries" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="impcourse_ibfk_5" columns="courseID" ref-table="course" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+    </table>
+    <table name="major" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="title" sqlType="TEXT" precision="65535" scale="0" nullable="false" jdbcType="-1"/>
+      <column name="grade" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <exported-key name="imp_ibfk_2" table="imp" schema="" catalog="fbSchedule" columns="majorID"/>
+      <exported-key name="termplan_ibfk_1" table="termPlan" schema="" catalog="fbSchedule" columns="majorID"/>
+    </table>
+    <table name="planCourse" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="courseID" sqlType="VARCHAR" precision="7" scale="0" nullable="false" jdbcType="12"/>
+      <column name="courseClassID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="courseTypeID" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="courseSeriesID" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="fullPlanID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="termPlanID" sqlType="INT" precision="10" scale="0" nullable="true" jdbcType="4"/>
+      <column name="period" sqlType="FLOAT" precision="12" scale="0" nullable="false" jdbcType="7"/>
+      <column name="credits" sqlType="FLOAT" precision="12" scale="0" nullable="false" jdbcType="7"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="plancourse_ibfk_2" columns="courseClassID" ref-table="courseClass" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="plancourse_ibfk_3" columns="courseTypeID" ref-table="courseType" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="plancourse_ibfk_4" columns="courseSeriesID" ref-table="courseSeries" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="plancourse_ibfk_5" columns="fullPlanID" ref-table="fullPlan" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="plancourse_ibfk_6" columns="termPlanID" ref-table="termPlan" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="plancourse_ibfk_7" columns="courseID" ref-table="course" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="partialPlanID" unique="false" columns="termPlanID"/>
+    </table>
+    <table name="planSpec" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="courseClassID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="courseTypeID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="period" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="credits" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="termPlanID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="planspec_ibfk_1" columns="termPlanID" ref-table="termPlan" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="planspec_ibfk_2" columns="courseTypeID" ref-table="courseType" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <foreign-key name="planspec_ibfk_3" columns="courseClassID" ref-table="courseClass" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <index name="partialPlanID" unique="false" columns="termPlanID"/>
+    </table>
+    <table name="termPlan" schema="" catalog="fbSchedule" type="TABLE">
+      <column name="id" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4" autoIncrement="true"/>
+      <column name="majorID" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <column name="term" sqlType="INT" precision="10" scale="0" nullable="false" jdbcType="4"/>
+      <primary-key name="PRIMARY" columns="id"/>
+      <foreign-key name="termplan_ibfk_1" columns="majorID" ref-table="major" ref-schema="" ref-catalog="fbSchedule" ref-columns="id" update-rule="3" delete-rule="3" deferrability="2"/>
+      <exported-key name="fullplan_ibfk_1" table="fullPlan" schema="" catalog="fbSchedule" columns="termPlanID"/>
+      <exported-key name="imp_ibfk_1" table="imp" schema="" catalog="fbSchedule" columns="termPlanID"/>
+      <exported-key name="plancourse_ibfk_6" table="planCourse" schema="" catalog="fbSchedule" columns="termPlanID"/>
+      <exported-key name="planspec_ibfk_1" table="planSpec" schema="" catalog="fbSchedule" columns="termPlanID"/>
+    </table>
+  </data-source>
+</component>
