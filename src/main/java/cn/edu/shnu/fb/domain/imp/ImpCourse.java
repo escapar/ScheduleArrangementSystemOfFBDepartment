@@ -2,8 +2,12 @@ package cn.edu.shnu.fb.domain.imp;
 
 import java.io.Serializable;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -27,7 +31,8 @@ public class ImpCourse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private int id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	protected int id;
 
 	@Lob
 	private String comment;
@@ -43,21 +48,21 @@ public class ImpCourse implements Serializable {
 	@Column(name="period_in_week")
 	private float periodInWeek;
 
-	@ManyToOne
+	@ManyToOne(cascade= CascadeType.MERGE)
 	private Imp imp;
 
-	@ManyToOne
+	@ManyToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="course_class_id")
 	private CourseClass courseClass;
 
-	@ManyToOne
+	@ManyToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="course_type_id")
 	private CourseType courseType;
 
-	@ManyToOne
+	@ManyToOne(cascade= CascadeType.MERGE)
 	private Course course;
 
-	@ManyToOne
+	@ManyToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="course_exam_id")
 	private CourseExam courseExam;
 

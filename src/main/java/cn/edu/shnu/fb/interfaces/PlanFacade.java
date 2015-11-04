@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.shnu.fb.domain.imp.ImpCourse;
+import cn.edu.shnu.fb.domain.imp.ImpCourseRepository;
+import cn.edu.shnu.fb.domain.imp.ImpRepository;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.major.MajorRepository;
 import cn.edu.shnu.fb.domain.plan.Plan;
@@ -40,6 +43,8 @@ public class PlanFacade {
     @Autowired
     MajorRepository majorRepository;
 
+    @Autowired
+    ImpCourseRepository impCourseRepository;
     @ResponseBody
     @RequestMapping(value="/plan/{id}",method=RequestMethod.GET)
     public List<PlanDTO> planBrief(@PathVariable Integer id,@PathVariable Integer detailed){
@@ -55,7 +60,7 @@ public class PlanFacade {
 
     @ResponseBody
     @RequestMapping(value="/plan/major/{grade}/{title}/term/{termCount}",method=RequestMethod.GET)
-    public List<PlanCourseGridDTO> planDetailByTermAndMajor(@PathVariable Integer grade,@PathVariable String title,@PathVariable Integer termCount){
+    public List<PlanCourseGridDTO> planBriefByTermAndMajor(@PathVariable Integer grade,@PathVariable String title,@PathVariable Integer termCount){
         Major major = majorRepository.findMajorByGradeAndTitleLike(grade, title);
         Boolean shouldLoadDetailedPlan = true;
         int termYear = grade + (termCount - 1) / 2 ;
@@ -68,13 +73,14 @@ public class PlanFacade {
             PCDTOs = planTmp.getPlanCourses();
             for(PlanCourse PCDTO : PCDTOs) {
                 PlanCourseGridDTO tmpPCGDTO = new PlanCourseGridDTO(new PlanCourseDTO(PCDTO));
-                tmpPCGDTO.setPeriod(PCDTO.getPeriod());
-                tmpPCGDTO.setCredits(PCDTO.getCredits());
+                tmpPCGDTO.setOnePeriod(PCDTO.getPeriod());
+                tmpPCGDTO.setOneCredits(PCDTO.getCredits());
                 PCGDTOs.add(tmpPCGDTO);
             }
         }
         return PCGDTOs;
     }
+
 
     @ResponseBody
     @RequestMapping(value="/plan/spec/major/{grade}/{title}/term/{termCount}",method=RequestMethod.GET)
@@ -91,12 +97,28 @@ public class PlanFacade {
             PSDTOs = planTmp.getPlanSpecs();
             for(PlanSpec PSDTO : PSDTOs) {
                 PlanCourseGridDTO tmpPCGDTO = new PlanCourseGridDTO(new PlanSpecDTO(PSDTO));
-                tmpPCGDTO.setPeriod(PSDTO.getPeriod());
-                tmpPCGDTO.setCredits(PSDTO.getCredits());
+                tmpPCGDTO.setOnePeriod(PSDTO.getPeriod());
+                tmpPCGDTO.setOneCredits(PSDTO.getCredits());
                 PCGDTOs.add(tmpPCGDTO);
             }
         }
         return PCGDTOs;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/plan/spec/major/{grade}/{title}/term/{termCount}/detail",method=RequestMethod.GET)
+    public List<PlanSpec> planSpecDetailByTermAndMajor(@PathVariable Integer grade,@PathVariable String title,@PathVariable Integer termCount){
+        Major major = majorRepository.findMajorByGradeAndTitleLike(grade, title);
+        int termYear = grade + (termCount - 1) / 2 ;
+        int termPart = termCount % 2;
+        Iterable<Plan> plans = planRepository.findPlansByMajorAndTermYearAndTermPart(major,termYear,termPart);
+        List<PlanCourseGridDTO> PCGDTOs = new ArrayList<>();
+        List<PlanSpec> PSDTOs = new ArrayList<>();
+
+        for(Plan planTmp : plans){
+            PSDTOs = planTmp.getPlanSpecs();
+        }
+        return PSDTOs;
     }
 
     @ResponseBody
@@ -149,22 +171,32 @@ public class PlanFacade {
                     genericPlan = planTmp;
                 }
             }
+            Boolean isImped = false;
+            List<ImpCourse> impCourses = impCourseRepository.findImpCoursesByImpMajor(major);
             planCourses = planCourseRepository.findPlanCoursesByPlan(genericPlan);
             if(genericPlan!=null) {
-                List<PlanCourseDTO> planCourseDTOs = new ArrayList();
                 for (PlanCourse planCourseTmp : planCourses) {
                     if(planCourseTmp.getCourseClass().getId() == courseClass) {
                         if (courseType == 0 || planCourseTmp.getCourseType() != null && planCourseTmp.getCourseType().getId() == courseType) {
-                            PlanCourseDTO planCourseDTO = new PlanCourseDTO(planCourseTmp);
-                            PlanCourseGridDTO PCGDTO = new PlanCourseGridDTO(planCourseDTO);
-                            PCGDTO.setCredits(planCourseDTO.getCredits());
-                            PCGDTO.setPeriod(planCourseDTO.getPeriod());
-                            PCGDTOs.add(PCGDTO);
+                            for(ImpCourse impCourse : impCourses) {
+                                if (impCourse.getCourse().getId() == planCourseTmp.getCourse().getId()) {
+                                    isImped = true;
+                                    break;
+                                }
+                            }
+                            if(!isImped) {
+                                PlanCourseDTO planCourseDTO = new PlanCourseDTO(planCourseTmp);
+                                PlanCourseGridDTO PCGDTO = new PlanCourseGridDTO(planCourseDTO);
+                                PCGDTO.setOneCredits(planCourseDTO.getCredits());
+                                PCGDTO.setOnePeriod(planCourseDTO.getPeriod());
+                                PCGDTOs.add(PCGDTO);
+                            }
+                            isImped = false;
                         }
                     }
                 }
-                return PCGDTOs;
             }
+            return PCGDTOs;
         }
         return null;
     }

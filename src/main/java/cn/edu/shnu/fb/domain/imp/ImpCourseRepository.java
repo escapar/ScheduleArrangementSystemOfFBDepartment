@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
 
+import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.term.Term;
 
@@ -12,4 +13,7 @@ import cn.edu.shnu.fb.domain.term.Term;
  */
 public interface ImpCourseRepository extends PagingAndSortingRepository<ImpCourse,Integer> {
     List<ImpCourse> findImpCoursesByImpTermAndImpMajor(Term term,Major major);
+    List<ImpCourse> findImpCoursesByImpMajor(Major major);
+    ImpCourse findByCourse(Course course);
+
 }

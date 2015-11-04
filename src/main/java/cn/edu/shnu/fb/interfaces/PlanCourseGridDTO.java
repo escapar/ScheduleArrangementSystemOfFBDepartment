@@ -18,6 +18,9 @@ public class PlanCourseGridDTO {
     private float periodW ;
     private float[] credits= new float[8];
     private String courseClass;
+    public PlanCourseGridDTO(){
+
+    }
     public PlanCourseGridDTO(PlanCourseDTO planCourseDTO){
         this.id = planCourseDTO.getId();
         this.code = planCourseDTO.getCourse().getCode();
@@ -72,11 +75,19 @@ public class PlanCourseGridDTO {
         return code;
     }
 
-    public void setPeriod(float period) {
+    public void setPeriod(float period[]) {
+        this.period=period;
+    }
+
+    public void setCredits(float credits[]) {
+        this.credits=credits;
+    }
+
+    public void setOnePeriod(float period) {
         this.period[0]=period;
     }
 
-    public void setCredits(float credits) {
+    public void setOneCredits(float credits) {
         this.credits[0]=credits;
     }
 
