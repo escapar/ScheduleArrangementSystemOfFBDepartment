@@ -1,18 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a30eaaea-bb8d-4106-9470-6400e491de19" name="Default" comment="完成选课模块的API更新">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/CourseClassRepository.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/CourseExamRepository.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/course/CourseRepository.java" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/CourseTypeRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/imp/ImpCourse.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/imp/ImpCourse.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/ImpCourseFacade.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/ImpCourseFacade.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/imp/ImpCourseRepository.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/imp/ImpCourseRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/PlanCourseGridDTO.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/PlanCourseGridDTO.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/PlanFacade.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/PlanFacade.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/compiler.xml" afterPath="$PROJECT_DIR$/.idea/compiler.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbSA.iml" afterPath="$PROJECT_DIR$/fbSA.iml" />
+    <list default="true" id="a30eaaea-bb8d-4106-9470-6400e491de19" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/aopalliance-1.0.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/commons-logging-1.1.3.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-aop-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-aspects-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-beans-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-context-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-context-support-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-core-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-expression-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-instrument-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-instrument-tomcat-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-jdbc-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-jms-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-messaging-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-orm-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-oxm-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-test-4.1.6.RELEASE.jar" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/lib/spring-tx-4.1.6.RELEASE.jar" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="fbSA.iws" />
@@ -987,7 +994,7 @@
       <workItem from="1446115578418" duration="30205000" />
       <workItem from="1446351662798" duration="3229000" />
       <workItem from="1446355484522" duration="17724000" />
-      <workItem from="1446443105503" duration="45148000" />
+      <workItem from="1446443105503" duration="45296000" />
     </task>
     <task id="LOCAL-00001" summary="增加获取选修课列表的API">
       <created>1446617120429</created>
@@ -995,11 +1002,17 @@
       <option name="project" value="LOCAL" />
       <updated>1446617120429</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="完成选课模块的API更新">
+      <created>1446654920312</created>
+      <option name="number" value="00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1446654920312</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96306000" />
+    <option name="totallyTimeSpent" value="96454000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="45" y="23" width="1440" height="873" extended-state="6" />
@@ -1023,7 +1036,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23541667" sideWeight="0.8111111" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.23541667" sideWeight="0.8111111" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Persistence" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.18888889" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Java Enterprise" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
