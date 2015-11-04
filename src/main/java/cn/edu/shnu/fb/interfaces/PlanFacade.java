@@ -109,8 +109,10 @@ public class PlanFacade {
             List<PlanSpec> planSpecs = new ArrayList();
 
             for (Plan planTmp : plans) {
-                planCourses.addAll(planCourseRepository.findPlanCoursesByPlan(planTmp));
-                planSpecs.addAll(planSpecRepository.findPlanSpecsByPlan(planTmp));
+                if(planTmp.getTerm()!=null) {
+                    planCourses.addAll(planCourseRepository.findPlanCoursesByPlan(planTmp));
+                    planSpecs.addAll(planSpecRepository.findPlanSpecsByPlan(planTmp));
+                }
             }
             List<PlanCourseDTO> planCourseDTOs = new ArrayList();
             List<PlanSpecDTO> planSpecDTOs = new ArrayList();
@@ -133,4 +135,37 @@ public class PlanFacade {
         return null;
     }
 
+    @ResponseBody
+    @RequestMapping(value="/plan/class/{courseClass}/type/{courseType}/major/{grade}/{title}",method=RequestMethod.GET)
+    public List<PlanCourseGridDTO> planSelectableCourseByMajor(@PathVariable Integer courseClass,@PathVariable Integer courseType,@PathVariable Integer grade,@PathVariable String title){
+        Major major = majorRepository.findMajorByGradeAndTitleLike(grade, title);
+        if(major != null) {
+            Iterable<Plan> plans = planRepository.findPlansByMajor(major);
+            Plan genericPlan = null;
+            List<PlanCourse> planCourses = new ArrayList();
+            List<PlanCourseGridDTO> PCGDTOs = new ArrayList<>();
+            for (Plan planTmp : plans) {
+                if(planTmp.getTerm() == null) {
+                    genericPlan = planTmp;
+                }
+            }
+            planCourses = planCourseRepository.findPlanCoursesByPlan(genericPlan);
+            if(genericPlan!=null) {
+                List<PlanCourseDTO> planCourseDTOs = new ArrayList();
+                for (PlanCourse planCourseTmp : planCourses) {
+                    if(planCourseTmp.getCourseClass().getId() == courseClass) {
+                        if (courseType == 0 || planCourseTmp.getCourseType() != null && planCourseTmp.getCourseType().getId() == courseType) {
+                            PlanCourseDTO planCourseDTO = new PlanCourseDTO(planCourseTmp);
+                            PlanCourseGridDTO PCGDTO = new PlanCourseGridDTO(planCourseDTO);
+                            PCGDTO.setCredits(planCourseDTO.getCredits());
+                            PCGDTO.setPeriod(planCourseDTO.getPeriod());
+                            PCGDTOs.add(PCGDTO);
+                        }
+                    }
+                }
+                return PCGDTOs;
+            }
+        }
+        return null;
+    }
 }
