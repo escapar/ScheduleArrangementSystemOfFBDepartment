@@ -63,6 +63,7 @@ public class ImpCourseFacade {
     @ResponseBody
     @RequestMapping(value="/imp/major/{grade}/{title}/term/{termCount}/oblige",method=RequestMethod.GET)
     public List<PlanCourseGridDTO> impDetailByTermAndMajor(@PathVariable Integer grade,@PathVariable String title,@PathVariable Integer termCount){
+        System.out.println(title);
         int termYear = grade + (termCount - 1) / 2 ;
         int termPart = termCount % 2;
         Term term = termRepository.findTermByYearAndPart(termYear,termPart);
@@ -79,6 +80,7 @@ public class ImpCourseFacade {
     @ResponseBody
     @RequestMapping(value="/imp/major/{grade}/{title}/term/{termCount}/selectable",method=RequestMethod.GET)
     public List<PlanCourseGridDTO> impSelectableDetailByTermAndMajor(@PathVariable Integer grade,@PathVariable String title,@PathVariable Integer termCount){
+        System.out.println(title);
         int termYear = grade + (termCount - 1) / 2 ;
         int termPart = termCount % 2;
         Term term = termRepository.findTermByYearAndPart(termYear,termPart);
@@ -118,6 +120,8 @@ public class ImpCourseFacade {
     @ResponseBody
     @RequestMapping(value="/plan/major/{majorGrade}/{majorTitle}/term/{termCount}/class/{courseClass}/type/{courseType}",method=RequestMethod.POST , consumes = "application/json")
     public void updateSelectableImpCourse(@RequestBody List<PlanCourseGridDTO> courseGridDTOs,@PathVariable Integer majorGrade,@PathVariable String majorTitle,@PathVariable Integer termCount,@PathVariable Integer courseClass,@PathVariable Integer courseType){
+                System.out.println(majorTitle);
+
         Major major = majorRepository.findMajorByGradeAndTitleLike(majorGrade, majorTitle);
         int termYear = major.getGrade() + (termCount - 1) / 2 ;
         int termPart = termCount % 2;
