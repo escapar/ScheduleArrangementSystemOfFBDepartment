@@ -2,12 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a30eaaea-bb8d-4106-9470-6400e491de19" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_tomcat_tomcat_servlet_api_7_0_42.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/fbSA_war.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/artifacts/fbSA_war_exploded.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_springframework_boot_spring_boot_legacy_1_0_1_RELEASE.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/java/META-INF/web.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbSA.iml" afterPath="$PROJECT_DIR$/fbSA.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/artifacts/fbSA_war_exploded.xml" afterPath="$PROJECT_DIR$/.idea/artifacts/fbSA_war_exploded.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -59,7 +57,7 @@
         <entry file="file://$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="19" column="5" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+              <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#682#683#0" expanded="true" />
@@ -103,11 +101,21 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="true">
+      <file leaf-file-name="pom.xml" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/pom.xml">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.5030488">
-              <caret line="34" column="21" selection-start-line="34" selection-start-column="21" selection-end-line="34" selection-end-column="21" />
+            <state vertical-scroll-proportion="-4.7222223">
+              <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="web.xml" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/web.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.921466">
+              <caret line="39" column="10" selection-start-line="39" selection-start-column="10" selection-end-line="39" selection-end-column="10" />
               <folding />
             </state>
           </provider>
@@ -159,7 +167,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/TermPlan.java" />
         <option value="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/Imp.java" />
         <option value="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/FullPlan.java" />
         <option value="$PROJECT_DIR$/src/main/java/META-INF/persistence.xml" />
@@ -210,6 +217,7 @@
         <option value="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ServletInitializer.java" />
         <option value="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java" />
         <option value="$PROJECT_DIR$/pom.xml" />
+        <option value="$PROJECT_DIR$/src/main/java/META-INF/web.xml" />
       </list>
     </option>
   </component>
@@ -376,6 +384,10 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="java" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="META-INF" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -726,7 +738,7 @@
             </option>
             <option name="goals">
               <list>
-                <option value="package" />
+                <option value="spring-boot:run" />
               </list>
             </option>
             <option name="profilesMap">
@@ -764,7 +776,7 @@
       <workItem from="1446115578418" duration="30205000" />
       <workItem from="1446351662798" duration="3229000" />
       <workItem from="1446355484522" duration="17724000" />
-      <workItem from="1446443105503" duration="46666000" />
+      <workItem from="1446443105503" duration="47651000" />
     </task>
     <task id="LOCAL-00001" summary="增加获取选修课列表的API">
       <created>1446617120429</created>
@@ -796,11 +808,17 @@
       <option name="project" value="LOCAL" />
       <updated>1446655195175</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="部署">
+      <created>1446699700963</created>
+      <option name="number" value="00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1446699700963</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="97824000" />
+    <option name="totallyTimeSpent" value="98809000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="45" y="23" width="1440" height="873" extended-state="6" />
@@ -881,7 +899,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="增加获取选修课列表的API" />
     <MESSAGE value="完成选课模块的API更新" />
-    <option name="LAST_COMMIT_MESSAGE" value="完成选课模块的API更新" />
+    <MESSAGE value="部署" />
+    <option name="LAST_COMMIT_MESSAGE" value="部署" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1329,10 +1348,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/pom.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-4.7222223">
+          <caret line="40" column="0" selection-start-line="40" selection-start-column="0" selection-end-line="40" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="19" column="5" selection-start-line="19" selection-start-column="5" selection-end-line="19" selection-end-column="5" />
+          <caret line="18" column="0" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#682#683#0" expanded="true" />
@@ -1343,10 +1370,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/pom.xml">
+    <entry file="file://$PROJECT_DIR$/src/main/java/META-INF/web.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5030488">
-          <caret line="34" column="21" selection-start-line="34" selection-start-column="21" selection-end-line="34" selection-end-column="21" />
+        <state vertical-scroll-proportion="0.921466">
+          <caret line="39" column="10" selection-start-line="39" selection-start-column="10" selection-end-line="39" selection-end-column="10" />
           <folding />
         </state>
       </provider>
