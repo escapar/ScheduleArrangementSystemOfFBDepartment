@@ -6,7 +6,7 @@
 	<groupId>cn.edu.shnu.fb</groupId>
 	<artifactId>sa</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>war</packaging>
 
 	<name>ScheduleArrangement</name>
 	<description>ScheduleArrangement for fb SHNU</description>
