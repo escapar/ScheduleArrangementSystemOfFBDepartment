@@ -47,7 +47,7 @@ public class PlanFacade {
     ImpCourseRepository impCourseRepository;
     @ResponseBody
     @RequestMapping(value="/plan/{id}",method=RequestMethod.GET)
-    public List<PlanDTO> planBrief(@PathVariable Integer id,@PathVariable Integer detailed){
+    public List<PlanDTO> planBrief(@PathVariable Integer id){
         Iterable<Plan> plans = planRepository.findAll();
         List<PlanDTO> planDTOs = new ArrayList<PlanDTO>();
         Boolean shouldLoadDetailedPlan = false;
