@@ -18,8 +18,6 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         ResourceBundleViewResolver resolver = new ResourceBundleViewResolver();
         resolver.setOrder(1);
         resolver.setBasename("views");
-        Locale locale = new Locale("zh_CN");
-        resolver.setLocalesToInitialize(locale);
         return resolver;
     }
 }
