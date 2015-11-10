@@ -1,5 +1,7 @@
 package cn.edu.shnu.fb;
 
+import java.util.Locale;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -16,6 +18,8 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         ResourceBundleViewResolver resolver = new ResourceBundleViewResolver();
         resolver.setOrder(1);
         resolver.setBasename("views");
+        Locale locale = new Locale("zh_CN");
+        resolver.setLocalesToInitialize(locale);
         return resolver;
     }
 }
