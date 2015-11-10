@@ -93,6 +93,18 @@
           <version>2.1.1</version>
           <configuration>
               <warName>java-hello</warName>
+                              <webResources>
+            <resource>
+              <!-- this is relative to the pom.xml directory -->
+              <directory>src/main/java</directory>
+              <!-- the list has a default value of ** -->
+              <includes>
+                <include>**/*.xls</include>
+                <include>**/*.properties</include>
+
+              </includes>
+            </resource>
+          </webResources>
           </configuration>
       </plugin>
     </plugins>
