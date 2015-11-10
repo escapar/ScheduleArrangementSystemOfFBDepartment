@@ -11,6 +11,7 @@ import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 
 @SpringBootApplication
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
 @EnableAutoConfiguration(exclude = JerseyAutoConfiguration.class)
 
 public class ScheduleArrangementApplication extends SpringBootServletInitializer {
