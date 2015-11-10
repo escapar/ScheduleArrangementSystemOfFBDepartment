@@ -1,0 +1,11 @@
+{
+    "MENU": {
+        "UI": {
+            "PLAN-MODULE": "培养方案",
+            "PLAN-PAGE": "显示方案"
+        }
+    },
+    "PLAN": {
+        "TITLE": "欢迎消息"
+    }
+}

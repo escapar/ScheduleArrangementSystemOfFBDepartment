@@ -1,0 +1,10 @@
+{
+    "MENU": {
+        "UI": {
+            "IMP-MODULE": "执行计划",
+            "IMP-PAGE": "必修课执行计划",
+            "IMP-SELECTABLE-PAGE": "查看选修课执行计划",
+            "IMP-SELECTABLE-MODIFY-PAGE" : "制定选修课执行计划"
+        }
+    }
+}
