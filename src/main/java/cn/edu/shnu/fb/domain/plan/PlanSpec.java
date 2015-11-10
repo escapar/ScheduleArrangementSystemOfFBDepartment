@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import cn.edu.shnu.fb.domain.common.CourseClass;
 import cn.edu.shnu.fb.domain.common.CourseType;
+import cn.edu.shnu.fb.domain.common.Locator;
 
 /**
  * The persistent class for the plan_spec database table.
@@ -21,7 +22,6 @@ import cn.edu.shnu.fb.domain.common.CourseType;
  */
 @Entity
 @Table(name="plan_spec")
-@NamedQuery(name="PlanSpec.findAll", query="SELECT p FROM PlanSpec p")
 public class PlanSpec implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -33,16 +33,7 @@ public class PlanSpec implements Serializable {
 	private float period;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JsonIgnore
-	private Plan plan;
-
-	@ManyToOne
-	@JoinColumn(name="course_type_id")
-	private CourseType courseType;
-
-	@ManyToOne
-	@JoinColumn(name="course_class_id")
-	private CourseClass courseClass;
+	private Locator locator;
 
 	public PlanSpec() {
 	}
@@ -71,28 +62,12 @@ public class PlanSpec implements Serializable {
 		this.period = period;
 	}
 
-	public Plan getPlan() {
-		return this.plan;
+	public Locator getLocator() {
+		return this.locator;
 	}
 
-	public void setPlan(Plan plan) {
-		this.plan = plan;
-	}
-
-	public CourseType getCourseType() {
-		return this.courseType;
-	}
-
-	public void setCourseType(CourseType courseType) {
-		this.courseType = courseType;
-	}
-
-	public CourseClass getCourseClass() {
-		return this.courseClass;
-	}
-
-	public void setCourseClass(CourseClass courseClass) {
-		this.courseClass = courseClass;
+	public void setLocator(Locator locator) {
+		this.locator = locator;
 	}
 
 

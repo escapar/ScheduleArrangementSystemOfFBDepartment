@@ -2,6 +2,7 @@ package cn.edu.shnu.fb.domain.user;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Lob;
@@ -13,7 +14,6 @@ import javax.persistence.NamedQuery;
  * 
  */
 @Entity
-@NamedQuery(name="Teacher.findAll", query="SELECT t FROM Teacher t")
 public class Teacher implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -22,6 +22,10 @@ public class Teacher implements Serializable {
 
 	@Lob
 	private String name;
+
+	@Lob
+	@Column(name="pro_title")
+	private String proTitle;
 
 	public Teacher() {
 	}
@@ -41,5 +45,18 @@ public class Teacher implements Serializable {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getProTitle() {
+		return proTitle;
+	}
+
+	public void setProTitle(final String proTitle) {
+		this.proTitle = proTitle;
+	}
+
+	public static long getSerialVersionUID() {
+		return serialVersionUID;
+	}
+
 
 }

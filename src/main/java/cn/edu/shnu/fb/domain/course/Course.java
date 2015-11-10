@@ -16,7 +16,6 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  * 
  */
 @Entity
-@NamedQuery(name="Course.findAll", query="SELECT c FROM Course c")
 public class Course implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -31,8 +30,6 @@ public class Course implements Serializable {
 	@Lob
 	private String title;
 
-	@ManyToOne
-	private Teacher teacher;
 
 	public Course() {
 	}
@@ -59,13 +56,4 @@ public class Course implements Serializable {
 	public void setTitle(String title) {
 		this.title = title;
 	}
-
-	public Teacher getTeacher() {
-		return this.teacher;
-	}
-
-	public void setTeacher(Teacher teacher) {
-		this.teacher = teacher;
-	}
-
 }

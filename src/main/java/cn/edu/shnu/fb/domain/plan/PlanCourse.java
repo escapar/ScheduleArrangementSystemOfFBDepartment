@@ -8,14 +8,12 @@ import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import cn.edu.shnu.fb.domain.common.CourseClass;
 import cn.edu.shnu.fb.domain.common.CourseExam;
-import cn.edu.shnu.fb.domain.common.CourseType;
+import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.course.Course;
 
 /**
@@ -24,7 +22,6 @@ import cn.edu.shnu.fb.domain.course.Course;
  */
 @Entity
 @Table(name="plan_course")
-@NamedQuery(name="PlanCourse.findAll", query="SELECT p FROM PlanCourse p")
 public class PlanCourse implements Serializable {
 	private static final long serialVersionUID = 1L;
 
@@ -38,17 +35,9 @@ public class PlanCourse implements Serializable {
 
 	private float period;
 
-	@ManyToOne
-	@JoinColumn(name="course_class_id")
-	private CourseClass courseClass;
-
-	@ManyToOne
-	@JoinColumn(name="course_type_id")
-	private CourseType courseType;
-
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonIgnore
-	private Plan plan;
+	private Locator locator;
 
 	//uni-directional many-to-one association to Course
 	@ManyToOne
@@ -94,28 +83,12 @@ public class PlanCourse implements Serializable {
 		this.period = period;
 	}
 
-	public CourseClass getCourseClass() {
-		return this.courseClass;
+	public Locator getLocator() {
+		return this.locator;
 	}
 
-	public void setCourseClass(CourseClass courseClass) {
-		this.courseClass = courseClass;
-	}
-
-	public CourseType getCourseType() {
-		return this.courseType;
-	}
-
-	public void setCourseType(CourseType courseType) {
-		this.courseType = courseType;
-	}
-
-	public Plan getPlan() {
-		return this.plan;
-	}
-
-	public void setPlan(Plan plan) {
-		this.plan = plan;
+	public void setLocator(Locator locator) {
+		this.locator = locator;
 	}
 
 	public Course getCourse() {

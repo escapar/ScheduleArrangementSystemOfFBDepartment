@@ -8,14 +8,8 @@ import javax.persistence.Lob;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
-/**
- * The persistent class for the course_exam database table.
- * 
- */
 @Entity
 @Table(name="course_exam")
-@NamedQuery(name="CourseExam.findAll", query="SELECT c FROM CourseExam c")
 public class CourseExam implements Serializable {
 	private static final long serialVersionUID = 1L;
 
