@@ -1,5 +1,6 @@
 package cn.edu.shnu.fb.infrastructure.poi;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -52,21 +53,22 @@ public class ExcelTemplate {
      * 使用默认模板创建ExcelTemplate对象
      * @return 根据模板已初始化完成的ExcelTemplate对象
      */
-    public static ExcelTemplate newInstance(){
+ /*   public static ExcelTemplate newInstance(){
         return newInstance("default.xls");
-    }
+    }*/
 
     /**
      * 指定模板创建ExcelTemplate对象
      * @param templates 模板名称
      * @return 根据模板已初始化完成的ExcelTemplate对象
      */
-    public static ExcelTemplate newInstance(String templates){
+    public static ExcelTemplate newInstance(InputStream is){
         try {
             ExcelTemplate excel = new ExcelTemplate();
-            POIFSFileSystem fs = new POIFSFileSystem(
+            POIFSFileSystem fs = new POIFSFileSystem(is);
         //            Thread.currentThread().getContextClassLoader()
-                            ExcelTemplate.class.getResourceAsStream(templates));
+         //                   ExcelTemplate.class.getResourceAsStream(templates));
+
             excel.workbook = new HSSFWorkbook(fs);
             excel.sheet = excel.workbook.getSheetAt(0);
 

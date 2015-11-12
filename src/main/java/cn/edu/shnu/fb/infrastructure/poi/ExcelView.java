@@ -1,5 +1,6 @@
 package cn.edu.shnu.fb.infrastructure.poi;
 
+import java.io.InputStream;
 import java.io.OutputStream;
 
 import java.util.ArrayList;
@@ -34,7 +35,8 @@ public class ExcelView extends AbstractXlsView {
 
         response.setHeader("Content-Disposition", "attachment; filename=\"result.xls\"");
            // InputStream is= this.getClass().getResourceAsStream("impTemplate.xls");
-        ExcelTemplate template = ExcelTemplate.newInstance("impTemplate.xls");
+        InputStream is = this.getClass().getResourceAsStream(request.getContextPath() + "/impTemplate.xls");
+        ExcelTemplate template = ExcelTemplate.newInstance(is);
         ImpExcelDTO imp = (ImpExcelDTO)model.get("impExcelDTOs");
         ImpExcelHeaderDTO headerDTO = imp.getHeader();
         Map<String,Object> map = new HashMap<>();
