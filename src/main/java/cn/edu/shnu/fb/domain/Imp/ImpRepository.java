@@ -10,6 +10,7 @@ import cn.edu.shnu.fb.domain.common.CourseClass;
 import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.common.CourseType;
 import cn.edu.shnu.fb.domain.common.Locator;
+import cn.edu.shnu.fb.domain.common.LocatorRepository;
 import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.term.Term;
@@ -46,6 +47,9 @@ public class ImpRepository {
 
     @Autowired
     TermRepository termRepository;
+
+    @Autowired
+    LocatorRepository locatorRepository;
 
     @Autowired
     CourseExamDao courseExamDao;
@@ -101,6 +105,24 @@ public class ImpRepository {
         }
     }
 
+    public List<Imp> getAllImpByMajorIdAndTermCount(int majorId,int termCount){
+        if(termCount>0 && termCount<9) {
+            List<Imp> resList = new ArrayList<>();
+
+            Major major = majorDao.findOne(majorId);
+
+            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+                if (major != null && term != null) {
+                    List<Locator> locators = locatorDao.findByMajorAndTerm(major, term);
+                    for (Locator locator : locators){
+                        resList.addAll(impDao.findByLocator(locator));
+                    }
+                    return resList;
+                }
+        }
+        return null;
+    }
+
     public List<Imp> getImpByLocatorId(int locatorId){
         Locator locator = locatorDao.findOne(locatorId);
         if(locator!=null) {
@@ -127,6 +149,30 @@ public class ImpRepository {
             CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
             imp.setCourseExam(courseExam);
             impDao.save(imp);
+        }
+    }
+
+    public void updateImpByGridEntity(GridEntityDTO entity , Integer termCount){
+        if(termCount>0 && termCount<9) {
+            if (entity != null) {
+                Imp imp = impDao.findOne(entity.getId());
+                if(imp!=null) {
+                    imp.setCredits(entity.getCredits()[0]);
+                    imp.setPeriodHours(entity.getPeriod()[0]);
+                    imp.setPeriodWeeks(entity.getPeriodWeeks());
+                    imp.setIsDegCourse(entity.getIsDegCourse());
+                    Locator locator = imp.getLocator();
+                    Integer ctId = 0;
+                    if (locator.getCourseType() != null) {
+                        ctId = locator.getCourseType().getId();
+                    }
+                    Locator newLocator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(locator.getMajor().getId(), termCount, locator.getCourseClass().getId(), ctId);
+                    imp.setLocator(newLocator);
+                    CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
+                    imp.setCourseExam(courseExam);
+                    impDao.save(imp);
+                }
+            }
         }
     }
 

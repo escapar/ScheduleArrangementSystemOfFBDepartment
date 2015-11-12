@@ -18,7 +18,7 @@ import cn.edu.shnu.fb.infrastructure.persistence.ImpDao;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelHeaderDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
-import cn.edu.shnu.fb.interfaces.facade.IOAssembler;
+import cn.edu.shnu.fb.interfaces.assembler.IOAssembler;
 
 /**
  * Created by bytenoob on 15/11/10.

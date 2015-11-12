@@ -15,6 +15,8 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = JerseyAutoConfiguration.class)
 //@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, HibernateJpaAutoConfiguration.class})
+
+
 public class ScheduleArrangementApplication extends SpringBootServletInitializer {
 
     @Override

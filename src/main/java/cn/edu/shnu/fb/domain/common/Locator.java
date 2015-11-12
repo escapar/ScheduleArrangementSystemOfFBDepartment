@@ -49,6 +49,8 @@ public class Locator implements Serializable{
     @JoinColumn(name="course_type_id")
     private CourseType courseType;
 
+    private int modified;
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
@@ -114,4 +116,11 @@ public class Locator implements Serializable{
         this.courseType = courseType;
     }
 
+    public int getModified() {
+        return modified;
+    }
+
+    public void setModified(final int modified) {
+        this.modified = modified;
+    }
 }

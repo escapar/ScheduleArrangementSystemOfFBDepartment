@@ -53,7 +53,7 @@ public class ImpFacade {
     @ResponseBody
     @RequestMapping(value="/i/m/{majorId}/cc/{courseClassId}/ct/{courseTypeId}/grid",method=RequestMethod.GET) // e for electable
     public List<GridEntityDTO> getElectedImp(@PathVariable Integer majorId , @PathVariable Integer courseClassId , @PathVariable Integer courseTypeId){
-        List<Imp> imps = impRepository.getElectedImp(majorId , courseClassId , courseTypeId);
+        List<Imp> imps = impRepository.getElectedImp(majorId, courseClassId, courseTypeId);
         return ImpAssembler.toGridEntityDTO(imps);
     }
 
@@ -79,6 +79,12 @@ public class ImpFacade {
                 impRepository.deleteImp(dImp);
             }
         }
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/update/t/{termCount}",method=RequestMethod.POST , consumes = "application/json")  //  l for location
+    public void updateImp(@RequestBody GridEntityDTO grid , @PathVariable Integer termCount){
+         impRepository.updateImpByGridEntity(grid,termCount);
     }
 
     @ResponseBody

@@ -1,4 +1,4 @@
-package cn.edu.shnu.fb.interfaces.facade;
+package cn.edu.shnu.fb.interfaces.assembler;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
