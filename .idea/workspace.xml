@@ -2,24 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a30eaaea-bb8d-4106-9470-6400e491de19" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__commons_codec_commons_codec_1_5.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_3_9.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_ooxml_3_9.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_poi_poi_ooxml_schemas_3_9.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__org_apache_xmlbeans_xmlbeans_2_3_0.xml" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/.idea/libraries/Maven__stax_stax_api_1_0_1.xml" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/infrastructure/poi/impTemplate.xls" afterPath="$PROJECT_DIR$/src/main/resources/impTemplate.xls" />
-      <change type="MOVED" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/facade/IOAssembler.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/assembler/IOAssembler.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/application/ExcelService.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/application/ExcelService.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/infrastructure/poi/ExcelView.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/infrastructure/poi/ExcelView.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/facade/IOFacade.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/facade/IOFacade.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/facade/ImpFacade.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/interfaces/facade/ImpFacade.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/Imp/ImpRepository.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/Imp/ImpRepository.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/Locator.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/Locator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java" afterPath="$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/ScheduleArrangementApplication.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/resources/application.properties" afterPath="$PROJECT_DIR$/src/main/resources/application.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/fbSA.iml" afterPath="$PROJECT_DIR$/fbSA.iml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/pom.xml" afterPath="$PROJECT_DIR$/pom.xml" />
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/main/webapp/scripts/app-8fc37656.js" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/main/webapp/index.html" afterPath="$PROJECT_DIR$/src/main/webapp/index.html" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="fbSA.iws" />
@@ -68,8 +52,8 @@
       <file leaf-file-name="CourseExam.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/CourseExam.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7853403">
-              <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
+            <state vertical-scroll-proportion="0.2539267">
+              <caret line="19" column="25" selection-start-line="19" selection-start-column="25" selection-end-line="19" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -1049,7 +1033,7 @@
       <workItem from="1447148398326" duration="2794000" />
       <workItem from="1447165339380" duration="629000" />
       <workItem from="1447166017742" duration="351000" />
-      <workItem from="1447167922832" duration="8983000" />
+      <workItem from="1447167922832" duration="9270000" />
     </task>
     <task id="LOCAL-00001" summary="增加获取选修课列表的API">
       <created>1446617120429</created>
@@ -1117,11 +1101,17 @@
       <option name="project" value="LOCAL" />
       <updated>1447165459207</updated>
     </task>
-    <option name="localTasksCounter" value="12" />
+    <task id="LOCAL-00012" summary="update course elect model">
+      <created>1447329338008</created>
+      <option name="number" value="00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1447329338008</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="111566000" />
+    <option name="totallyTimeSpent" value="111853000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="1440" height="873" extended-state="6" />
@@ -1174,7 +1164,8 @@
     <MESSAGE value="完成选课模块的API更新" />
     <MESSAGE value="部署" />
     <MESSAGE value="update excel io" />
-    <option name="LAST_COMMIT_MESSAGE" value="update excel io" />
+    <MESSAGE value="update course elect model" />
+    <option name="LAST_COMMIT_MESSAGE" value="update course elect model" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1598,8 +1589,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/cn/edu/shnu/fb/domain/common/CourseExam.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7853403">
-          <caret line="28" column="22" selection-start-line="28" selection-start-column="22" selection-end-line="28" selection-end-column="22" />
+        <state vertical-scroll-proportion="0.2539267">
+          <caret line="19" column="25" selection-start-line="19" selection-start-column="25" selection-end-line="19" selection-end-column="25" />
           <folding />
         </state>
       </provider>
