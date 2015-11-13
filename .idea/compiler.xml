@@ -22,11 +22,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="true" />
-        <module name="fbSA" />
+        <module name="sa" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel target="1.8">
-      <module name="fbSA" target="1.7" />
+    <bytecodeTargetLevel>
+      <module name="sa" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

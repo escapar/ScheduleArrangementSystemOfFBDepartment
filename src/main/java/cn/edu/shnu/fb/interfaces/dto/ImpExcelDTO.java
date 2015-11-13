@@ -6,6 +6,15 @@ import java.util.List;
  * Created by bytenoob on 15/11/10.
  */
 public class ImpExcelDTO {
+
+    ImpExcelHeaderDTO header;
+    List<ImpExcelGridDTO> podtos;
+    List<ImpExcelGridDTO> modtos;
+    List<ImpExcelGridDTO> redtos;
+    List<ImpExcelGridDTO> fedtos;
+    List<ImpExcelGridDTO> tdtos;
+
+
     public ImpExcelHeaderDTO getHeader() {
         return header;
     }
@@ -57,12 +66,6 @@ public class ImpExcelDTO {
     public void setTdtos(final List<ImpExcelGridDTO> tdtos) {
         this.tdtos = tdtos;
     }
-    ImpExcelHeaderDTO header;
-    List<ImpExcelGridDTO> podtos;
-    List<ImpExcelGridDTO> modtos;
-    List<ImpExcelGridDTO> redtos;
-    List<ImpExcelGridDTO> fedtos;
-    List<ImpExcelGridDTO> tdtos;
 
     public ImpExcelDTO(ImpExcelHeaderDTO header , List<ImpExcelGridDTO> podtos)
     {
