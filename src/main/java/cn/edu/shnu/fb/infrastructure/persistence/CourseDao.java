@@ -10,4 +10,5 @@ import cn.edu.shnu.fb.domain.course.Course;
 public interface CourseDao extends PagingAndSortingRepository<Course,Integer> {
     Course findByTitle(String title); //不推荐
     Course findByCode(String code); //不推荐
+    Course findByCodeAndTitle(String code , String title);
 }

@@ -2,6 +2,7 @@ package cn.edu.shnu.fb.application;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,6 +18,8 @@ import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.infrastructure.persistence.ImpDao;
+import cn.edu.shnu.fb.infrastructure.poi.ExcelTemplate;
+import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelHeaderDTO;
@@ -38,6 +41,11 @@ public class ExcelService {
         }
         ImpExcelDTO res = new ImpExcelDTO(new ImpExcelHeaderDTO(1,2,3,4,5,6,7,8,9,10,11),POLists);
         return res;
+    }
+
+    public List<GridEntityDTO> generatePlan(InputStream is){
+        ExcelTemplate template = ExcelTemplate.newInstance(is);
+        return template.getCourseGridEntity();
     }
 
     public ImpExcelGridDTO toExcelDTO(Imp imp){

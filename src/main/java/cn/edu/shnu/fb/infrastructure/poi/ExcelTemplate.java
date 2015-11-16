@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -19,8 +20,13 @@ import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.util.StringUtils;
+
+import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 
 /**
  *
@@ -324,7 +330,7 @@ public class ExcelTemplate {
             for(int i=0; i<cellLength; i++){
                 HSSFCell cell = (HSSFCell)row.getCell((short)i);
                 if(cell == null) continue;
-                String config = cell.getStringCellValue();
+                String config = getCellValue(cell);
                 if(DATAS.equalsIgnoreCase(config)){
                     //本行是数据开始行和样式配置行，需要读取相应的配置信息
                     initrow = row.getRowNum();
@@ -416,7 +422,7 @@ public class ExcelTemplate {
                 HSSFRow tmpRow = (HSSFRow) rowIt.next();
                 HSSFRow newRow = toSheet.createRow(tmpRow.getRowNum());
                 //行复制
-                copyRow(tmpRow,newRow,copyValueFlag);
+                copyRow(tmpRow, newRow, copyValueFlag);
             }
         }
         /**
@@ -486,4 +492,191 @@ public class ExcelTemplate {
                 }
             }
         }
+
+    public List<GridEntityDTO> getCourseGridEntity(){
+        List<GridEntityDTO> geDTOs = new ArrayList<>();
+        int allRows = sheet.getPhysicalNumberOfRows();
+        int cellNum ;
+        String title ;
+        for(int j=4;j < allRows;j++){
+            HSSFRow row = sheet.getRow(j);
+            cellNum = row.getPhysicalNumberOfCells();
+            GridEntityDTO geDTO = new GridEntityDTO();
+            float[] period = new float[9];
+            float[] credits = new float[9];
+
+            for(int i=0;i < cellNum;i++){
+                if(i == 0){
+                    title = getMergedRegionValue(j,0);
+                    geDTO.setCourseClass(title);
+                }else {
+                    HSSFCell cell = row.getCell(i);
+                    if (i == 2) {
+                        String code = getCellValue(cell);
+                        if(code.contains(".")){
+                            String[] codes = code.split("\\.");
+                            code = codes[0];
+                        }
+                        geDTO.setCode(code);
+                    } else if (i == 3) {
+                        geDTO.setTitle(getCellValue(cell));
+                    } else if (i >= 4 && i <= 19) {
+                        // 5-1 6-1 7-2 8-2
+                        if(i%2 == 0) {
+                            if(getCellValue(cell) != "" && !getCellValue(cell).contains("周") && !getCellValue(cell).contains("SUM")) {
+                                period[i / 2 - 2] = Float.valueOf(getCellValue(cell));
+                            }
+                        }else {
+                            if(getCellValue(cell) != "" && !getCellValue(cell).contains("周") && !getCellValue(cell).contains("SUM")) {
+                                credits[i / 2 - 2] = Float.valueOf(getCellValue(cell));
+                            }
+                        }
+                    } else if(i == 21){
+                        if(getCellValue(cell) != "" && !getCellValue(cell).contains("+") && !getCellValue(cell).contains("SUM")) {
+                            credits[8] = Float.valueOf(getCellValue(cell));
+                        }
+                    }
+                    else if(i == 22 && getCellValue(cell).equals("√")){
+                        geDTO.setCourseExamId(1);
+                    } else if(i == 23 && getCellValue(cell).equals("√")){
+                        geDTO.setCourseExamId(2);
+                    }
+                }
+            }
+            geDTO.setPeriod(period);
+            geDTO.setCredits(credits);
+            geDTOs.add(geDTO);
+        }
+        return geDTOs;
+    }
+
+    /**
+     * 获取合并单元格的值
+     * @param sheet
+     * @param row
+     * @param column
+     * @return
+     */
+    public String getMergedRegionValue(int row , int column){
+        int sheetMergeCount = sheet.getNumMergedRegions();
+
+        for(int i = 0 ; i < sheetMergeCount ; i++){
+            CellRangeAddress ca = sheet.getMergedRegion(i);
+            int firstColumn = ca.getFirstColumn();
+            int lastColumn = ca.getLastColumn();
+            int firstRow = ca.getFirstRow();
+            int lastRow = ca.getLastRow();
+
+            if(row >= firstRow && row <= lastRow){
+
+                if(column >= firstColumn && column <= lastColumn){
+                    Row fRow = sheet.getRow(firstRow);
+                    Cell fCell = fRow.getCell(firstColumn);
+                    return getCellValue(fCell) ;
+                }
+            }
+        }
+
+        return null ;
+    }
+
+    /**
+     * 判断合并了行
+     * @param sheet
+     * @param row
+     * @param column
+     * @return
+     */
+    private boolean isMergedRow(int row ,int column) {
+        int sheetMergeCount = sheet.getNumMergedRegions();
+        for (int i = 0; i < sheetMergeCount; i++) {
+            CellRangeAddress range = sheet.getMergedRegion(i);
+            int firstColumn = range.getFirstColumn();
+            int lastColumn = range.getLastColumn();
+            int firstRow = range.getFirstRow();
+            int lastRow = range.getLastRow();
+            if(row == firstRow && row == lastRow){
+                if(column >= firstColumn && column <= lastColumn){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断指定的单元格是否是合并单元格
+     * @param sheet
+     * @param row 行下标
+     * @param column 列下标
+     * @return
+     */
+    private boolean isMergedRegion(int row ,int column) {
+        int sheetMergeCount = sheet.getNumMergedRegions();
+        for (int i = 0; i < sheetMergeCount; i++) {
+            CellRangeAddress range = sheet.getMergedRegion(i);
+            int firstColumn = range.getFirstColumn();
+            int lastColumn = range.getLastColumn();
+            int firstRow = range.getFirstRow();
+            int lastRow = range.getLastRow();
+            if(row >= firstRow && row <= lastRow){
+                if(column >= firstColumn && column <= lastColumn){
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 判断sheet页中是否含有合并单元格
+     * @param sheet
+     * @return
+     */
+    private boolean hasMerged() {
+        return sheet.getNumMergedRegions() > 0 ? true : false;
+    }
+
+    /**
+     * 合并单元格
+     * @param sheet
+     * @param firstRow 开始行
+     * @param lastRow 结束行
+     * @param firstCol 开始列
+     * @param lastCol 结束列
+     */
+    private void mergeRegion(int firstRow, int lastRow, int firstCol, int lastCol) {
+        sheet.addMergedRegion(new CellRangeAddress(firstRow, lastRow, firstCol, lastCol));
+    }
+
+    /**
+     * 获取单元格的值
+     * @param cell
+     * @return
+     */
+    public String getCellValue(Cell cell){
+
+        if(cell == null) return "";
+
+        if(cell.getCellType() == Cell.CELL_TYPE_STRING){
+
+            return cell.getStringCellValue().replace(" ", "");
+
+        }else if(cell.getCellType() == Cell.CELL_TYPE_BOOLEAN){
+
+            return String.valueOf(cell.getBooleanCellValue());
+
+        }else if(cell.getCellType() == Cell.CELL_TYPE_FORMULA){
+
+            return cell.getCellFormula() ;
+
+        }else if(cell.getCellType() == Cell.CELL_TYPE_NUMERIC){
+
+            return String.valueOf(cell.getNumericCellValue());
+
+        }
+        return "";
+    }
+
+
 }

@@ -57,7 +57,7 @@ public class LocatorRepository {
         if(major!=null) {
             Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
             if(term!=null) {
-                resList = locatorDao.findByMajorAndTerm(major,term);
+                resList = locatorDao.findByMajorAndTerm(major, term);
             }
         }
         return resList;
@@ -93,5 +93,9 @@ public class LocatorRepository {
         }else{
             return null;
         }
+    }
+
+    public void save(Locator locator){
+        locatorDao.save(locator);
     }
 }

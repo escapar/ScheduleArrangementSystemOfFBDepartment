@@ -17,6 +17,7 @@ public class GridEntityDTO {
 
     // CourseParams
     private String courseClass;
+
     private String code;
     private String title;
     private String courseExam;
@@ -81,7 +82,12 @@ public class GridEntityDTO {
         int indice;
         Term term = planCourse.getLocator().getTerm();
         indice = (term.getYear() - major.getGrade()) * 2 + term.getPart()-1;
-        if(indice>7) indice=8; // 只有总学分 不在排课表上显示的情况
+        if(indice>7) {          // 只有总学分 不在排课表上显示的情况
+            this.period[0] = 0;
+            this.credits[0] = 0;
+            this.period[0] = 0;
+            indice=8;
+        }
         this.period[indice]=planCourse.getPeriod();
         this.credits[indice]=planCourse.getCredits();
     }
@@ -164,5 +170,18 @@ public class GridEntityDTO {
 
     public void setCourseExam(final String courseExam) {
         this.courseExam = courseExam;
+    }
+
+    public void setCourseClass(final String courseClass) {
+        this.courseClass = courseClass;
+    }
+
+
+    public void setTitle(final String title) {
+        this.title = title;
+    }
+
+    public void setCode(final String code) {
+        this.code = code;
     }
 }
