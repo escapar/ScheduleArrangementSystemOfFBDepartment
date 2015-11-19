@@ -31,6 +31,10 @@ public class Teacher implements Serializable {
 	@Column(name="pro_title")
 	private String proTitle;
 
+	@Lob
+	@Column(name="id_code")
+	private String idCode;
+
 	public Teacher() {
 	}
 
@@ -62,5 +66,11 @@ public class Teacher implements Serializable {
 		return serialVersionUID;
 	}
 
+	public String getIdCode() {
+		return idCode;
+	}
 
+	public void setIdCode(final String idCode) {
+		this.idCode = idCode;
+	}
 }

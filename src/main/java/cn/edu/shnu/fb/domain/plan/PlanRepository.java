@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import cn.edu.shnu.fb.domain.Imp.Imp;
+import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.CourseClass;
 import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.common.CourseType;
@@ -64,11 +65,14 @@ public class PlanRepository {
 
     @Autowired
     LocatorRepository locatorRepository;
+
+    @Autowired
+    ImpRepository impRepository;
     public List<PlanCourse> getPlanCoursesByLocator(Locator locator){
         return planCourseDao.findByLocator(locator);
     }
 
-    public Iterable<PlanSpec> getPlanSpecByLocator(Locator locator){
+    public PlanSpec getPlanSpecByLocator(Locator locator){
         return planSpecDao.findByLocator(locator);
     }
 
@@ -124,7 +128,7 @@ public class PlanRepository {
         if(termCount>0 && termCount<9) {
             Major major = majorDao.findOne(majorId);
             Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
-            Iterable<CourseClass> courseClasses = courseClassDao.findByTitleLike("%选修%");
+            Iterable<CourseClass> courseClasses = courseClassDao.findByTitleNotLike("%选修%");
             List<PlanCourse> planCourses = new ArrayList<>();
             if(major!=null && courseClasses!=null && term!=null) {
                 for (CourseClass cc : courseClasses) {
@@ -154,7 +158,7 @@ public class PlanRepository {
         }
     }
 
-    public List<PlanSpec> getPlanSpecsByLocatorId(int locatorId){
+    public PlanSpec getPlanSpecsByLocatorId(int locatorId){
         Locator locator = locatorDao.findOne(locatorId);
         if(locator!=null){
             return planSpecDao.findByLocator(locator);
@@ -163,6 +167,72 @@ public class PlanRepository {
         }
     }
 
+    public void updatePlanCoursesByWordAndMajorId(int majorId,List<GridEntityDTO> geDTOs){
+        Major major = majorDao.findOne(majorId);
+        if (major != null) {
+            for (GridEntityDTO geDTO : geDTOs) {
+                //COURSE
+                Course course = courseDao.findByCodeAndTitle(geDTO.getCode(), geDTO.getTitle());
+                if (course == null) {
+                    course = new Course();
+                    if(geDTO.getCode()!=null) {
+                        course.setCode(geDTO.getCode());
+                    }
+                    if(geDTO.getTitle()!=null) {
+                        course.setTitle(geDTO.getTitle());
+                    }
+                    courseDao.save(course);
+                    course = courseDao.findByCodeAndTitle(geDTO.getCode(), geDTO.getTitle());
+                }
+
+                //COURSECLASS COURSETYPE
+                String cc = geDTO.getCourseClass();
+                CourseType courseType = null;
+                CourseClass courseClass = null;
+                if(!(cc.contains("学院素质教育课程") || cc.contains("创新创业教育课程")) && !cc.contains("任选")){
+                    courseClass= courseClassDao.findByTitleLike("限定选修课").get(0);
+                    courseType= courseTypeDao.findByTitleLike("专业限定选修课");
+                }else if(cc.contains("学院素质教育课程") || cc.contains("创新创业教育课程")){
+                    courseClass= courseClassDao.findByTitleLike("限定选修课").get(0);
+                    courseType= courseTypeDao.findByTitleLike(cc);
+                }else{
+                    courseClass= courseClassDao.findByTitleLike("任意选修课").get(0);
+                }
+
+                //LOCATOR
+                int ctid = 0;
+                if(courseType != null){
+                    ctid=courseType.getId();
+                }
+                Locator locator = locatorRepository.getLocatorByMajorIdAndCourseClassIdAndCourseTypeId(majorId, courseClass.getId(),ctid);
+                if (locator == null) {
+                    locator = new Locator();
+                    locator.setCourseClass(courseClass);
+                    locator.setCourseType(courseType);
+                    locator.setMajor(major);
+                    locatorRepository.save(locator);
+                    locator = locatorRepository.getLocatorByMajorIdAndCourseClassIdAndCourseTypeId(majorId, courseClass.getId(),ctid);
+                }
+
+                //PLANCOURSE
+                PlanCourse planCourse = planCourseDao.findByCourseAndLocator(course,locator);
+                if(planCourse == null) {
+                    planCourse = new PlanCourse();
+                    planCourse.setLocator(locator);
+                    planCourse.setCourse(course);
+                }
+                    planCourse.setCredits(geDTO.getCredits()[0]);
+                    planCourse.setPeriod(geDTO.getPeriod()[0]);
+
+                    if (geDTO.getCourseExamId() != 0) {
+                        CourseExam ce = courseExamDao.findOne(geDTO.getCourseExamId());
+                        planCourse.setCourseExam(ce);
+                    }
+
+                planCourseDao.save(planCourse);
+            }
+        }
+    }
     public void updatePlansByExcelAndMajorId(int majorId,List<GridEntityDTO> geDTOs) {
         Major major = majorDao.findOne(majorId);
         if (major != null) {
@@ -175,7 +245,7 @@ public class PlanRepository {
 
                     if (ccs.size() > 0) {
                         CourseClass cc = ccs.get(0);
-                        if (!geDTO.getCourseClass().contains("选修")) {
+                        if (!geDTO.getCourseClass().contains("选修")) { //必修
                             Course course = courseDao.findByCodeAndTitle(geDTO.getCode(), title);
                             if (course == null) {
                                 course = new Course();
@@ -213,9 +283,12 @@ public class PlanRepository {
                                         locatorRepository.save(locator);
                                         locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i+1, cc.getId(), 0);
                                     }
-                                    PlanCourse planCourse = new PlanCourse();
-                                    planCourse.setLocator(locator);
-                                    planCourse.setCourse(course);
+                                    PlanCourse planCourse = planCourseDao.findByCourseAndLocator(course,locator);
+                                    if(planCourse == null) {
+                                        planCourse = new PlanCourse();
+                                        planCourse.setLocator(locator);
+                                        planCourse.setCourse(course);
+                                    }
                                     planCourse.setCredits(geDTO.getCredits()[i]);
                                     planCourse.setPeriod(geDTO.getPeriod()[i]);
                                     CourseExam ce = courseExamDao.findOne(geDTO.getCourseExamId());
@@ -226,6 +299,23 @@ public class PlanRepository {
                                         planCourse.setIsDegCourse(0);
                                     }
                                     planCourseDao.save(planCourse);
+
+                                    Imp imp = impRepository.getImpByCourseIdAndLocatorId(course.getId(),locator.getId());
+                                    if(imp == null){
+                                        imp = new Imp();
+                                        imp.setCourse(course);
+                                        imp.setLocator(locator);
+                                    }
+                                    imp.setCredits(geDTO.getCredits()[i]);
+                                    imp.setPeriodWeeks(locator.getTerm().getWeeks());
+                                    imp.setPeriodHours(geDTO.getPeriod()[i]);
+                                    imp.setCourseExam(ce);
+                                    if(geDTO.getTitle().contains("*")){
+                                        imp.setIsDegCourse(1);
+                                    }else{
+                                        imp.setIsDegCourse(0);
+                                    }
+                                    impRepository.save(imp);
                                 }
                             }
                         } else  {
@@ -239,8 +329,11 @@ public class PlanRepository {
                                         }
                                     }
                                     Locator locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i, cc.getId(), ctId);
-                                    PlanSpec planSpec = new PlanSpec();
-                                    planSpec.setLocator(locator);
+                                    PlanSpec planSpec = planSpecDao.findByLocator(locator);
+                                    if(planSpec == null){
+                                        planSpec = new PlanSpec();
+                                        planSpec.setLocator(locator);
+                                    }
                                     planSpec.setPeriod(geDTO.getPeriod()[i]);
                                     planSpec.setCredits(geDTO.getCredits()[i]);
                                     planSpecDao.save(planSpec);

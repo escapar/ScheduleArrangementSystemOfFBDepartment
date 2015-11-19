@@ -13,6 +13,7 @@ import cn.edu.shnu.fb.domain.Imp.Imp;
 import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.common.LocatorRepository;
 import cn.edu.shnu.fb.interfaces.assembler.ImpAssembler;
+import cn.edu.shnu.fb.interfaces.dto.ElectableLocatorDTO;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 
 /**
@@ -25,8 +26,8 @@ public class LocatorFacade {
     LocatorRepository locatorRepository;
     @ResponseBody
     @RequestMapping(value="/l/m/{majorId}/t/{termCount}/cc/{courseClassId}/ct/{courseTypeId}",method= RequestMethod.GET)
-    public Locator getLocators(@PathVariable Integer majorId,@PathVariable Integer termCount,@PathVariable Integer courseClassId , @PathVariable Integer courseTypeId){
-        return locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, termCount, courseClassId , courseTypeId);
+    public ElectableLocatorDTO getLocator(@PathVariable Integer majorId,@PathVariable Integer termCount,@PathVariable Integer courseClassId , @PathVariable Integer courseTypeId){
+        return locatorRepository.getLocatorDTOByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, termCount, courseClassId , courseTypeId);
     }
 
     @ResponseBody
@@ -37,7 +38,7 @@ public class LocatorFacade {
 
     @ResponseBody
     @RequestMapping(value="/l/e/m/{majorId}/t/{termCount}",method= RequestMethod.GET) // e for electable
-    public List<Locator> getLocatorsElectableByMajorAndTerm(@PathVariable Integer majorId,@PathVariable Integer termCount){
+    public List<ElectableLocatorDTO> getLocatorsElectableByMajorAndTerm(@PathVariable Integer majorId,@PathVariable Integer termCount){
         return locatorRepository.getLocatorElectableByMajorIdAndTermCount(majorId, termCount);
     }
 }

@@ -14,7 +14,7 @@ import cn.edu.shnu.fb.domain.term.Term;
  * Created by bytenoob on 15/11/2.
  */
 public interface PlanSpecDao extends PagingAndSortingRepository<PlanSpec,Integer> {
-    List<PlanSpec> findByLocator(Locator locator);
+    PlanSpec findByLocator(Locator locator);
     List<PlanSpec> findByLocatorMajor(Major major);
     List<PlanSpec> findByLocatorMajorAndLocatorTerm(Major major,Term term);
     List<PlanSpec> findByLocatorMajorAndLocatorTermAndLocatorCourseClass(Major major,Term term,CourseClass courseClass); // 只单独拿限选的时候用

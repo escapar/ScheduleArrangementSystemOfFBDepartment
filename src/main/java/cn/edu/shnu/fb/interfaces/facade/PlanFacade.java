@@ -62,7 +62,7 @@ public class PlanFacade {
 
     @ResponseBody
     @RequestMapping(value="/ps/l/{locatorId}",method=RequestMethod.GET) // PlanSpec Grid
-    public List<PlanSpec> planSpecGridEntityByMajorAndTerm(@PathVariable Integer locatorId){
+    public PlanSpec planSpecGridEntityByMajorAndTerm(@PathVariable Integer locatorId){
         return planRepository.getPlanSpecsByLocatorId(locatorId);
     }
 

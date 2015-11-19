@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import cn.edu.shnu.fb.application.ExcelService;
+import cn.edu.shnu.fb.application.WordService;
 import cn.edu.shnu.fb.domain.plan.PlanRepository;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
@@ -28,6 +29,9 @@ import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
 public class IOFacade {
     @Autowired
     ExcelService excelService;
+
+    @Autowired
+    WordService wordService;
 
     @Autowired
     PlanRepository planRepository;
@@ -48,6 +52,17 @@ public class IOFacade {
         }
     }
 
+
+    @RequestMapping(value = "/i/p/e/m/{majorId}", method = RequestMethod.POST)
+    public void importElectableCourse(@RequestParam(value = "file[0]", required = false) MultipartFile file, @PathVariable Integer majorId) {
+        List<GridEntityDTO> geDTOs = null ;
+        try {
+            geDTOs = wordService.generatePlan(file.getInputStream());
+            planRepository.updatePlanCoursesByWordAndMajorId(majorId, geDTOs);
+        }catch (Exception e){
+            System.out.println(e.toString());
+        }
+    }
 
 }
 
