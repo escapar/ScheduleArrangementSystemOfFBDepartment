@@ -3,7 +3,6 @@ package cn.edu.shnu.fb.domain.common;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.h2.table.Plan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -158,5 +157,36 @@ public class LocatorRepository {
 
     public void save(Locator locator){
         locatorDao.save(locator);
+    }
+
+    public void initLocators(int majorId){
+        Major major = majorDao.findOne(majorId);
+        Iterable<CourseClass> courseClasses = courseClassDao.findAll();
+        Iterable<CourseType> courseTypes = courseTypeDao.findAll();
+        int termCount;
+        for(termCount = 1 ; termCount < 10; termCount++) {
+            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+            for(CourseClass cc : courseClasses){
+                if(!cc.getTitle().contains("限定选修")) {
+                    Locator locator = new Locator();
+                    locator.setMajor(major);
+                    locator.setTerm(term);
+                    locator.setCourseClass(cc);
+                    locator.setModified(0);
+                    locatorDao.save(locator);
+                }else {
+                    for (CourseType ct : courseTypes) {
+                        Locator locator = new Locator();
+                        locator.setMajor(major);
+                        locator.setTerm(term);
+                        locator.setCourseClass(cc);
+                        locator.setModified(0);
+                        locator.setCourseType(ct);
+                        locatorDao.save(locator);
+                    }
+                }
+            }
+        }
+
     }
 }

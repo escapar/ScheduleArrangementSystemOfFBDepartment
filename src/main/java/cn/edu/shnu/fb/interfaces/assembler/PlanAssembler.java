@@ -41,23 +41,25 @@ public class PlanAssembler {
 
     public static final List<GridEntityDTO> mergePlanCoursesAndCreateGridEntityDTO(List<PlanCourse> PCs) {
         List<GridEntityDTO> resList = new ArrayList();
-        Major major = PCs.get(0).getLocator().getMajor();
-        boolean existsCourse = false;
-        for (PlanCourse pc : PCs) {
-            if(pc.getLocator().getTerm()!=null) { // to ensure it's not a
-                for (GridEntityDTO entity : resList) {
-                    if (entity.getCourseId() == pc.getCourse().getId()) {
-                        entity.setPeriodAndCredits(major, pc);
-                        existsCourse = true;
-                        break;
+        if(PCs.size()>0) {
+            Major major = PCs.get(0).getLocator().getMajor();
+            boolean existsCourse = false;
+            for (PlanCourse pc : PCs) {
+                if (pc.getLocator().getTerm() != null) { // to ensure it's not a
+                    for (GridEntityDTO entity : resList) {
+                        if (entity.getCourseId() == pc.getCourse().getId()) {
+                            entity.setPeriodAndCredits(major, pc);
+                            existsCourse = true;
+                            break;
+                        }
                     }
+                    if (!existsCourse) {
+                        GridEntityDTO tmpEntity = new GridEntityDTO(pc);
+                        tmpEntity.setPeriodAndCredits(major, pc);
+                        resList.add(tmpEntity);
+                    }
+                    existsCourse = false;
                 }
-                if (!existsCourse) {
-                    GridEntityDTO tmpEntity = new GridEntityDTO(pc);
-                    tmpEntity.setPeriodAndCredits(major, pc);
-                    resList.add(tmpEntity);
-                }
-                existsCourse = false;
             }
         }
         return resList;
@@ -65,22 +67,24 @@ public class PlanAssembler {
 
     public static final List<GridEntityDTO> mergePlanSpecsAndCreateGridEntityDTO(List<PlanSpec> PSs) {
         List<GridEntityDTO> resList = new ArrayList();
-        Major major = PSs.get(0).getLocator().getMajor();
-        boolean existsCourse = false;
-        for (PlanSpec ps : PSs) {
-            for(GridEntityDTO entity :resList){
-                if(hasSameReference(ps, entity)) {
-                    entity.setPeriodAndCredits(major, ps);
-                    existsCourse = true;
-                    break;
+        if(PSs.size()>0) {
+            Major major = PSs.get(0).getLocator().getMajor();
+            boolean existsCourse = false;
+            for (PlanSpec ps : PSs) {
+                for (GridEntityDTO entity : resList) {
+                    if (hasSameReference(ps, entity)) {
+                        entity.setPeriodAndCredits(major, ps);
+                        existsCourse = true;
+                        break;
+                    }
                 }
+                if (!existsCourse) {
+                    GridEntityDTO tmpEntity = new GridEntityDTO(ps);
+                    tmpEntity.setPeriodAndCredits(major, ps);
+                    resList.add(tmpEntity);
+                }
+                existsCourse = false;
             }
-            if(!existsCourse) {
-                GridEntityDTO tmpEntity = new GridEntityDTO(ps);
-                tmpEntity.setPeriodAndCredits(major, ps);
-                resList.add(tmpEntity);
-            }
-            existsCourse = false;
         }
         return resList;
     }
