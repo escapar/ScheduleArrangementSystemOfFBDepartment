@@ -302,7 +302,7 @@ public class ExcelService {
         List<PlanSpec> planspecs = new ArrayList<>();
         for(Locator litlocator :litlocators){
 
-            planspecs.addAll(planRepository.getPlanSpecsByLocatorId(litlocator.getId()));
+            planspecs.add(planRepository.getPlanSpecsByLocatorId(litlocator.getId()));
         }
 
         float litcsum=0;

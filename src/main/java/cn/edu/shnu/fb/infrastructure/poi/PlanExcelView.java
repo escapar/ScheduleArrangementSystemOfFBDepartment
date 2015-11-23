@@ -42,7 +42,7 @@ public class PlanExcelView extends AbstractXlsView {
         IOAssembler.flushParams(map, headerDTO);
         template.replaceParameters(map);
 
-        List<ImpExcelGridDTO> iePodtos = imp.getPodto();
+        List<ImpExcelGridDTO> iePodtos = imp.getPodtos();
         ArrayList<Map> mapList = new ArrayList<>();
         for(ImpExcelGridDTO dto : iePodtos) {
             map = new HashMap<>();

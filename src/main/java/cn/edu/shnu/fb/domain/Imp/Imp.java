@@ -142,11 +142,4 @@ public class Imp implements Serializable {
 		this.teacher = teacher;
 	}
 
-	public String getCourseComment() {
-		return courseComment;
-	}
-
-	public void setCourseComment(final String comment) {
-		this.courseComment = comment;
-	}
 }

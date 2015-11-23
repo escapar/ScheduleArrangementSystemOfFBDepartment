@@ -1,6 +1,9 @@
 package cn.edu.shnu.fb.infrastructure.persistence;
 
 import cn.edu.shnu.fb.domain.Imp.ImpComment;
+import cn.edu.shnu.fb.domain.major.Major;
+import cn.edu.shnu.fb.domain.term.Term;
+
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 /**

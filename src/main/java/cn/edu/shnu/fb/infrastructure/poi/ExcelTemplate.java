@@ -116,6 +116,32 @@ public class ExcelTemplate {
      * @param index 从0开始计数
      */
 
+    public void replaceParameters(Map props){
+        if(props == null || props.size() == 0){
+            return;
+        }
+        Set propsets = props.entrySet();
+        Iterator rowit = sheet.rowIterator();
+        while(rowit.hasNext()){
+            HSSFRow row = (HSSFRow)rowit.next();
+            if(row == null)	continue;
+            int cellLength = row.getLastCellNum();
+            for(int i=0; i<cellLength; i++){
+                HSSFCell cell = (HSSFCell)row.getCell((short)i);
+                if(cell == null) continue;
+                String value = poiGetCellStringValue(cell);
+                if(value != null && value.indexOf("#") != -1){
+                    for (Iterator iter = propsets.iterator(); iter.hasNext();) {
+                        Map.Entry entry = (Map.Entry) iter.next();
+                        value = value.replaceAll("#"+entry.getKey(),String.valueOf(entry.getValue()));
+                    }
+                }
+                // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+                cell.setCellValue(value);
+            }
+        }
+    }
+
     public void createRowByHashMap(ArrayList<Map> props , String keyword) {
         int index = findRowByKeyword(keyword);
         int tmpIndex = index+1;

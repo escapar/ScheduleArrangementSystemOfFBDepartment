@@ -27,9 +27,6 @@ public class Teacher implements Serializable {
 	@Column(name="pro_title")
 	private String proTitle;
 
-	@Column(name="id_code")
-	private String proCode;
-
 	@Lob
 	@Column(name="id_code")
 	private String idCode;
@@ -62,11 +59,11 @@ public class Teacher implements Serializable {
 	}
 
 	public String getProCode() {
-		return proCode;
+		return idCode;
 	}
 
-	public void setProCode(final String proCode) {
-		this.proCode = proCode;
+	public void setProCode(final String idCode) {
+		this.idCode = idCode;
 	}
 
 	public static long getSerialVersionUID() {
