@@ -24,16 +24,16 @@ public class ImpComment  implements Serializable {
     @Id
     private int id;
 
-    @ManyToOne(cascade= CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Major major;
 
-    @ManyToOne(cascade= CascadeType.MERGE)
+    @ManyToOne(cascade = CascadeType.MERGE)
     private Term term;
 
-    @Column(name="comment")
+    @Column(name = "comment")
     private String comment;
 
-    public ImpComment(){
+    public ImpComment() {
     }
 
     public int getId() {
@@ -49,7 +49,7 @@ public class ImpComment  implements Serializable {
     }
 
     public void setComment(String comment) {
-        this.comment=comment;
+        this.comment = comment;
     }
 
     public Major getMajor() {
@@ -57,7 +57,7 @@ public class ImpComment  implements Serializable {
     }
 
     public void setMajor(Major major) {
-        this.major=major;
+        this.major = major;
     }
 
     public Term getTerm() {
@@ -65,7 +65,7 @@ public class ImpComment  implements Serializable {
     }
 
     public void setTerm(final Term term) {
-        this.term=term;
+        this.term = term;
     }
 
 }
