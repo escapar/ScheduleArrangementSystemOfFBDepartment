@@ -30,6 +30,14 @@ public class GridEntityDTO {
 
 
     private int isDegCourse;
+
+
+    private String teacherName;
+    private String teacherProTitle;
+    private String teacherCode;
+
+    private int teacherId;
+    private String comment;
     public GridEntityDTO(){
 
     }
@@ -75,6 +83,14 @@ public class GridEntityDTO {
                 this.courseExam=imp.getCourseExam().getTitle();
                 this.courseExamId=imp.getCourseExam().getId();
             }
+            if(imp.getTeacher()!=null) {
+                this.teacherName = imp.getTeacher().getName();
+                this.teacherCode = imp.getTeacher().getIdCode();
+                this.teacherProTitle = imp.getTeacher().getProTitle();
+            }
+            if(!imp.getCourseComment().isEmpty()){
+                this.comment = imp.getCourseComment();
+            }
         }
     }
 
@@ -99,7 +115,29 @@ public class GridEntityDTO {
         this.credits[indice] = planSpec.getCredits();
     }
 
+    public String getTeacherName() {
+        return teacherName;
+    }
 
+    public void setTeacherName(final String teacherName) {
+        this.teacherName = teacherName;
+    }
+
+    public String getTeacherProTitle() {
+        return teacherProTitle;
+    }
+
+    public void setTeacherProTitle(final String teacherProTitle) {
+        this.teacherProTitle = teacherProTitle;
+    }
+
+    public String getTeacherCode() {
+        return teacherCode;
+    }
+
+    public void setTeacherCode(final String teacherCode) {
+        this.teacherCode = teacherCode;
+    }
     public int getId() {
         return id;
     }
@@ -183,5 +221,22 @@ public class GridEntityDTO {
 
     public void setCode(final String code) {
         this.code = code;
+    }
+
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(final int teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public String getComment() {
+        return comment;
+    }
+
+    public void setComment(final String comment) {
+        this.comment = comment;
     }
 }

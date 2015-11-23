@@ -17,14 +17,17 @@ import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
+import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.infrastructure.persistence.CourseClassDao;
 import cn.edu.shnu.fb.infrastructure.persistence.CourseDao;
 import cn.edu.shnu.fb.infrastructure.persistence.CourseExamDao;
 import cn.edu.shnu.fb.infrastructure.persistence.CourseTypeDao;
+import cn.edu.shnu.fb.infrastructure.persistence.ImpCommentDao;
 import cn.edu.shnu.fb.infrastructure.persistence.ImpDao;
 import cn.edu.shnu.fb.infrastructure.persistence.LocatorDao;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
 import cn.edu.shnu.fb.infrastructure.persistence.PlanCourseDao;
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 
 /**
@@ -32,6 +35,11 @@ import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
  */
 @Repository
 public class ImpRepository {
+
+    @Autowired
+    ImpCommentDao impCommentDao;
+    @Autowired
+    TeacherDao teacherDao;
 
     @Autowired
     ImpDao impDao;
@@ -185,6 +193,14 @@ public class ImpRepository {
                     imp.setLocator(newLocator);
                     CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
                     imp.setCourseExam(courseExam);
+                    Teacher teacher = teacherDao.findOne(entity.getTeacherId());
+                    if(teacher!=null){
+                        imp.setTeacher(teacher);
+                    }
+                    if(!entity.getComment().isEmpty()) {
+                        imp.setCourseComment(entity.getComment());
+                    }
+
                     impDao.save(imp);
                 }
             }
@@ -203,6 +219,24 @@ public class ImpRepository {
         }
         return null;
     }
+
+    public void persistImpComment(Integer majorId,Integer termCount,String comment){
+        if(termCount>0 && termCount<9 && !comment.isEmpty()) {
+            Major major = majorDao.findOne(majorId);
+            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+            if(term != null && major != null) {
+                ImpComment impComment = impCommentDao.findByTermAndMajor(term,major);
+                if(impComment == null) {
+                    impComment = new ImpComment();
+                    impComment.setMajor(major);
+                    impComment.setTerm(term);
+                }
+                impComment.setComment(comment);
+                impCommentDao.save(impComment);
+            }
+        }
+    }
+
     public void deleteImp(Imp imp){
         Locator locator = imp.getLocator();
         locator.setModified(1);

@@ -92,4 +92,11 @@ public class ImpFacade {
     public Imp findById(@PathVariable Integer impId){
         return impRepository.getImpById(impId);
     }
+
+    @ResponseBody
+    @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}/update",method=RequestMethod.POST , consumes = "application/json")  //  l for location
+    public void updateImp(@PathVariable Integer majorId , @PathVariable Integer termCount,@RequestBody String comment){
+        impRepository.persistImpComment(majorId,termCount,comment);
+    }
+
 }

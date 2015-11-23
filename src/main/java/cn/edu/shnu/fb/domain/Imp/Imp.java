@@ -42,6 +42,9 @@ public class Imp implements Serializable {
 	@Column(name="period_hours")
 	private float periodHours;
 
+	@Lob
+	private String courseComment;
+
 	@ManyToOne(cascade= CascadeType.MERGE)
 	private Locator locator;
 
@@ -131,4 +134,11 @@ public class Imp implements Serializable {
 		this.teacher = teacher;
 	}
 
+	public String getCourseComment() {
+		return courseComment;
+	}
+
+	public void setCourseComment(final String comment) {
+		this.courseComment = comment;
+	}
 }
