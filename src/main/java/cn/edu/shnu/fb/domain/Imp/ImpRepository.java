@@ -223,16 +223,18 @@ public class ImpRepository {
     public void persistImpComment(Integer majorId,Integer termCount,String comment){
         if(termCount>0 && termCount<9 && !comment.isEmpty()) {
             Major major = majorDao.findOne(majorId);
-            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
-            if(term != null && major != null) {
-                ImpComment impComment = impCommentDao.findByTermAndMajor(term,major);
-                if(impComment == null) {
-                    impComment = new ImpComment();
-                    impComment.setMajor(major);
-                    impComment.setTerm(term);
+            if(major!=null) {
+                Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+                if (term != null) {
+                    ImpComment impComment = impCommentDao.findByTermAndMajor(term, major);
+                    if (impComment == null) {
+                        impComment = new ImpComment();
+                        impComment.setMajor(major);
+                        impComment.setTerm(term);
+                    }
+                    impComment.setComment(comment);
+                    impCommentDao.save(impComment);
                 }
-                impComment.setComment(comment);
-                impCommentDao.save(impComment);
             }
         }
     }
