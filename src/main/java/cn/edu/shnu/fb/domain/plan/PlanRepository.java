@@ -71,6 +71,14 @@ public class PlanRepository {
     public List<PlanCourse> getPlanCoursesByLocator(Locator locator){
         return planCourseDao.findByLocator(locator);
     }
+    public List<PlanCourse> getPlanCourseByLocatorId(int locatorId){
+        Locator locator = locatorDao.findOne(locatorId);
+        if(locator!=null) {
+            return planCourseDao.findByLocator(locator);
+        } else {
+            return null;
+        }
+    }
 
     public PlanSpec getPlanSpecByLocator(Locator locator){
         return planSpecDao.findByLocator(locator);

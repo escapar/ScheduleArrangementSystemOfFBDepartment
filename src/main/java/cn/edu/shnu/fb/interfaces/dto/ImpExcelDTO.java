@@ -7,6 +7,7 @@ import java.util.List;
  */
 public class ImpExcelDTO {
 
+    MajAndTmAndImpComDTO mtidto;
     ImpExcelHeaderDTO header;
     List<ImpExcelGridDTO> podtos;
     List<ImpExcelGridDTO> modtos;
@@ -14,13 +15,14 @@ public class ImpExcelDTO {
     List<ImpExcelGridDTO> fedtos;
     List<ImpExcelGridDTO> tdtos;
 
+    public MajAndTmAndImpComDTO getmtidto() {return mtidto;}
+
+    public void setmtidto(final MajAndTmAndImpComDTO mtidto) {
+        this.mtidto=mtidto;
+    }
 
     public ImpExcelHeaderDTO getHeader() {
         return header;
-    }
-
-    public List<ImpExcelGridDTO> getPodto() {
-        return podtos;
     }
 
     public void setHeader(final ImpExcelHeaderDTO header) {
@@ -67,8 +69,9 @@ public class ImpExcelDTO {
         this.tdtos = tdtos;
     }
 
-    public ImpExcelDTO(ImpExcelHeaderDTO header , List<ImpExcelGridDTO> podtos)
+    public ImpExcelDTO(MajAndTmAndImpComDTO mtidto,ImpExcelHeaderDTO header,List<ImpExcelGridDTO> podtos,List<ImpExcelGridDTO> modtos,List<ImpExcelGridDTO> redtos,List<ImpExcelGridDTO> fedtos,List<ImpExcelGridDTO> tdtos)
     {
+        this.mtidto=mtidto;
         this.header = header;
         this.podtos = podtos;
         this.modtos = modtos;

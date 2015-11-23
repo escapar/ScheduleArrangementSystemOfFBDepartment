@@ -2,17 +2,12 @@ package cn.edu.shnu.fb.domain.major;
 
 import java.io.Serializable;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.NamedQuery;
+import javax.persistence.*;
 
 
 /**
  * The persistent class for the major database table.
- * 
+ *
  */
 @Entity
 public class Major implements Serializable {
@@ -27,6 +22,9 @@ public class Major implements Serializable {
 
 	@Lob
 	private String title;
+
+	@Column(name="major_code")
+	private String majorCode;
 
 	public Major() {
 	}
@@ -53,6 +51,14 @@ public class Major implements Serializable {
 
 	public void setTitle(String title) {
 		this.title = title;
+	}
+
+	public String getMajorCode() {
+		return this.majorCode;
+	}
+
+	public void setMajorCode(String majorCode) {
+		this.majorCode = majorCode;
 	}
 
 }

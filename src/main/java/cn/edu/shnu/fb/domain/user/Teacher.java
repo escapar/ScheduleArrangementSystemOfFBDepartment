@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.NamedQuery;
@@ -13,15 +11,13 @@ import javax.persistence.NamedQuery;
 
 /**
  * The persistent class for the teacher database table.
- * 
+ *
  */
 @Entity
 public class Teacher implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-
 	private int id;
 
 	@Lob
@@ -30,6 +26,9 @@ public class Teacher implements Serializable {
 	@Lob
 	@Column(name="pro_title")
 	private String proTitle;
+
+	@Column(name="id_code")
+	private String proCode;
 
 	@Lob
 	@Column(name="id_code")
@@ -60,6 +59,14 @@ public class Teacher implements Serializable {
 
 	public void setProTitle(final String proTitle) {
 		this.proTitle = proTitle;
+	}
+
+	public String getProCode() {
+		return proCode;
+	}
+
+	public void setProCode(final String proCode) {
+		this.proCode = proCode;
 	}
 
 	public static long getSerialVersionUID() {

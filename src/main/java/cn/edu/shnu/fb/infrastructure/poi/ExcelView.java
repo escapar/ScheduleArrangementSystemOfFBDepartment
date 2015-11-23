@@ -11,14 +11,12 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import cn.edu.shnu.fb.interfaces.dto.*;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.document.AbstractXlsView;
 
 import cn.edu.shnu.fb.infrastructure.persistence.ImpDao;
-import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
-import cn.edu.shnu.fb.interfaces.dto.ImpExcelHeaderDTO;
-import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
 import cn.edu.shnu.fb.interfaces.assembler.IOAssembler;
 
 /**
@@ -33,6 +31,7 @@ public class ExcelView extends AbstractXlsView {
             Workbook workbook, HttpServletRequest request, HttpServletResponse response)
             throws Exception {
 
+
         response.setHeader("Content-Disposition", "attachment; filename=\"result.xls\"");
         response.setHeader("Content-type", "application/vnd.ms-excel");
 
@@ -41,23 +40,67 @@ public class ExcelView extends AbstractXlsView {
         InputStream is = this.getClass().getResourceAsStream(request.getContextPath() + "/impTemplate.xls");
         ExcelTemplate template = ExcelTemplate.newInstance(is);
         ImpExcelDTO imp = (ImpExcelDTO)model.get("impExcelDTOs");
+
+        //替换Header
         ImpExcelHeaderDTO headerDTO = imp.getHeader();
         Map<String,Object> map = new HashMap<>();
         IOAssembler.flushParams(map, headerDTO);
-        template.replaceParameters(map);
+        template.replaceParametersBykeyword(map,"#");
 
-        List<ImpExcelGridDTO> iePodtos = imp.getPodto();
-        ArrayList<Map> mapList = new ArrayList<>();
+        //替换模板中的majorCode,termCount和impComment
+        MajAndTmAndImpComDTO mtidto=imp.getmtidto();
+        Map<String,Object> mtimap = new HashMap<>();
+        IOAssembler.flushParams(mtimap, mtidto);
+        template.replaceParametersBykeyword(mtimap,"#");
+
+        //替换模板中的执行计划下的各类课程
+        List<ImpExcelGridDTO> iePodtos = imp.getPodtos();
+        ArrayList<Map> pomapList = new ArrayList<>();
         for(ImpExcelGridDTO dto : iePodtos) {
             map = new HashMap<>();
             IOAssembler.flushParams(map, dto);
-            mapList.add(map);
+            pomapList.add(map);
         }
-        template.createRowByHashMap(mapList, "#PO");
 
-        template.createRowByHashMap(mapList,"#MO");
+        List<ImpExcelGridDTO> ieModtos = imp.getModtos();
+        ArrayList<Map> momapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieModtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            momapList.add(map);
+        }
 
-        template.createRowByHashMap(mapList,"#RE");
+        List<ImpExcelGridDTO> ieRedtos = imp.getRedtos();
+        ArrayList<Map> remapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieRedtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            remapList.add(map);
+        }
+
+        List<ImpExcelGridDTO> ieFedtos = imp.getFedtos();
+        ArrayList<Map> femapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieFedtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            femapList.add(map);
+        }
+
+        List<ImpExcelGridDTO> ieTdtos = imp.getTdtos();
+        ArrayList<Map> tmapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieTdtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            tmapList.add(map);
+        }
+
+        template.createRowByHashMap(pomapList, "#PO");
+        template.createRowByHashMap(momapList, "#MO");
+        template.createRowByHashMap(remapList, "#RE");
+        template.createRowByHashMap(femapList,"#FE");
+        template.createRowByHashMap(tmapList,"#T");
+
+
 
         workbook = template.getWorkbook();
         /*

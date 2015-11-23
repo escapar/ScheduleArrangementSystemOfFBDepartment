@@ -34,6 +34,7 @@ public class LocatorRepository {
     MajorDao majorDao;
     @Autowired
     CourseClassDao courseClassDao;
+
     @Autowired
     CourseTypeDao courseTypeDao;
     @Autowired
@@ -60,6 +61,19 @@ public class LocatorRepository {
         }
 
         return locator;
+    }
+//根据专业和学期找出所有文修核心课程(综合素质课程)
+    public List<Locator> getLocatorLitByMajorIdAndTermCount(int majorId,int termCount){
+        Major major = majorDao.findOne(majorId);
+        List<Locator> resList = new ArrayList<>();
+        if(major!=null) {
+            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+            if(term!=null) {
+                CourseType courseType=courseTypeDao.findOne(3);
+                resList=locatorDao.findByMajorAndTermAndCourseType(major,term,courseType);
+            }
+        }
+        return resList;
     }
 
     public ElectableLocatorDTO getLocatorDTOByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(int majorId, int termCount , int courseClassId,int courseTypeId){
@@ -139,6 +153,33 @@ public class LocatorRepository {
         }
         return resList;
     }
+    public List<Locator> getLocatorByMajorIdAndTermCountAndCourseClassId(int majorId,int termCount,int CourseClassId){
+        Major major = majorDao.findOne(majorId);
+        List<Locator> resList = new ArrayList<>();
+        if(major!=null) {
+            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+            if(term!=null) {
+                List<CourseClass> CCs =new ArrayList<>();
+                if(CourseClassId==1)
+                    CCs = courseClassDao.findByTitleLike("%公共%");
+                else if(CourseClassId==2)
+                    CCs = courseClassDao.findByTitleLike("%专业%");
+                else if(CourseClassId==3)
+                    CCs = courseClassDao.findByTitleLike("%限定%");
+                else if(CourseClassId==4)
+                    CCs = courseClassDao.findByTitleLike("%任意%");
+                else if(CourseClassId==5)
+                    CCs = courseClassDao.findByTitleLike("%实践%");
+                if(CCs.size()>0) {
+                    for (CourseClass cc : CCs) {
+                        resList.addAll(locatorDao.findByMajorAndTermAndCourseClass(major, term, cc));
+                    }
+                }
+            }
+        }
+        return resList;
+    }
+
 
     public Locator getLocatorById(int id){
         return locatorDao.findOne(id);

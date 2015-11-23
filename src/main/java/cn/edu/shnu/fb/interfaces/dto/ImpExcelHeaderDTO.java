@@ -29,6 +29,7 @@ public class ImpExcelHeaderDTO {
 
     private float impSumC;
 
+
     public float getPlanPOC() {
         return planPOC;
     }
@@ -77,7 +78,7 @@ public class ImpExcelHeaderDTO {
         return impSumC;
     }
 
-    public ImpExcelHeaderDTO(float planpoc, float planmoc, float planrec, float planfec, float plantc, float imppoc, float impmoc, float imprec, float impfec, float imptc, float impsumc) {
+    public ImpExcelHeaderDTO(float planpoc, float planmoc, float planrec, float planfec, float plantc, float imppoc, float impmoc, float imprec, float impfec, float imptc) {
         this.planPOC=planpoc;
         this.planMOC=planmoc;
         this.planREC=planrec;

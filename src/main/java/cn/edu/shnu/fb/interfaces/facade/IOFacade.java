@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.edu.shnu.fb.interfaces.dto.ImpCreditsDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -70,6 +71,10 @@ public class IOFacade {
             System.out.println(e.toString());
         }
     }
-
+    @RequestMapping(value = "/o/i/m/{majorId}", method = RequestMethod.GET)
+    public ModelAndView downloadImpCreditsExcel(@PathVariable Integer majorId) {
+        ImpCreditsDTO res = excelService.generateImpCreditsDTO(majorId);
+        return new ModelAndView("impCreditsExcelView", "impCreditsDTOS", res);
+    }
 }
 

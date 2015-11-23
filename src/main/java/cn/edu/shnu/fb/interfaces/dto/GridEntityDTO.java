@@ -10,6 +10,7 @@ import cn.edu.shnu.fb.domain.term.Term;
  * Created by bytenoob on 15/11/1.
  */
 public class GridEntityDTO {
+
     //For Backend Identity
     private int id;
     private int courseId;
@@ -28,7 +29,8 @@ public class GridEntityDTO {
     // Credits
     private float[] credits= new float[9];// use 0 only if not a plan
 
-
+    //Comment
+    private String courseComment;
     private int isDegCourse;
 
 
@@ -79,6 +81,7 @@ public class GridEntityDTO {
             this.courseId = imp.getCourse().getId();
             this.courseClass= imp.getLocator().getCourseClass().getTitle();
             this.isDegCourse = imp.getIsDegCourse();
+            this.courseComment=imp.getCourseComment();
             if(imp.getCourseExam()!=null) {
                 this.courseExam=imp.getCourseExam().getTitle();
                 this.courseExamId=imp.getCourseExam().getId();
@@ -208,6 +211,13 @@ public class GridEntityDTO {
 
     public void setCourseExam(final String courseExam) {
         this.courseExam = courseExam;
+    }
+    public String getCourseComment() {
+        return courseComment;
+    }
+
+    public void setCourseComment(final String courseComment) {
+        this.courseComment = courseComment;
     }
 
     public void setCourseClass(final String courseClass) {

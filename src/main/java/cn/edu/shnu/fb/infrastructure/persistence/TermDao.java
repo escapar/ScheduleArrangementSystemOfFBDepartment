@@ -1,8 +1,8 @@
 package cn.edu.shnu.fb.infrastructure.persistence;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
+        import org.springframework.data.repository.PagingAndSortingRepository;
 
-import cn.edu.shnu.fb.domain.term.Term;
+        import cn.edu.shnu.fb.domain.term.Term;
 
 /**
  * Created by bytenoob on 15/11/2.

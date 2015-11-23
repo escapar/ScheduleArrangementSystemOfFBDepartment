@@ -42,7 +42,7 @@ public class Imp implements Serializable {
 	@Column(name="period_hours")
 	private float periodHours;
 
-	@Lob
+	@Column(name="course_comment")
 	private String courseComment;
 
 	@ManyToOne(cascade= CascadeType.MERGE)
@@ -83,6 +83,14 @@ public class Imp implements Serializable {
 
 	public void setIsDegCourse(int isDegCourse) {
 		this.isDegCourse = isDegCourse;
+	}
+
+	public String getCourseComment() {
+		return this.courseComment;
+	}
+
+	public void setCourseComment(String courseComment) {
+		this.courseComment=courseComment;
 	}
 
 	public float getPeriodHours() {

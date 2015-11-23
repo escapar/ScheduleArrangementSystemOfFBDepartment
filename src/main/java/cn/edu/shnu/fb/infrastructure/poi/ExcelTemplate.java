@@ -82,10 +82,9 @@ public class ExcelTemplate {
             excel.initConfig();
 
             //查找其它样式配置
-      //      excel.readCellStyles();
 
             //删除配置行
-   //         excel.sheet.removeRow( excel.sheet.getRow(excel.initrow) );
+            //excel.sheet.removeRow( excel.sheet.getRow(excel.initrow) );
 
             return excel;
         } catch (Exception e) {
@@ -119,7 +118,7 @@ public class ExcelTemplate {
 
     public void createRowByHashMap(ArrayList<Map> props , String keyword) {
         int index = findRowByKeyword(keyword);
-        int tmpIndex = index + 1;
+        int tmpIndex = index+1;
         int mergeFlag = -1;
         HSSFRow src = sheet.getRow(index);
         for(Map map: props) {
@@ -237,7 +236,7 @@ public class ExcelTemplate {
     /**
      * 替换模板中的文本参数
      * 参数以“#”开始
-     * @param props
+     * @param
      */
     public int findRowByKeyword(String keyword){
         Iterator rowit = sheet.rowIterator();
@@ -264,7 +263,8 @@ public class ExcelTemplate {
      * 参数以“#”开始
      * @param props
      */
-    public void replaceParameters(Map props){
+
+    public void replaceParametersBykeyword(Map props,String keyword){
         if(props == null || props.size() == 0){
             return;
         }
@@ -278,13 +278,13 @@ public class ExcelTemplate {
                 HSSFCell cell = (HSSFCell)row.getCell((short)i);
                 if(cell == null) continue;
                 String value = poiGetCellStringValue(cell);
-                if(value != null && value.indexOf("#") != -1){
+                if(value != null && value.indexOf("") != -1){
                     for (Iterator iter = propsets.iterator(); iter.hasNext();) {
                         Map.Entry entry = (Map.Entry) iter.next();
-                        value = value.replaceAll("#"+entry.getKey(),String.valueOf(entry.getValue()));
+                        value = value.replaceAll(keyword+entry.getKey(),String.valueOf(entry.getValue()));
                     }
                 }
-               // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+                // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
                 cell.setCellValue(value);
             }
         }
