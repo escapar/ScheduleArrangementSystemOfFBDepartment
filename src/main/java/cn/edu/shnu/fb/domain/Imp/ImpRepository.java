@@ -197,7 +197,7 @@ public class ImpRepository {
                     if(teacher!=null){
                         imp.setTeacher(teacher);
                     }
-                    if(!entity.getComment().isEmpty()) {
+                    if(entity.getComment()!=null && !entity.getComment().isEmpty()) {
                         imp.setCourseComment(entity.getComment());
                     }
 
@@ -252,11 +252,19 @@ public class ImpRepository {
     public Imp getImpByCourseIdAndLocatorId(Integer courseId,Integer locatorId){
         Locator locator = locatorDao.findOne(locatorId);
         Course course = courseDao.findOne(courseId);
-        return impDao.findByLocatorAndCourse(locator,course);
+        return impDao.findByLocatorAndCourse(locator, course);
     }
 
     public void save(Imp imp){
         impDao.save(imp);
     }
 
+    public ImpComment getImpCommentByMajorIdAndTermCount(Integer majorId, Integer termCount){
+        Major major = majorDao.findOne(majorId);
+        Term term = null;
+        if(major!=null){
+            term = termRepository.findTermByGradeAndTermCount(major.getGrade(),termCount);
+        }
+        return impCommentDao.findByTermAndMajor(term,major);
+    }
 }

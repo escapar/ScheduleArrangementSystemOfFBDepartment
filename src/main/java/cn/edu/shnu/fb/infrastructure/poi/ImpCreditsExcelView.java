@@ -32,7 +32,7 @@ public class ImpCreditsExcelView extends AbstractXlsView {
         CreditsHeaderDTO headerdto = impcredits.getHeaderdto();
         Map<String,Object> map = new HashMap<>();
         IOAssembler.flushParams(map, headerdto);
-        template.replaceParametersBykeyword(map,"#");
+        template.replaceParametersByKeywordRichString(map,"#U");
 
         CreditsDTO fircredto=impcredits.getFircredto();
         Map<String,Object> fircremap = new HashMap<>();

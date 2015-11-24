@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.Imp.Imp;
@@ -94,9 +95,20 @@ public class ImpFacade {
     }
 
     @ResponseBody
-    @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}/update",method=RequestMethod.POST , consumes = "application/json")  //  l for location
-    public void updateImp(@PathVariable Integer majorId , @PathVariable Integer termCount,@RequestBody String comment){
+    @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}/update",method=RequestMethod.POST , consumes = "application/json")
+    public void updateImpComment(@PathVariable Integer majorId , @PathVariable Integer termCount,@RequestBody String comment){
         impRepository.persistImpComment(majorId,termCount,comment);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}",method=RequestMethod.GET)
+    public String getImpComment(@PathVariable Integer majorId , @PathVariable Integer termCount){
+        ImpComment res = impRepository.getImpCommentByMajorIdAndTermCount(majorId, termCount);
+        if(res!=null){
+            return res.getComment();
+        }else{
+            return null;
+        }
     }
 
 }

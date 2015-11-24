@@ -91,7 +91,7 @@ public class GridEntityDTO {
                 this.teacherCode = imp.getTeacher().getIdCode();
                 this.teacherProTitle = imp.getTeacher().getProTitle();
             }
-            if(!imp.getCourseComment().isEmpty()){
+            if(imp.getCourseComment()!=null && !imp.getCourseComment().isEmpty()){
                 this.comment = imp.getCourseComment();
             }
         }

@@ -141,13 +141,15 @@ public class ExcelService {
         String majorCode="";
         Major major=majorDao.findOne(majorId);
         majorCode=major.getMajorCode();
+        String majorTitle=major.getTitle();
 
         //获取impComment
         String impComment="";
         ImpComment impcom=impCommentDao.findImpCommentByMajorIdAndTermId(new Integer(majorId), new Integer(termCount));
-        impComment=impcom.getComment();
+        if(impcom!=null)
+            impComment=impcom.getComment();
 
-        ImpExcelDTO res = new ImpExcelDTO(new MajAndTmAndImpComDTO(majorCode,termCount,impComment),new ImpExcelHeaderDTO(planpoc,planmoc,planrec,planfec,plantc,imppoc,impmoc,imprec,impfec,imptc),POLists,MOLists,RELists,FELists,TLists);
+        ImpExcelDTO res = new ImpExcelDTO(new MajAndTmAndImpComDTO(majorTitle,majorCode,termCount,impComment),new ImpExcelHeaderDTO(planpoc,planmoc,planrec,planfec,plantc,imppoc,impmoc,imprec,impfec,imptc),POLists,MOLists,RELists,FELists,TLists);
         return res;
     }
 
@@ -309,11 +311,11 @@ public class ExcelService {
 
 
         for(PlanSpec planspec : planspecs){
-
-            litcsum=litcsum+planspec.getCredits();
-
+            if(planspec!=null) {
+                litcsum = litcsum + planspec.getCredits();
+            }
         }
-        if(termCount==8){litcsum=litcsum-2;}
+        if(termCount==8){litcsum=0;}
         return litcsum;
 
     }

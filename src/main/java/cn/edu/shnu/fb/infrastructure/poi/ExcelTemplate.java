@@ -15,12 +15,15 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.hssf.usermodel.HSSFRichTextString;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.Region;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -63,11 +66,6 @@ public class ExcelTemplate {
         return newInstance("default.xls");
     }*/
 
-    /**
-     * 指定模板创建ExcelTemplate对象
-     * @param templates 模板名称
-     * @return 根据模板已初始化完成的ExcelTemplate对象
-     */
     public static ExcelTemplate newInstance(InputStream is){
         try {
             ExcelTemplate excel = new ExcelTemplate();
@@ -111,10 +109,6 @@ public class ExcelTemplate {
         cellStyle = null;
     }
 
-    /**
-     * 创建新行
-     * @param index 从0开始计数
-     */
 
     public void replaceParameters(Map props){
         if(props == null || props.size() == 0){
@@ -160,7 +154,7 @@ public class ExcelTemplate {
                     if(value != null && value.indexOf(keyword) != -1){
                         for (Iterator iter = propsets.iterator(); iter.hasNext();) {
                             Map.Entry entry = (Map.Entry) iter.next();
-                            value = value.replaceAll(keyword+entry.getKey(),String.valueOf(entry.getValue()));
+                            value = value.replaceAll(keyword+entry.getKey(),subZeroAndDot(String.valueOf(entry.getValue())));
                         }
                         if(mergeFlag >= 0) {
                             sheet.addMergedRegion(new CellRangeAddress(tmpIndex, tmpIndex, mergeFlag, i-1));
@@ -182,6 +176,14 @@ public class ExcelTemplate {
         }
         sheet.shiftRows(index + 1 , 100 , -1);
 
+    }
+
+    public static String subZeroAndDot(String s){
+        if(s.indexOf(".") > 0){
+            s = s.replaceAll("0+?$", "");//去掉多余的0
+            s = s.replaceAll("[.]$", "");//如最后一位是.则去掉
+        }
+        return s;
     }
     public void createRow(int index){
         //如果在当前插入数据的区域有后续行，则将其后面的行往后移动
@@ -304,16 +306,62 @@ public class ExcelTemplate {
                 HSSFCell cell = (HSSFCell)row.getCell((short)i);
                 if(cell == null) continue;
                 String value = poiGetCellStringValue(cell);
-                if(value != null && value.indexOf("") != -1){
+                if(value != null && value.indexOf("") != -1 && value.contains(keyword)){
                     for (Iterator iter = propsets.iterator(); iter.hasNext();) {
                         Map.Entry entry = (Map.Entry) iter.next();
-                        value = value.replaceAll(keyword+entry.getKey(),String.valueOf(entry.getValue()));
+                        value = value.replaceAll(keyword + entry.getKey(), subZeroAndDot(String.valueOf(entry.getValue())));
+                        cell.setCellValue(value);
                     }
                 }
                 // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-                cell.setCellValue(value);
             }
         }
+    }
+
+    public void replaceParametersByKeywordRichString(Map props,String keyword){
+        if(props == null || props.size() == 0){
+            return;
+        }
+        Set propsets = props.entrySet();
+        Iterator rowit = sheet.rowIterator();
+        Font underLine = getFont();
+        while(rowit.hasNext()){
+            HSSFRow row = (HSSFRow)rowit.next();
+            if(row == null)	continue;
+            int cellLength = row.getLastCellNum();
+            for(int i=0; i<cellLength; i++){
+                HSSFCell cell = (HSSFCell)row.getCell((short)i);
+                if(cell == null) continue;
+                HSSFRichTextString value = poiGetCellRichStringValue(cell);
+                if(value != null && value.getString().indexOf("") != -1 && value.getString().contains(keyword)){
+                    String strValue = value.getString();
+                    for (Iterator iter = propsets.iterator(); iter.hasNext();) {
+                        Map.Entry entry = (Map.Entry) iter.next();
+                        String replaceValue = String.valueOf(entry.getValue());
+                        strValue = strValue.replaceAll(keyword + entry.getKey(), replaceValue);
+                       // value.applyFont(strValue.indexOf(replaceValue), strValue.indexOf(replaceValue) + replaceValue.length(), underLine);
+                    }
+                    value = new HSSFRichTextString(strValue);
+                    for (Iterator iter = propsets.iterator(); iter.hasNext();) {
+                        Map.Entry entry = (Map.Entry) iter.next();
+                        String replaceValue = String.valueOf(entry.getValue());
+                        value.applyFont(strValue.indexOf(replaceValue)-2, strValue.indexOf(replaceValue)+2 + replaceValue.length(), underLine);
+                    }
+                    value.applyFont(strValue.indexOf("商学院")-2, strValue.indexOf("商学院")+2 + "商学院".length(), underLine);
+
+                    cell.setCellValue(value);
+                }
+                // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+            }
+        }
+    }
+
+    public Font getFont() {
+        Font font = workbook.createFont();
+        font.setFontName("宋体");
+        font.setFontHeightInPoints((short)12);
+        font.setUnderline(Font.U_SINGLE); //下划线
+        return font;
     }
 
     private String poiGetCellStringValue(HSSFCell cell){
@@ -325,6 +373,13 @@ public class ExcelTemplate {
         else
             x = "";
         return x;
+    }
+
+    private HSSFRichTextString poiGetCellRichStringValue(HSSFCell cell){
+        if(cell.getCellType() == 1)
+            return cell.getRichStringCellValue();
+        else
+            return null;
     }
 
     private long poiGetCellNumValue(HSSFCell cell){
