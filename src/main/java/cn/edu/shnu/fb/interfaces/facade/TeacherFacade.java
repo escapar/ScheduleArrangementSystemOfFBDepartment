@@ -1,6 +1,11 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
+import java.security.Principal;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,4 +34,5 @@ public class TeacherFacade {
     public List<Teacher> planSpecGridEntityByMajorAndTerm(@RequestBody String name){
         return teacherDao.findByNameLike("%"+name+"%");
     }
+
 }
