@@ -71,15 +71,16 @@ public class ScheduleArrangementApplication extends SpringBootServletInitializer
             http                    .csrf().disable()
                     //.csrfTokenRepository(csrfTokenRepository()).and()
                  //   .addFilterBefore(new SimpleCORSFilter() , ChannelProcessingFilter.class)
-                    .httpBasic().and().logout().and()//.addFilterBefore(new SimpleCORSFilter(),SimpleCORSFilter.class)
+                    .httpBasic().and()//.logout().and()//.addFilterBefore(new SimpleCORSFilter(),SimpleCORSFilter.class)
                     .authorizeRequests()
                     .antMatchers("/").permitAll()
+                    .antMatchers(HttpMethod.GET, "/").permitAll()
                     .antMatchers("/#/**").permitAll()
                     .antMatchers("/auth/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/**").permitAll()
-                    .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
-                    .anyRequest()
-                    .authenticated();//.and()
+                    .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll();
+                    //.anyRequest()
+                    //.authenticated();//.and()
                    // .addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
         }
 
