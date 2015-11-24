@@ -22,7 +22,8 @@
 		<java.version>1.7</java.version>
 	</properties>
 
-            <dependency>
+    <dependencies>
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId> 
            <exclusions>
@@ -31,7 +32,7 @@
         		<artifactId>spring-boot-starter-tomcat</artifactId>
            	</exclusion>
            </exclusions> 
-</dependency>
+        </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
