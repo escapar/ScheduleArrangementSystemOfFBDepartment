@@ -2,7 +2,9 @@
     "MENU": {
         "UI": {
             "PLAN-MODULE": "培养方案",
-            "PLAN-PAGE": "显示方案"
+            "PLAN-IMPORT": "导入方案",
+            "PLAN-PAGE": "显示方案",
+            "PLAN-IMPORT-COURSE": "导入方案选修课"
         }
     },
     "PLAN": {
