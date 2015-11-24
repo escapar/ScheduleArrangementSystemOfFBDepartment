@@ -18,7 +18,6 @@ import org.apache.poi.hwpf.usermodel.TableIterator;
 import org.apache.poi.hwpf.usermodel.TableRow;
 
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
-import javafx.scene.control.Cell;
 
 /**
  * Created by bytenoob on 15/11/17.
