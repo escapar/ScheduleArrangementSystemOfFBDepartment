@@ -74,6 +74,7 @@ public class ScheduleArrangementApplication extends SpringBootServletInitializer
                     .httpBasic().and().logout().and()//.addFilterBefore(new SimpleCORSFilter(),SimpleCORSFilter.class)
                     .authorizeRequests()
                     .antMatchers("/").permitAll()
+                    .antMatchers("/#/**").permitAll()
                     .antMatchers("/auth/**").permitAll()
                     .antMatchers(HttpMethod.POST, "/api/**").permitAll()
                     .antMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
