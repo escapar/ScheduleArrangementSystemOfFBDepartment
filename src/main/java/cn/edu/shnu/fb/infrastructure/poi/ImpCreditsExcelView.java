@@ -23,7 +23,8 @@ public class ImpCreditsExcelView extends AbstractXlsView {
             throws Exception {
 
         response.setHeader("Content-Disposition", "attachment; filename=\"creditsresult.xls\"");
-        // InputStream is= this.getClass().getResourceAsStream("impTemplate.xls");
+        response.setHeader("Content-type", "application/vnd.ms-excel");
+        response.setHeader("Set-Cookie","fileDownload=true; path=/");        // InputStream is= this.getClass().getResourceAsStream("impTemplate.xls");
         InputStream is = this.getClass().getResourceAsStream(request.getContextPath() + "/impCreditsTemplate.xls");
         ExcelTemplate template = ExcelTemplate.newInstance(is);
         ImpCreditsDTO impcredits =(ImpCreditsDTO)model.get("impCreditsDTOS");

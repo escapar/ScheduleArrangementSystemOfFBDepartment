@@ -31,6 +31,7 @@ import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfToken;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -68,7 +69,7 @@ public class ScheduleArrangementApplication extends SpringBootServletInitializer
     protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http                    .csrf().disable()
+            http                    .csrf().disable().headers().frameOptions().disable().and()
                     //.csrfTokenRepository(csrfTokenRepository()).and()
                  //   .addFilterBefore(new SimpleCORSFilter() , ChannelProcessingFilter.class)
                     .httpBasic().and()//.logout().and()//.addFilterBefore(new SimpleCORSFilter(),SimpleCORSFilter.class)

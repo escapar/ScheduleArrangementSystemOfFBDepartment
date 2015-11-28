@@ -1,6 +1,7 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -29,7 +30,20 @@ public class MajorFacade {
 
     @ResponseBody
     @RequestMapping(value="/m",method= RequestMethod.GET)
-    public Iterable<Major> initMajor (){
+    public Iterable<Major> getAllMajors (){
         return majorRepository.findAll();
     }
+
+    @ResponseBody
+    @RequestMapping(value="/m/{majorId}/delete",method= RequestMethod.GET)
+    public void deleteMajor (@PathVariable Integer majorId){
+        majorRepository.deleteByMajorId(majorId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/m/available",method= RequestMethod.GET)
+    public Iterable<Major> findAvailable(){
+        return majorRepository.findAll();
+    }
+
 }

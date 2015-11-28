@@ -194,9 +194,9 @@ public class ImpRepository {
                     CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
                     imp.setCourseExam(courseExam);
                     Teacher teacher = teacherDao.findOne(entity.getTeacherId());
-                    if(teacher!=null){
-                        imp.setTeacher(teacher);
-                    }
+                    //if(teacher!=null){
+                    imp.setTeacher(teacher);
+                    //}
                     if(entity.getComment()!=null && !entity.getComment().isEmpty()) {
                         imp.setCourseComment(entity.getComment());
                     }

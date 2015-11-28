@@ -2,7 +2,9 @@ package cn.edu.shnu.fb.domain.common;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -52,6 +54,15 @@ public class Locator implements Serializable{
     @ManyToOne
     @JoinColumn(name="course_type_id")
     private CourseType courseType;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy ="locator")
+    private Set<Imp> imps;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy ="locator")
+    private Set<PlanCourse> planCourses;
+
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY,mappedBy ="locator")
+    private Set<PlanSpec> planSpecs;
 
     private int modified;
 

@@ -1,5 +1,6 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.shnu.fb.application.CautionService;
 import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.Locator;
@@ -28,9 +30,11 @@ import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 public class ImpFacade {
     @Autowired
     ImpRepository impRepository;
+    @Autowired
+    CautionService cautionService;
 
     @ResponseBody
-    @RequestMapping(value="/i/o/m/{majorId}/t/{termCount}/grid",method=RequestMethod.GET) // o for oblidge
+    @RequestMapping(value="/i/o/m/{majorId}/t/{termCount}/grid",method=RequestMethod.GET) // o for oblige
     public List<GridEntityDTO> getImpOblige(@PathVariable Integer majorId,@PathVariable Integer termCount){
         List<Imp> imps = impRepository.getObligeImpByMajorIdAndTermCount(majorId, termCount);
         return ImpAssembler.toGridEntityDTO(imps);
@@ -97,7 +101,7 @@ public class ImpFacade {
     @ResponseBody
     @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}/update",method=RequestMethod.POST , consumes = "application/json")
     public void updateImpComment(@PathVariable Integer majorId , @PathVariable Integer termCount,@RequestBody String comment){
-        impRepository.persistImpComment(majorId,termCount,comment);
+        impRepository.persistImpComment(majorId, termCount, comment);
     }
 
     @ResponseBody
@@ -109,6 +113,20 @@ public class ImpFacade {
         }else{
             return null;
         }
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value="/i/e/caution/m/{majorId}/t/{termCount}",method=RequestMethod.GET)
+    public ArrayList<String> getElectableCaution(@PathVariable Integer majorId,@PathVariable Integer termCount){
+        ArrayList<String> electCaution=cautionService.getElectableCaution(majorId, termCount);
+        return electCaution;
+    }
+    @ResponseBody
+    @RequestMapping(value="/i/o/caution/m/{majorId}",method=RequestMethod.GET)
+    public ArrayList<String> getOblidgeCaution(@PathVariable Integer majorId){
+        ArrayList<String> obligeCaution=cautionService.getOblidgeCaution(majorId);
+        return obligeCaution;
     }
 
 }

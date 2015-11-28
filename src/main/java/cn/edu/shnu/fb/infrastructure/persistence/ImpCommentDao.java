@@ -12,4 +12,6 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 public interface ImpCommentDao extends PagingAndSortingRepository<ImpComment,Integer>{
     ImpComment findImpCommentByMajorIdAndTermId(Integer majorId, Integer termId);
     ImpComment findByTermAndMajor(Term term,Major major);
+    Iterable<ImpComment> findByMajor(Major major);
+
 }

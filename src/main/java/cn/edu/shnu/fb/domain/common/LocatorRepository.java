@@ -70,7 +70,7 @@ public class LocatorRepository {
             Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
             if(term!=null) {
                 CourseType courseType=courseTypeDao.findOne(3);
-                resList=locatorDao.findByMajorAndTermAndCourseType(major,term,courseType);
+                resList=locatorDao.findByMajorAndTermAndCourseType(major, term, courseType);
             }
         }
         return resList;
@@ -119,6 +119,7 @@ public class LocatorRepository {
         }
         return resList;
     }
+
 
     public List<ElectableLocatorDTO> getLocatorElectableByMajorIdAndTermCount(int majorId,int termCount){
         Major major = majorDao.findOne(majorId);
@@ -200,6 +201,13 @@ public class LocatorRepository {
         locatorDao.save(locator);
     }
 
+    public void deleteLocatorsByMajorId(int majorId){
+        Major major = majorDao.findOne(majorId);
+        List<Locator> locators = locatorDao.findByMajor(major);
+        for(Locator locator : locators){
+            locatorDao.delete(locator);
+        }
+    }
     public void initLocators(int majorId){
         Major major = majorDao.findOne(majorId);
         Iterable<CourseClass> courseClasses = courseClassDao.findAll();
@@ -229,5 +237,22 @@ public class LocatorRepository {
             }
         }
 
+    }
+    public List<Locator> getLocatorObligeByMajorIdAndTermCount(int majorId,int termCount){
+        Major major = majorDao.findOne(majorId);
+        List<Locator> resList = new ArrayList<>();
+        if(major!=null) {
+            Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+            if(term!=null) {
+                List<CourseClass> CCs =new ArrayList<>();
+                CCs = courseClassDao.findByTitleLike("%必修%");
+                if(CCs.size()>0) {
+                    for (CourseClass cc : CCs) {
+                        resList.addAll(locatorDao.findByMajorAndTermAndCourseClass(major, term, cc));
+                    }
+                }
+            }
+        }
+        return resList;
     }
 }

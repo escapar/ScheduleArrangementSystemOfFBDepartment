@@ -34,7 +34,6 @@ public class ExcelView extends AbstractXlsView {
 
         response.setHeader("Content-Disposition", "attachment; filename=\"result.xls\"");
         response.setHeader("Content-type", "application/vnd.ms-excel");
-
         response.setHeader("Set-Cookie","fileDownload=true; path=/");
            // InputStream is= this.getClass().getResourceAsStream("impTemplate.xls");
         InputStream is = this.getClass().getResourceAsStream(request.getContextPath() + "/impTemplate.xls");
