@@ -16,6 +16,7 @@ import org.springframework.boot.autoconfigure.jersey.JerseyAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.embedded.FilterRegistrationBean;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,14 +25,6 @@ import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
 import org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.web.access.channel.ChannelProcessingFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
-import org.springframework.security.web.csrf.CsrfToken;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
-import org.springframework.security.web.header.writers.frameoptions.XFrameOptionsHeaderWriter;
 import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -46,6 +39,16 @@ public class ScheduleArrangementApplication extends SpringBootServletInitializer
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(ScheduleArrangementApplication.class);
+    }
+
+    @Bean
+    public FilterRegistrationBean jwtFilter() {
+        final FilterRegistrationBean registrationBean = new FilterRegistrationBean();
+        registrationBean.setFilter(new JwtFilter());
+        registrationBean.addUrlPatterns("/api/*");
+        registrationBean.addUrlPatterns("/auth/role/*");
+
+        return registrationBean;
     }
 
     public static void main(String[] args) throws Exception {
@@ -63,7 +66,7 @@ public class ScheduleArrangementApplication extends SpringBootServletInitializer
     public OpenEntityManagerInViewFilter openEntityManagerInViewFilter() {
         return new OpenEntityManagerInViewFilter();
     }
-
+/*
     @Configuration
     @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
     protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -113,6 +116,6 @@ public class ScheduleArrangementApplication extends SpringBootServletInitializer
             return repository;
         }
     }
-
+*/
 
 }
