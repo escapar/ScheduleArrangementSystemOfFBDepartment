@@ -336,7 +336,7 @@ public class PlanRepository {
                                             ctId = ct.getId();
                                         }
                                     }
-                                    Locator locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i, cc.getId(), ctId);
+                                    Locator locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i+1, cc.getId(), ctId);
                                     PlanSpec planSpec = planSpecDao.findByLocator(locator);
                                     if(planSpec == null){
                                         planSpec = new PlanSpec();

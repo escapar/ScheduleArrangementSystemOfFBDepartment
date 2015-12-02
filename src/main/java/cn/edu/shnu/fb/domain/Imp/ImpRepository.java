@@ -193,11 +193,19 @@ public class ImpRepository {
                     imp.setLocator(newLocator);
                     CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
                     imp.setCourseExam(courseExam);
-                    Teacher teacher = teacherDao.findOne(entity.getTeacherId());
-                    //if(teacher!=null){
-                    imp.setTeacher(teacher);
-                    //}
-                    if(entity.getComment()!=null && !entity.getComment().isEmpty()) {
+                    int[] teacherIds = entity.getTeacherIds();
+                    List<Teacher> teacherList = new ArrayList<>();
+                    for (Integer tId : teacherIds) {
+                        if(tId!=0) {
+                            Teacher teacher = teacherDao.findOne(tId);
+                            if (teacher != null) {
+                                teacherList.add(teacher);
+                            }
+                        }
+                    }
+                    imp.setTeachers(teacherList);
+
+                if(entity.getComment()!=null && !entity.getComment().isEmpty()) {
                         imp.setCourseComment(entity.getComment());
                     }
 

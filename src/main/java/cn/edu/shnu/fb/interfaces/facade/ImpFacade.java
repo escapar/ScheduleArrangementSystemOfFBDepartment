@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.edu.shnu.fb.application.CautionService;
+import cn.edu.shnu.fb.application.ExcelService;
 import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.Imp.Imp;
 import cn.edu.shnu.fb.infrastructure.persistence.LocatorDao;
 import cn.edu.shnu.fb.interfaces.assembler.ImpAssembler;
+import cn.edu.shnu.fb.interfaces.dto.CreditsDTO;
+import cn.edu.shnu.fb.interfaces.dto.CreditsGridDTO;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
+import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
+import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
 
 /**
  * Created by bytenoob on 15/11/2.
@@ -32,7 +37,8 @@ public class ImpFacade {
     ImpRepository impRepository;
     @Autowired
     CautionService cautionService;
-
+    @Autowired
+    ExcelService excelService;
     @ResponseBody
     @RequestMapping(value="/i/o/m/{majorId}/t/{termCount}/grid",method=RequestMethod.GET) // o for oblige
     public List<GridEntityDTO> getImpOblige(@PathVariable Integer majorId,@PathVariable Integer termCount){
@@ -127,6 +133,24 @@ public class ImpFacade {
     public ArrayList<String> getOblidgeCaution(@PathVariable Integer majorId){
         ArrayList<String> obligeCaution=cautionService.getOblidgeCaution(majorId);
         return obligeCaution;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/impdto/m/{majorId}/t/{termCount}",method=RequestMethod.GET)
+    public ImpExcelDTO getExcelDtoImp(@PathVariable Integer majorId,@PathVariable Integer termCount){
+        return excelService.generateImpExcelDTO(majorId,termCount);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/creditsdto/m/{majorId}/t/{termCount}",method=RequestMethod.GET)
+    public List<CreditsGridDTO> getExcelCreditsDtoImp(@PathVariable Integer majorId,@PathVariable Integer termCount){
+        CreditsDTO dto = excelService.getCreditDTOByMajorAndTerm(majorId, termCount);
+        List<CreditsGridDTO> CGDTOs = new ArrayList<>();
+        if(dto!=null) {
+            CGDTOs.add(new CreditsGridDTO(dto, 1));
+            CGDTOs.add(new CreditsGridDTO(dto, 2));
+        }
+        return CGDTOs;
     }
 
 }

@@ -38,6 +38,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by bytenoob on 15/11/10.
@@ -185,24 +186,26 @@ public class ExcelService {
     public ImpExcelGridDTO toExcelDTO(Imp imp){
         Course course = imp.getCourse();
         CourseExam courseExam = imp.getCourseExam();
-        Teacher teacher = imp.getTeacher();
+        List<Teacher> teachers = imp.getTeachers();
 
         String courseCode = "";
         String courseTitle = "";
         String courseExamTitle = "";
         String isDegCourseTitle = "";
-        String teacherCode = "";
-        String teacherName = "";
-        String teacherTitle = "";
+        List<String> teacherCode = new ArrayList<>();
+        List<String> teacherName = new ArrayList<>();
+        List<String> teacherTitle = new ArrayList<>();
         String courseComment="";
 
         if(imp.getCourseComment()!=null){
             courseComment=imp.getCourseComment();}
 
-        if(teacher!=null){
-            teacherCode=imp.getTeacher().getProCode();
-            teacherName=imp.getTeacher().getName();
-            teacherTitle=imp.getTeacher().getProTitle();
+        if(teachers!=null){
+            for(Teacher teacher : teachers){
+                teacherCode.add(teacher.getIdCode());
+                teacherName.add(teacher.getName());
+                teacherTitle.add(teacher.getProTitle());
+            }
         }
         if(course != null){
             courseCode = imp.getCourse().getCode();

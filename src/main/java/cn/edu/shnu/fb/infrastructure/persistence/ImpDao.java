@@ -17,7 +17,7 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  * Created by bytenoob on 15/11/2.
  */
 public interface ImpDao extends PagingAndSortingRepository<Imp,Integer> {
-    List<Imp> findByTeacher(Teacher teacher);
+    //List<Imp> findByTeacher(Teacher teacher);
     List<Imp> findByLocator(Locator locator);
     Imp findByLocatorAndCourse(Locator locator , Course course);
     List<Imp> findByLocatorMajor(Major major);

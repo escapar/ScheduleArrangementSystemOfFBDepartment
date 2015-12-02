@@ -1,5 +1,7 @@
 package cn.edu.shnu.fb.interfaces.dto;
 
+import java.util.List;
+
 /**
  * Created by bytenoob on 15/11/10.
  */
@@ -55,11 +57,11 @@ public class ImpExcelGridDTO {
     float weeks;
     float hours;
     String deg;
-    String tc;
-    String tn;
-    String tt;
+    String tc="";
+    String tn="";
+    String tt="";
     String comment;
-    public ImpExcelGridDTO(String code, String title, String exam, float credits, float weeks, float hours, String deg, String tc, String tn, String tt, String comment){
+    public ImpExcelGridDTO(String code, String title, String exam, float credits, float weeks, float hours, String deg, List<String> tcs, List<String> tns, List<String> tts, String comment){
         this.code = code;
         this.title = title;
         this.exam = exam;
@@ -67,9 +69,21 @@ public class ImpExcelGridDTO {
         this.weeks = weeks;
         this.hours = hours;
         this.deg = deg;
-        this.tc = tc;
-        this.tn = tn;
-        this.tt = tt;
+        for(String tc : tcs){
+            if(!this.tc.isEmpty()){
+                this.tc += (',' + tc);
+            } else{this.tc = tc;}
+        }
+        for(String tn : tns){
+            if(!this.tn.isEmpty()){
+                this.tn += (',' + tn);
+            } else{this.tn = tn;}
+        }
+        for(String tt : tts){
+            if(!this.tt.isEmpty()){
+                this.tt += (',' + tt);
+            } else{this.tt = tt;}
+        }
         this.comment = comment;
     }
 }

@@ -1,16 +1,25 @@
 package cn.edu.shnu.fb.domain.Imp;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import cn.edu.shnu.fb.domain.common.CourseExam;
@@ -45,20 +54,39 @@ public class Imp implements Serializable {
 	@Column(name="course_comment")
 	private String courseComment;
 
+	public List<Teacher> getTeachers() {
+		return teachers;
+	}
+
+	public void setTeachers(final List<Teacher> teachers) {
+		this.teachers = teachers;
+	}
+
+	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "imp_teacher",
+			joinColumns = @JoinColumn(name = "imp_id"),
+			inverseJoinColumns = @JoinColumn(name = "teacher_id")
+	)
+	private List<Teacher> teachers = new ArrayList<>();
+
 	@ManyToOne(cascade= CascadeType.MERGE)
 	private Locator locator;
 
 	@ManyToOne(cascade= CascadeType.MERGE)
 	private Course course;
 
-	@ManyToOne(cascade= CascadeType.MERGE)
-	private Teacher teacher;
 
 	@ManyToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="course_exam_id")
 	private CourseExam courseExam;
 
+	/*public void addTeacher(Teacher t){
+		teachers.add(t);
+	}*/
+
 	public Imp() {
+		teachers = new ArrayList<>();
 	}
 
 	public int getId() {
@@ -134,12 +162,5 @@ public class Imp implements Serializable {
 		this.locator = locator;
 	}
 
-	public Teacher getTeacher() {
-		return teacher;
-	}
-
-	public void setTeacher(final Teacher teacher) {
-		this.teacher = teacher;
-	}
 
 }

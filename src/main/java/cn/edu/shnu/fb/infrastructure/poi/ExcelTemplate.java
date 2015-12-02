@@ -576,6 +576,7 @@ public class ExcelTemplate {
 
     public List<GridEntityDTO> getCourseGridEntity(){
         List<GridEntityDTO> geDTOs = new ArrayList<>();
+        sheet = workbook.getSheetAt(1);
         int allRows = sheet.getPhysicalNumberOfRows();
         int cellNum ;
         String title ;
@@ -585,48 +586,69 @@ public class ExcelTemplate {
             GridEntityDTO geDTO = new GridEntityDTO();
             float[] period = new float[9];
             float[] credits = new float[9];
+            if (cellNum >= 3 && getCellValue(row.getCell(3)).contains("基础法语")){
+                geDTO.setCourseClass("专业必修课");
+                geDTO.setTitle("基础法语");
+                geDTO.setCourseExamId(1);
+                geDTO.setCode("4720037");
+                float[] tmpPeriod = {5,5,5,5,0,0,0,0,0};
+                float[] tmpCredits = {6,6,6,6,0,0,0,0,0};
 
-            for(int i=0;i < cellNum;i++){
-                if(i == 0){
-                    title = getMergedRegionValue(j,0);
-                    geDTO.setCourseClass(title);
-                }else {
-                    HSSFCell cell = row.getCell(i);
-                    if (i == 2) {
-                        String code = getCellValue(cell);
-                        if(code.contains(".")){
-                            String[] codes = code.split("\\.");
-                            code = codes[0];
-                        }
-                        geDTO.setCode(code);
-                    } else if (i == 3) {
-                        geDTO.setTitle(getCellValue(cell));
-                    } else if (i >= 4 && i <= 19) {
-                        // 5-1 6-1 7-2 8-2
-                        if(i%2 == 0) {
-                            if(getCellValue(cell) != "" && !getCellValue(cell).contains("周") && !getCellValue(cell).contains("SUM")) {
-                                period[i / 2 - 2] = Float.valueOf(getCellValue(cell));
+                geDTO.setPeriod(tmpPeriod);
+                geDTO.setCredits(tmpCredits);
+                geDTOs.add(geDTO);
+                geDTO = new GridEntityDTO();
+                geDTO.setCourseClass("专业必修课");
+                geDTO.setTitle("基础法语（听说）");
+                geDTO.setCourseExamId(1);
+                geDTO.setCode("4720037");
+
+                geDTO.setPeriod(new float[]{4,4,4,4,0,0,0,0,0});
+                geDTO.setCredits(new float[]{0,0,0,0,0,0,0,0,0});
+                geDTOs.add(geDTO);
+                continue;
+            }else {
+                for (int i = 0; i < cellNum; i++) {
+                    if (i == 0) {
+                        title = getMergedRegionValue(j, 0);
+                        geDTO.setCourseClass(title);
+                    } else {
+                        HSSFCell cell = row.getCell(i);
+                        if (i == 2) {
+                            String code = getCellValue(cell);
+                            if (code.contains(".")) {
+                                String[] codes = code.split("\\.");
+                                code = codes[0];
                             }
-                        }else {
-                            if(getCellValue(cell) != "" && !getCellValue(cell).contains("周") && !getCellValue(cell).contains("SUM")) {
-                                credits[i / 2 - 2] = Float.valueOf(getCellValue(cell));
+                            geDTO.setCode(code);
+                        } else if (i == 3) {
+                            geDTO.setTitle(getCellValue(cell));
+                        } else if (i >= 4 && i <= 19) {
+                            // 5-1 6-1 7-2 8-2
+                            if (i % 2 == 0) {
+                                if (getCellValue(cell) != "" && !getCellValue(cell).contains("周") && !getCellValue(cell).contains("SUM")) {
+                                    period[i / 2 - 2] = Float.valueOf(getCellValue(cell));
+                                }
+                            } else {
+                                if (getCellValue(cell) != "" && !getCellValue(cell).contains("周") && !getCellValue(cell).contains("SUM")) {
+                                    credits[i / 2 - 2] = Float.valueOf(getCellValue(cell));
+                                }
                             }
+                        } else if (i == 21) {
+                            if (getCellValue(cell) != "" && !getCellValue(cell).contains("+") && !getCellValue(cell).contains("SUM")) {
+                                credits[8] = Float.valueOf(getCellValue(cell));
+                            }
+                        } else if (i == 22 && getCellValue(cell).equals("√")) {
+                            geDTO.setCourseExamId(1);
+                        } else if (i == 23 && getCellValue(cell).equals("√")) {
+                            geDTO.setCourseExamId(2);
                         }
-                    } else if(i == 21){
-                        if(getCellValue(cell) != "" && !getCellValue(cell).contains("+") && !getCellValue(cell).contains("SUM")) {
-                            credits[8] = Float.valueOf(getCellValue(cell));
-                        }
-                    }
-                    else if(i == 22 && getCellValue(cell).equals("√")){
-                        geDTO.setCourseExamId(1);
-                    } else if(i == 23 && getCellValue(cell).equals("√")){
-                        geDTO.setCourseExamId(2);
                     }
                 }
+                geDTO.setPeriod(period);
+                geDTO.setCredits(credits);
+                geDTOs.add(geDTO);
             }
-            geDTO.setPeriod(period);
-            geDTO.setCredits(credits);
-            geDTOs.add(geDTO);
         }
         return geDTOs;
     }

@@ -54,7 +54,7 @@ public class PlanAssembler {
                         }
                     }
                     if (!existsCourse) {
-                        GridEntityDTO tmpEntity = new GridEntityDTO(pc);
+                        GridEntityDTO tmpEntity = new GridEntityDTO(pc,false);
                         tmpEntity.setPeriodAndCredits(major, pc);
                         resList.add(tmpEntity);
                     }
@@ -79,7 +79,7 @@ public class PlanAssembler {
                     }
                 }
                 if (!existsCourse) {
-                    GridEntityDTO tmpEntity = new GridEntityDTO(ps);
+                    GridEntityDTO tmpEntity = new GridEntityDTO(ps,false);
                     tmpEntity.setPeriodAndCredits(major, ps);
                     resList.add(tmpEntity);
                 }

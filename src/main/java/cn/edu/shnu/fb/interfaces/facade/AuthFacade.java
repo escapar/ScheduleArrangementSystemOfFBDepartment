@@ -10,12 +10,15 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.shnu.fb.domain.user.User;
+import cn.edu.shnu.fb.domain.user.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -26,12 +29,12 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RequestMapping("/auth")
 @RestController
 public class AuthFacade {
-
+    @Autowired
+    UserRepository userRepository;
     private final Map<String, List<String>> userDb = new HashMap<>();
 
     public AuthFacade() {
-        userDb.put("tom", Arrays.asList("user"));
-        userDb.put("user", Arrays.asList("user", "admin"));
+
     }
 
     @RequestMapping(value="/user",method= RequestMethod.GET)
@@ -42,11 +45,12 @@ public class AuthFacade {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public LoginResponse login(@RequestBody final UserLogin login)
             throws ServletException {
-        if (login.username == null || !userDb.containsKey(login.username)) {
+        User user = userRepository.authOK(login.username , login.password);
+        if (login.username == null || user == null) {
             throw new ServletException("Invalid login");
         }
         return new LoginResponse(Jwts.builder().setSubject(login.username)
-                .claim("roles", userDb.get(login.username)).setIssuedAt(new Date())
+                .claim("roles", user.getRole()).setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, "FBSASECRET!").compact());
     }
 
@@ -56,7 +60,7 @@ public class AuthFacade {
             final HttpServletRequest request) throws ServletException {
         final Claims claims = (Claims) request.getAttribute("claims");
 
-        return ((List<String>) claims.get("roles")).contains(role);
+        return ((Integer) claims.get("roles")).equals(Integer.valueOf(role));
     }
 
     @SuppressWarnings("unused")

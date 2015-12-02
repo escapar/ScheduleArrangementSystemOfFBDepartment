@@ -32,7 +32,7 @@ public class TeacherFacade {
     @ResponseBody
     @RequestMapping(value="/t",method= RequestMethod.POST)
     public List<Teacher> planSpecGridEntityByMajorAndTerm(@RequestBody String name){
-        return teacherDao.findByNameLike("%"+name+"%");
+        return teacherDao.findByNameLike(name+"%");
     }
 
 }

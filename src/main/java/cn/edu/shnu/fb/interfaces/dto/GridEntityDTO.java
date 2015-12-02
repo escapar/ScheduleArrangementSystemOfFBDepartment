@@ -1,10 +1,14 @@
 package cn.edu.shnu.fb.interfaces.dto;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import cn.edu.shnu.fb.domain.Imp.Imp;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.plan.PlanSpec;
 import cn.edu.shnu.fb.domain.term.Term;
+import cn.edu.shnu.fb.domain.user.Teacher;
 
 /**
  * Created by bytenoob on 15/11/1.
@@ -17,11 +21,11 @@ public class GridEntityDTO {
     private int courseExamId;
 
     // CourseParams
-    private String courseClass;
+    private String courseClass="";
 
-    private String code;
-    private String title;
-    private String courseExam;
+    private String code="";
+    private String title="";
+    private String courseExam="";
     // Period
     private float[] period= new float[9]; // use 0 only if not a plan
     private float periodWeeks ;
@@ -30,15 +34,23 @@ public class GridEntityDTO {
     private float[] credits= new float[9];// use 0 only if not a plan
 
     //Comment
-    private String courseComment;
+    private String courseComment="";
     private int isDegCourse;
 
 
-    private String teacherName;
-    private String teacherProTitle;
-    private String teacherCode;
+    private String teacherName="";
+    private String teacherProTitle="";
+    private String teacherCode="";
 
-    private int teacherId;
+    public int[] getTeacherIds() {
+        return teacherIds;
+    }
+
+    public void setTeacherIds(final int[] teacherIds) {
+        this.teacherIds = teacherIds;
+    }
+
+    private int[] teacherIds = new int[5];
     private String comment;
     public GridEntityDTO(){
 
@@ -59,6 +71,26 @@ public class GridEntityDTO {
             }
         }
     }
+
+    public GridEntityDTO(PlanCourse planCourse,boolean isMono){
+        if(planCourse!=null) {
+            this.id = planCourse.getId();
+            this.code = planCourse.getCourse().getCode();
+            this.title = planCourse.getCourse().getTitle();
+            this.courseId = planCourse.getCourse().getId();
+            this.courseClass = planCourse.getLocator().getCourseClass().getTitle();
+            if(isMono) {
+                this.period[0] = planCourse.getPeriod();
+                this.credits[0] = planCourse.getCredits();
+            }
+            this.isDegCourse = planCourse.getIsDegCourse();
+            if(planCourse.getCourseExam()!=null) {
+                this.courseExam = planCourse.getCourseExam().getTitle();
+                this.courseExamId = planCourse.getCourseExam().getId();
+            }
+        }
+    }
+
     public GridEntityDTO(PlanSpec planSpec){
         if(planSpec!=null) {
             this.id = planSpec.getId();
@@ -68,6 +100,19 @@ public class GridEntityDTO {
             }
             this.period[0] = planSpec.getPeriod();
             this.credits[0] = planSpec.getCredits();
+        }
+    }
+    public GridEntityDTO(PlanSpec planSpec,boolean isMono){
+        if(planSpec!=null) {
+            this.id = planSpec.getId();
+            this.courseClass = planSpec.getLocator().getCourseClass().getTitle();
+            if (planSpec.getLocator().getCourseType() != null) {
+                this.title = planSpec.getLocator().getCourseType().getTitle();
+            }
+            if(isMono) {
+                this.period[0] = planSpec.getPeriod();
+                this.credits[0] = planSpec.getCredits();
+            }
         }
     }
     public GridEntityDTO(Imp imp){
@@ -86,10 +131,26 @@ public class GridEntityDTO {
                 this.courseExam=imp.getCourseExam().getTitle();
                 this.courseExamId=imp.getCourseExam().getId();
             }
-            if(imp.getTeacher()!=null) {
-                this.teacherName = imp.getTeacher().getName();
-                this.teacherCode = imp.getTeacher().getIdCode();
-                this.teacherProTitle = imp.getTeacher().getProTitle();
+            if(imp.getTeachers()!=null) {
+                List<Integer> tmpId = new ArrayList();
+                int i=0;
+                for(Teacher teacher : imp.getTeachers()){
+                    tmpId.add(teacher.getId());
+                    if(teacherCode.isEmpty()){
+                        teacherCode = teacher.getIdCode();
+                        teacherName = teacher.getName();
+                        teacherProTitle = teacher.getProTitle();
+                        //teacherProTitle = teacher.getProTitle();
+                    }else {
+                        teacherCode += ',' + teacher.getIdCode();
+                        teacherName += ',' + teacher.getName();
+                        teacherProTitle += ',' + teacher.getProTitle();
+                    }
+                }
+                for(Integer id : tmpId){
+                    teacherIds[i] = id;
+                    i++;
+                }
             }
             if(imp.getCourseComment()!=null && !imp.getCourseComment().isEmpty()){
                 this.comment = imp.getCourseComment();
@@ -233,14 +294,6 @@ public class GridEntityDTO {
         this.code = code;
     }
 
-
-    public int getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(final int teacherId) {
-        this.teacherId = teacherId;
-    }
 
     public String getComment() {
         return comment;
