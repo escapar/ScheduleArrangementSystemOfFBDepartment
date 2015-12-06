@@ -2,6 +2,7 @@ package cn.edu.shnu.fb.infrastructure.persistence;
 
 import java.util.List;
 
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import cn.edu.shnu.fb.domain.common.CourseClass;
@@ -17,7 +18,6 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  * Created by bytenoob on 15/11/2.
  */
 public interface ImpDao extends PagingAndSortingRepository<Imp,Integer> {
-    //List<Imp> findByTeacher(Teacher teacher);
     List<Imp> findByLocator(Locator locator);
     Imp findByLocatorAndCourse(Locator locator , Course course);
     List<Imp> findByLocatorMajor(Major major);
@@ -25,6 +25,4 @@ public interface ImpDao extends PagingAndSortingRepository<Imp,Integer> {
     List<Imp> findByLocatorMajorAndLocatorTermAndLocatorCourseClass(Major major,Term term,CourseClass courseClass); // 只单独拿限选的时候用
     List<Imp> findByLocatorMajorAndLocatorCourseClass(Major major,CourseClass courseClass);
     List<Imp> findByLocatorMajorAndLocatorCourseClassAndLocatorCourseType(Major major,CourseClass courseClass,CourseType courseType); // 只单独拿限选的时候用
-
-
 }

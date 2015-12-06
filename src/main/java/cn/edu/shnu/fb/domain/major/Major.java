@@ -20,11 +20,11 @@ public class Major implements Serializable {
 
 	private int grade;
 
-	@Lob
-	private String title;
+	private int population;
 
-	@Column(name="major_code")
-	private String majorCode;
+	@ManyToOne
+	@JoinColumn(name="major_type_id")
+	private MajorType majorType;
 
 	public Major() {
 	}
@@ -45,20 +45,19 @@ public class Major implements Serializable {
 		this.grade = grade;
 	}
 
-	public String getTitle() {
-		return this.title;
+	public MajorType getMajorType() {
+		return this.majorType;
 	}
 
-	public void setTitle(String title) {
-		this.title = title;
+	public void setMajorType(MajorType majorType) {
+		this.majorType = majorType;
 	}
 
-	public String getMajorCode() {
-		return this.majorCode;
+	public int getPopulation() {
+		return population;
 	}
 
-	public void setMajorCode(String majorCode) {
-		this.majorCode = majorCode;
+	public void setPopulation(final int population) {
+		this.population = population;
 	}
-
 }

@@ -10,8 +10,8 @@ import cn.edu.shnu.fb.domain.major.Major;
  * Created by bytenoob on 15/11/1.
  */
 public interface MajorDao extends PagingAndSortingRepository<Major,Integer> {
-    Major findMajorByGradeAndTitleLike(Integer grade,String title); // 注意不要在浏览器链接里出现中文
-    Major findMajorByGradeAndTitle(Integer grade,String title); // 注意不要在浏览器链接里出现中文
+    Major findMajorByGradeAndMajorTypeTitleLike(Integer grade,String title); // 注意不要在浏览器链接里出现中文
+    Major findMajorByGradeAndMajorTypeTitle(Integer grade,String title); // 注意不要在浏览器链接里出现中文
 
     List<Major> findByGrade(Integer grade);
 }

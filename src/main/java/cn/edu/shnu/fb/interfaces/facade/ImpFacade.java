@@ -2,8 +2,19 @@ package cn.edu.shnu.fb.interfaces.facade;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import javax.xml.bind.annotation.XmlElementWrapper;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +35,8 @@ import cn.edu.shnu.fb.interfaces.dto.CreditsGridDTO;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
+import cn.edu.shnu.fb.interfaces.dto.MergeDTO;
+import cn.edu.shnu.fb.interfaces.dto.MergePageEntityDTO;
 
 /**
  * Created by bytenoob on 15/11/2.
@@ -53,6 +66,15 @@ public class ImpFacade {
         return ImpAssembler.toGridEntityDTO(imps);
     }
 
+    @Bean
+    public MappingJackson2HttpMessageConverter JsonMapping(){
+        MappingJackson2HttpMessageConverter jsonConverter=new MappingJackson2HttpMessageConverter();
+        ObjectMapper objectMapper=new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        jsonConverter.setObjectMapper(objectMapper);
+        return jsonConverter;
+    }
 
     @ResponseBody
     @RequestMapping(value="/i/l/{locatorId}/grid",method=RequestMethod.GET) // e for electable
@@ -153,4 +175,21 @@ public class ImpFacade {
         return CGDTOs;
     }
 
+    @ResponseBody
+    @RequestMapping(value="/i/merge",method=RequestMethod.POST  , consumes = "application/json")
+    public void mergeImps(@RequestBody List<MergeDTO> mergeDTO){
+        impRepository.mergeImps(mergeDTO);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/merge/undo",method=RequestMethod.POST)
+    public void undoMergeImps(@RequestBody List<Integer> impIds){
+        impRepository.undoMergeImps(impIds);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/merge/dto",method=RequestMethod.GET)
+    public List<MergePageEntityDTO> getImpsForMerge(){
+        return impRepository.getImpsForMerge();
+    }
 }

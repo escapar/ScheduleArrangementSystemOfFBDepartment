@@ -141,8 +141,8 @@ public class ExcelService {
         //获取majorCode
         String majorCode="";
         Major major=majorDao.findOne(majorId);
-        majorCode=major.getMajorCode();
-        String majorTitle=major.getTitle();
+        majorCode=major.getMajorType().getMajorCode();
+        String majorTitle=major.getMajorType().getTitle();
 
         //获取impComment
         String impComment="";
@@ -175,8 +175,8 @@ public class ExcelService {
         String title;
         Major major=majorDao.findOne(majorId);
         grade=major.getGrade();
-        code=major.getMajorCode();
-        title=major.getTitle();
+        code=major.getMajorType().getMajorCode();
+        title=major.getMajorType().getTitle();
 
         SumCreditsDTO sumCreditsdto=getSumCreditsDTOByMajor(majorId);
         ImpCreditsDTO res=new ImpCreditsDTO(new CreditsHeaderDTO(grade,code,title),fircredto,seccredto,thicredto,foucredto,fivcredto,sixcredto,sevcredto,eigcredto,sumCreditsdto);

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.major.MajorRepository;
+import cn.edu.shnu.fb.domain.major.MajorType;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 
@@ -29,10 +30,23 @@ public class MajorFacade {
     }
 
     @ResponseBody
+    @RequestMapping(value="/mt/init",method= RequestMethod.POST)
+    public void initMajorType (@RequestBody MajorType majorType){
+        majorRepository.updateMajorType(majorType);
+    }
+
+    @ResponseBody
     @RequestMapping(value="/m",method= RequestMethod.GET)
     public Iterable<Major> getAllMajors (){
         return majorRepository.findAll();
     }
+
+    @ResponseBody
+    @RequestMapping(value="/mt",method= RequestMethod.GET)
+    public Iterable<MajorType> getAllMajorTypes (){
+        return majorRepository.findAllMajorType();
+    }
+
 
     @ResponseBody
     @RequestMapping(value="/m/{majorId}/delete",method= RequestMethod.GET)

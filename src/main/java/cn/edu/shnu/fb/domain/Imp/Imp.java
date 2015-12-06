@@ -17,14 +17,19 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.common.Locator;
+import cn.edu.shnu.fb.domain.mergedClass.MergedClass;
 import cn.edu.shnu.fb.domain.user.Teacher;
 
 /**
@@ -32,6 +37,7 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  *
  */
 @Entity
+
 @Table(name="imp")
 public class Imp implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -51,6 +57,16 @@ public class Imp implements Serializable {
 	@Column(name="period_hours")
 	private float periodHours;
 
+	@Lob
+	@Column(name="merge_comment")
+	private String mergeComment;
+
+	@Lob
+	@Column(name="reject_comment")
+	private String rejectComment;
+
+	private int rejected;
+
 	@Column(name="course_comment")
 	private String courseComment;
 
@@ -62,7 +78,7 @@ public class Imp implements Serializable {
 		this.teachers = teachers;
 	}
 
-	@OneToMany(cascade = CascadeType.ALL , fetch = FetchType.EAGER)
+	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(
 			name = "imp_teacher",
 			joinColumns = @JoinColumn(name = "imp_id"),
@@ -80,6 +96,11 @@ public class Imp implements Serializable {
 	@ManyToOne(cascade= CascadeType.MERGE)
 	@JoinColumn(name="course_exam_id")
 	private CourseExam courseExam;
+
+	//bi-directional many-to-one association to MergedClass
+	@ManyToOne(cascade= CascadeType.ALL)
+	@JoinColumn(name="merged_class_id")
+	private MergedClass mergedClass;
 
 	/*public void addTeacher(Teacher t){
 		teachers.add(t);
@@ -161,6 +182,35 @@ public class Imp implements Serializable {
 	public void setLocator(Locator locator) {
 		this.locator = locator;
 	}
+	public int getRejected() {
+		return this.rejected;
+	}
 
+	public void setRejected(int rejected) {
+		this.rejected = rejected;
+	}
 
+	public MergedClass getMergedClass() {
+		return this.mergedClass;
+	}
+
+	public void setMergedClass(MergedClass mergedClass) {
+		this.mergedClass = mergedClass;
+	}
+
+	public String getMergeComment() {
+		return mergeComment;
+	}
+
+	public void setMergeComment(final String mergeComment) {
+		this.mergeComment = mergeComment;
+	}
+
+	public String getRejectComment() {
+		return rejectComment;
+	}
+
+	public void setRejectComment(final String rejectComment) {
+		this.rejectComment = rejectComment;
+	}
 }

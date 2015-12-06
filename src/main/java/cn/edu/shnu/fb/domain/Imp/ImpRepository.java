@@ -1,7 +1,10 @@
 package cn.edu.shnu.fb.domain.Imp;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import org.h2.table.Plan;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.common.LocatorRepository;
 import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.major.Major;
+import cn.edu.shnu.fb.domain.mergedClass.MergedClass;
 import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
@@ -26,9 +30,12 @@ import cn.edu.shnu.fb.infrastructure.persistence.ImpCommentDao;
 import cn.edu.shnu.fb.infrastructure.persistence.ImpDao;
 import cn.edu.shnu.fb.infrastructure.persistence.LocatorDao;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
+import cn.edu.shnu.fb.infrastructure.persistence.MergedClassDao;
 import cn.edu.shnu.fb.infrastructure.persistence.PlanCourseDao;
 import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
+import cn.edu.shnu.fb.interfaces.dto.MergeDTO;
+import cn.edu.shnu.fb.interfaces.dto.MergePageEntityDTO;
 
 /**
  * Created by bytenoob on 15/11/7.
@@ -43,6 +50,9 @@ public class ImpRepository {
 
     @Autowired
     ImpDao impDao;
+
+    @Autowired
+    MergedClassDao mergedClassDao;
 
     @Autowired
     MajorDao majorDao;
@@ -256,6 +266,58 @@ public class ImpRepository {
     public Imp getImpById(Integer id){
         return impDao.findOne(id);
     }
+    public List<MergePageEntityDTO> getImpsForMerge(){
+        List<MergePageEntityDTO> res = new ArrayList<>();
+        Iterable<Teacher> teachers = teacherDao.findAll();
+        for(Teacher T : teachers){
+            Iterable<Imp> impT = T.getImps();
+            List<Imp> imps = new ArrayList<>();
+            for(Iterator<Imp> it=impT.iterator();it.hasNext();){
+                Imp imp = it.next();
+                if(imp.getMergedClass() == null) {
+                    imps.add(imp); // ignore all merged Imps
+                }
+            }
+            if(imps.size() <= 1){
+                continue;
+            }
+            Map<Integer , List<Imp>> groupedImp = groupByCategoryType(imps);
+            MergePageEntityDTO mpeDTO = new MergePageEntityDTO(T);
+            for(Map.Entry<Integer, List<Imp>> entry: groupedImp.entrySet()) {
+                List<Imp> impGrouped = entry.getValue();
+                if(impGrouped.size()>1) {
+                    mpeDTO.addImpList(impGrouped);
+                }
+            }
+            if(mpeDTO.getImps().size()>0) {
+                res.add(mpeDTO);
+            }
+        }
+        return res;
+    }
+    public void undoMergeImps(List<Integer> impIds){ // designed to remove a set of imps who have safe mergedClass ( in same course )
+        MergedClass mergedClass;
+        mergedClass = impDao.findOne(impIds.get(0)).getMergedClass();
+        for(Integer id : impIds){
+            Imp imp = impDao.findOne(id);
+            imp.setMergeComment("");
+            imp.setMergedClass(null);
+            impDao.save(imp);
+        }
+        mergedClassDao.delete(mergedClass);
+    }
+    public Map<Integer, List<Imp>> groupByCategoryType(List<Imp> list) {
+        Map<Integer, List<Imp>> map = new TreeMap<Integer, List<Imp>>();
+        for (Imp o : list) {
+            List<Imp> group = map.get(o.getCourse().getId());
+            if (group == null) {
+                group = new ArrayList();
+                map.put(o.getCourse().getId(), group);
+            }
+            group.add(o);
+        }
+        return map;
+    }
 
     public Imp getImpByCourseIdAndLocatorId(Integer courseId,Integer locatorId){
         Locator locator = locatorDao.findOne(locatorId);
@@ -274,5 +336,32 @@ public class ImpRepository {
             term = termRepository.findTermByGradeAndTermCount(major.getGrade(),termCount);
         }
         return impCommentDao.findByTermAndMajor(term,major);
+    }
+
+    public void mergeImps(List<MergeDTO> mergeDTOs){
+        if(mergeDTOs.size()>1){
+            MergedClass mergedClass = new MergedClass();
+            int i=0;
+            float periodWeeks = 0;
+            float periodHours = 0;
+            float periodSum = -1;
+            List<Imp> imps = new ArrayList<>();
+            for(MergeDTO dto : mergeDTOs){
+                Imp imp = impDao.findOne(dto.getImpId());
+                imp.setMergeComment(dto.getMergeComment());
+                imps.add(imp);
+                if (imp.getPeriodWeeks() * imp.getPeriodHours() > periodSum ){
+                    periodSum = imp.getPeriodWeeks() * imp.getPeriodHours();
+                    periodWeeks = imp.getPeriodWeeks();
+                    periodHours = imp.getPeriodHours();
+                }
+                mergedClass.setPeriodHours(periodHours);
+                mergedClass.setPeriodWeeks(periodWeeks);
+            }
+            for(Imp imp : imps){
+                imp.setMergedClass(mergedClass);
+                impDao.save(imp);
+            }
+        }
     }
 }
