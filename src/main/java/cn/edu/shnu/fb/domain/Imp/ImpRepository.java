@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.h2.command.dml.Merge;
 import org.h2.table.Plan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -266,6 +267,24 @@ public class ImpRepository {
     public Imp getImpById(Integer id){
         return impDao.findOne(id);
     }
+
+    public List<MergePageEntityDTO> getMergedImps(Boolean refuseVerified){
+        List<MergePageEntityDTO> res = new ArrayList<>();
+        List<Imp> imps = new ArrayList<>();
+        Iterable<MergedClass> mcs = mergedClassDao.findAll();
+        for(MergedClass mc : mcs){
+            if(refuseVerified && mc.getStatus() == 1)
+                continue;
+            imps = mc.getImps();
+            if(imps.size() > 1 ) {
+                MergePageEntityDTO mpeDTO = new MergePageEntityDTO(imps.get(0).getTeachers());
+                mpeDTO.addImpList(imps);
+                res.add(mpeDTO);
+            }
+        }
+        return res;
+    }
+
     public List<MergePageEntityDTO> getImpsForMerge(){
         List<MergePageEntityDTO> res = new ArrayList<>();
         Iterable<Teacher> teachers = teacherDao.findAll();
@@ -295,11 +314,13 @@ public class ImpRepository {
         }
         return res;
     }
-    public void undoMergeImps(List<Integer> impIds){ // designed to remove a set of imps who have safe mergedClass ( in same course )
-        MergedClass mergedClass;
-        mergedClass = impDao.findOne(impIds.get(0)).getMergedClass();
-        for(Integer id : impIds){
-            Imp imp = impDao.findOne(id);
+    public void undoMergeImps(List<MergeDTO> mergeDTOs){ // designed to remove a set of imps who have safe mergedClass ( in same course )
+        MergedClass mergedClass = null;
+        for(MergeDTO mergeDTO : mergeDTOs){
+            Imp imp = impDao.findOne(mergeDTO.getImpId());
+            if(mergedClass == null){
+                mergedClass = imp.getMergedClass();
+            }
             imp.setMergeComment("");
             imp.setMergedClass(null);
             impDao.save(imp);
@@ -358,9 +379,51 @@ public class ImpRepository {
                 mergedClass.setPeriodHours(periodHours);
                 mergedClass.setPeriodWeeks(periodWeeks);
             }
+            mergedClass = mergedClassDao.save(mergedClass);
             for(Imp imp : imps){
                 imp.setMergedClass(mergedClass);
                 impDao.save(imp);
+            }
+        }
+    }
+
+    public List<MergePageEntityDTO> getImpsMergeForVerify(){
+        List<MergePageEntityDTO> res = new ArrayList<>();
+        Iterable<Teacher> teachers = teacherDao.findAll();
+        for(Teacher T : teachers){
+            Iterable<Imp> impT = T.getImps();
+            List<Imp> imps = new ArrayList<>();
+            for(Iterator<Imp> it=impT.iterator();it.hasNext();){
+                Imp imp = it.next();
+                if(imp.getMergedClass() != null && imp.getMergedClass().getStatus()!=1) {
+                    imps.add(imp); // ignore all merged Imps
+                }
+            }
+            if(imps.size() <= 1){
+                continue;
+            }
+            Map<Integer , List<Imp>> groupedImp = groupByCategoryType(imps);
+            MergePageEntityDTO mpeDTO = new MergePageEntityDTO(T);
+            for(Map.Entry<Integer, List<Imp>> entry: groupedImp.entrySet()) {
+                List<Imp> impGrouped = entry.getValue();
+                if(impGrouped.size()>1) {
+                    mpeDTO.addImpList(impGrouped);
+                }
+            }
+            if(mpeDTO.getImps().size()>0) {
+                res.add(mpeDTO);
+            }
+        }
+        return res;
+    }
+
+    public void verifyMergeImps(List<MergeDTO> mergeDTOs){
+        if(mergeDTOs.size()>1){
+            for(MergeDTO dto : mergeDTOs){
+                Imp imp = impDao.findOne(dto.getImpId());
+                MergedClass mc = imp.getMergedClass();
+                mc.setStatus(1);
+                mergedClassDao.save(mc);
             }
         }
     }

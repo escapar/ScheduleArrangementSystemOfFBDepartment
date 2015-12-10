@@ -22,7 +22,7 @@ public class JwtFilter extends GenericFilterBean {
             final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) req;
 
-        final String authHeader = request.getHeader("Authorization");
+/*        final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("FBSA ")) {
             throw new ServletException("Missing or invalid Authorization header.");
         }
@@ -36,7 +36,7 @@ public class JwtFilter extends GenericFilterBean {
         }
         catch (final SignatureException e) {
             throw new ServletException("Invalid token.");
-        }
+        }*/
 
         chain.doFilter(req, res);
     }

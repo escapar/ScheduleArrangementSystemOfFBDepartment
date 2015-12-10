@@ -26,6 +26,8 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import org.springframework.data.annotation.Transient;
+
 import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.common.Locator;
@@ -66,6 +68,10 @@ public class Imp implements Serializable {
 	private String rejectComment;
 
 	private int rejected;
+
+	@Transient
+	private float salary;
+
 
 	@Column(name="course_comment")
 	private String courseComment;
@@ -212,5 +218,13 @@ public class Imp implements Serializable {
 
 	public void setRejectComment(final String rejectComment) {
 		this.rejectComment = rejectComment;
+	}
+
+	public float getSalary() {
+		return salary;
+	}
+
+	public void setSalary(final float salary) {
+		this.salary = salary;
 	}
 }

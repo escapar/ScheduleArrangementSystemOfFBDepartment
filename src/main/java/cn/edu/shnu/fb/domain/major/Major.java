@@ -22,6 +22,8 @@ public class Major implements Serializable {
 
 	private int population;
 
+	private int suburb;
+
 	@ManyToOne
 	@JoinColumn(name="major_type_id")
 	private MajorType majorType;
@@ -59,5 +61,13 @@ public class Major implements Serializable {
 
 	public void setPopulation(final int population) {
 		this.population = population;
+	}
+
+	public int getSuburb() {
+		return suburb;
+	}
+
+	public void setSuburb(final int suburb) {
+		this.suburb = suburb;
 	}
 }

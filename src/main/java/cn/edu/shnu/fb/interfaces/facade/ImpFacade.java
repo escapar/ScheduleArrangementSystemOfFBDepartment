@@ -182,14 +182,32 @@ public class ImpFacade {
     }
 
     @ResponseBody
+    @RequestMapping(value="/i/merged",method=RequestMethod.GET)
+    public List<MergePageEntityDTO> mergedImps(){
+        return impRepository.getMergedImps(false);
+    }
+
+    @ResponseBody
     @RequestMapping(value="/i/merge/undo",method=RequestMethod.POST)
-    public void undoMergeImps(@RequestBody List<Integer> impIds){
-        impRepository.undoMergeImps(impIds);
+    public void undoMergeImps(@RequestBody List<MergeDTO> mergeDTO){
+        impRepository.undoMergeImps(mergeDTO);
     }
 
     @ResponseBody
     @RequestMapping(value="/i/merge/dto",method=RequestMethod.GET)
     public List<MergePageEntityDTO> getImpsForMerge(){
         return impRepository.getImpsForMerge();
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/merge/dto/verify",method=RequestMethod.GET)
+    public List<MergePageEntityDTO> getImpsMergeForVerify(){
+        return impRepository.getMergedImps(true);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/merge/verify",method=RequestMethod.POST , consumes = "application/json")
+    public void verifyMerge(@RequestBody List<MergeDTO> mergeDTO){
+        impRepository.verifyMergeImps(mergeDTO);
     }
 }

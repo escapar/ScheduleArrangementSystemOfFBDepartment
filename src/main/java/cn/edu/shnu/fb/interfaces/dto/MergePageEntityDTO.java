@@ -19,6 +19,17 @@ public class MergePageEntityDTO {
         teacherName = teacher.getName();
     }
 
+    public MergePageEntityDTO(List<Teacher> teachers) {
+        for(Teacher teacher : teachers) {
+            teacherId = teacher.getId();
+            if(teacherName == null){
+                teacherName = teacher.getName();
+            }else {
+                teacherName += ','+teacher.getName();
+            }
+        }
+    }
+
     public Integer getTeacherId() {
         return teacherId;
     }

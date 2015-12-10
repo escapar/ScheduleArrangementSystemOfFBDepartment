@@ -45,6 +45,8 @@ public class Teacher implements Serializable {
 
 	private String department;
 
+	private String type;
+
 	@Lob
 	@Column(name="id_code")
 	private String idCode;
@@ -114,5 +116,13 @@ public class Teacher implements Serializable {
 
 	public void setImps(final List<Imp> imps) {
 		this.imps = imps;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(final String type) {
+		this.type = type;
 	}
 }

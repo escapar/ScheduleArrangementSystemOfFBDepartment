@@ -2,8 +2,12 @@ package cn.edu.shnu.fb;
 
 import java.util.Locale;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.ResourceBundleViewResolver;
 
@@ -20,4 +24,5 @@ public class MvcConfig extends WebMvcConfigurerAdapter {
         resolver.setBasename("views");
         return resolver;
     }
+
 }

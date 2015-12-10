@@ -92,4 +92,8 @@ public class MergedClass implements Serializable {
     public void setPeriodHours(final float periodHours) {
         this.periodHours = periodHours;
     }
+
+    public void loadImps(){
+        imps.size();
+    }
 }
