@@ -29,6 +29,10 @@ public class MajorFacade {
         majorRepository.initMajor(major);
     }
 
+    @RequestMapping(value="/m/modify",method= RequestMethod.POST)
+    public void modifyMajor (@RequestBody Major major) {
+        majorRepository.modifyMajor(major);
+    }
     @ResponseBody
     @RequestMapping(value="/mt/init",method= RequestMethod.POST)
     public void initMajorType (@RequestBody MajorType majorType){

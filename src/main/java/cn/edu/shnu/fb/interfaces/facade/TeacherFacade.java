@@ -31,8 +31,12 @@ public class TeacherFacade {
     TeacherDao teacherDao;
     @ResponseBody
     @RequestMapping(value="/t",method= RequestMethod.POST)
-    public List<Teacher> planSpecGridEntityByMajorAndTerm(@RequestBody String name){
+    public List<Teacher> getByName(@RequestBody String name){
         return teacherDao.findByNameLike(name+"%");
     }
 
+    @RequestMapping(value="/t/all",method= RequestMethod.GET)
+    public Iterable<Teacher> getAll(){
+        return teacherDao.findByNameIsNotNullOrderByIdCode();
+    }
 }

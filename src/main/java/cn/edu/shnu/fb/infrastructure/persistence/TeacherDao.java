@@ -11,5 +11,6 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  */
 public interface TeacherDao extends PagingAndSortingRepository<Teacher,Integer> {
     List<Teacher> findByNameLike(String name);
+    List<Teacher> findByNameIsNotNullOrderByIdCode();
 
 }

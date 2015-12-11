@@ -27,15 +27,18 @@ public class MajorRepository {
     MajorTypeDao majorTypeDao;
     public void initMajor(Major major){
         try{
-        majorDao.save(major);
+            Major majorP = majorDao.save(major);
+            locatorRepository.initLocators(majorP.getId());
         }catch (Exception e){
-
-        }finally {
             Major majorP = majorDao.findMajorByGradeAndMajorTypeTitle(major.getGrade(), major.getMajorType().getTitle());
             locatorRepository.initLocators(majorP.getId());
         }
-
     }
+
+    public void modifyMajor(Major major){
+        majorDao.save(major);
+    }
+
 
     public Iterable<Major> findAll(){
         return majorDao.findAll();
