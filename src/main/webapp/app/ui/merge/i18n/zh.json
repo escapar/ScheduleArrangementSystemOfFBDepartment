@@ -1,0 +1,11 @@
+{
+    "MENU": {
+        "UI": {
+            "MERGE-MODULE": "合并",
+            "MERGE-PAGE": "合并班级请求",
+            "MERGE-VALIDATION-PAGE": "合并班级审核",
+            "MERGE-INSPECT-PAGE": "合并班级撤销"
+
+        }
+    }
+}
