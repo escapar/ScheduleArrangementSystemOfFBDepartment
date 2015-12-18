@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <appender name="FILEOUT" class="ch.qos.logback.core.FileAppender">
+        <file>src/main/webapp/log.txt</file>
+        <append>true</append>
+
+        <encoder>
+            <Pattern>
+                %d{yyyy-MM-dd HH:mm:ss} %X{name} %msg%n
+            </Pattern>
+        </encoder>
+    </appender>
+
+    <logger name="cn.edu.shnu.fb.application" level="TRACE">
+        <appender-ref ref="FILEOUT" />
+    </logger>
+
+</configuration>

@@ -31,7 +31,6 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class AuthFacade {
     @Autowired
     UserRepository userRepository;
-    private final Map<String, List<String>> userDb = new HashMap<>();
 
     public AuthFacade() {
 
@@ -46,11 +45,15 @@ public class AuthFacade {
     public LoginResponse login(@RequestBody final UserLogin login)
             throws ServletException {
         User user = userRepository.authOK(login.username , login.password);
+        String name = login.username;
         if (login.username == null || user == null) {
             throw new ServletException("Invalid login");
         }
+        if(user.getTeacher()!=null){
+            name = user.getTeacher().getName();
+        }
         return new LoginResponse(Jwts.builder().setSubject(login.username)
-                .claim("roles", user.getRole()).setIssuedAt(new Date())
+                .claim("roles", user.getRole()).claim("name", name).setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, "FBSASECRET!").compact());
     }
 

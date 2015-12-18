@@ -106,6 +106,26 @@ public class ImpRepository {
         }
     }
 
+    public List<Imp> getImpByTeacherIdAndTermId(Integer teacherId,Integer termId){
+        Teacher teacher = teacherDao.findOne(teacherId);
+        Term term = termRepository.findTermById(termId);
+        List<Imp> res = new ArrayList<>();
+        if(teacher!=null){
+            List<Imp> tmp = teacher.getImps();
+            for(Imp i : tmp){
+                if(i.getLocator().getTerm().getId() == termId){
+                    res.add(i);
+                }
+            }
+        }
+        return res;
+    }
+    public List<Imp> findByMergedClass(MergedClass mc){
+        return impDao.findByMergedClass(mc);
+    }
+    public List<Imp> findBySalary(Salary salary){
+        return impDao.findBySalary(salary);
+    }
     public List<Imp> getElectableImpByMajorIdAndTermCount(int majorId,int termCount){
         if(termCount>0 && termCount<9) {
             List<Imp> resList = new ArrayList<>();
@@ -285,7 +305,7 @@ public class ImpRepository {
         return res;
     }
 
-    public List<MergePageEntityDTO> getImpsForMerge(){
+    public List<MergePageEntityDTO> getImpsForMerge(Term term){
         List<MergePageEntityDTO> res = new ArrayList<>();
         Iterable<Teacher> teachers = teacherDao.findAll();
         for(Teacher T : teachers){
@@ -293,7 +313,7 @@ public class ImpRepository {
             List<Imp> imps = new ArrayList<>();
             for(Iterator<Imp> it=impT.iterator();it.hasNext();){
                 Imp imp = it.next();
-                if(imp.getMergedClass() == null) {
+                if(imp.getMergedClass() == null && imp.getLocator().getTerm().getId() == term.getId()) {
                     imps.add(imp); // ignore all merged Imps
                 }
             }
@@ -339,6 +359,8 @@ public class ImpRepository {
         }
         return map;
     }
+
+
 
     public Imp getImpByCourseIdAndLocatorId(Integer courseId,Integer locatorId){
         Locator locator = locatorDao.findOne(locatorId);
@@ -426,5 +448,9 @@ public class ImpRepository {
                 mergedClassDao.save(mc);
             }
         }
+    }
+
+    public List<Imp> getRejectedImps(Term term){
+        return impDao.findBySalaryRejectedAndLocatorTerm(1,term);
     }
 }

@@ -1,8 +1,13 @@
 package cn.edu.shnu.fb.domain.Imp;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 
+import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
 
 /**
@@ -11,14 +16,14 @@ import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
 @Entity
 
 public class Salary {
-    @Id
    // @JoinColumn(name="imp_id")
-    private int impId;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
     private String courseType;
     private String majorType;
     private String departmentType;
-    private String teacher;
-    private String proTitle;
+    private int teacherId;
     private float salaryPerHour;
     private String majorTitle;
     private String courseTitle;
@@ -38,17 +43,22 @@ public class Salary {
     private int monthlySalaryRound;
     private String comment;
 
+    @Lob
+    @Column(name="reject_comment")
+    private String rejectComment;
+
+    private int rejected;
     Salary(){
 
     }
 
-    public Salary(Integer impId , SalaryDTO salaryDTO){
-        this.impId = impId;
+    public Salary(SalaryDTO salaryDTO){
+        id = salaryDTO.getId();
         courseType = salaryDTO.getCourseType();
+        majorTitle = salaryDTO.getMajorTitle();
         majorType = salaryDTO.getMajorType();
         departmentType = salaryDTO.getDepartmentType();
-        teacher = salaryDTO.getTeacher();
-        proTitle = salaryDTO.getProTitle();
+        teacherId = salaryDTO.getTeacherId();
         salaryPerHour = salaryDTO.getSalaryPerHour();
         majorType = salaryDTO.getMajorType();
         courseTitle = salaryDTO.getCourseTitle();
@@ -66,7 +76,11 @@ public class Salary {
         termSalary = salaryDTO.getTermSalary();
         monthlySalary = salaryDTO.getMonthlySalary();
         monthlySalaryRound = salaryDTO.getMonthlySalaryRound();
+        rejected = salaryDTO.getRejected();
+        rejectComment = salaryDTO.getRejectComment();
         comment = salaryDTO.getComment();
+        rejected = salaryDTO.getRejected();
+        rejectComment = salaryDTO.getRejectComment();
     }
     public String getCourseType() {
         return courseType;
@@ -90,22 +104,6 @@ public class Salary {
 
     public void setDepartmentType(final String departmentType) {
         this.departmentType = departmentType;
-    }
-
-    public String getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(final String teacher) {
-        this.teacher = teacher;
-    }
-
-    public String getProTitle() {
-        return proTitle;
-    }
-
-    public void setProTitle(final String proTitle) {
-        this.proTitle = proTitle;
     }
 
     public float getSalaryPerHour() {
@@ -216,7 +214,8 @@ public class Salary {
         return basicSalaryDeduction;
     }
 
-    public void setBasicSalaryDeduction(final float basicSalaryDeduction) {
+    public void setBasicSalaryDeduction(float basicSalaryDeduction) {
+        if(basicSalaryDeduction>0) basicSalaryDeduction=-basicSalaryDeduction;
         this.basicSalaryDeduction = basicSalaryDeduction;
     }
 
@@ -252,7 +251,35 @@ public class Salary {
         this.comment = comment;
     }
 
-    public int getImpId() {
-        return impId;
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(final int teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public String getRejectComment() {
+        return rejectComment;
+    }
+
+    public void setRejectComment(final String rejectComment) {
+        this.rejectComment = rejectComment;
+    }
+
+    public int getRejected() {
+        return rejected;
+    }
+
+    public void setRejected(final int rejected) {
+        this.rejected = rejected;
     }
 }

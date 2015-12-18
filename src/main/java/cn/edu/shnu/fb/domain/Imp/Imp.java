@@ -24,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import org.springframework.data.annotation.Transient;
@@ -63,18 +64,12 @@ public class Imp implements Serializable {
 	@Column(name="merge_comment")
 	private String mergeComment;
 
-	@Lob
-	@Column(name="reject_comment")
-	private String rejectComment;
-
-	private int rejected;
-
-	@Transient
-	private float salary;
-
-
 	@Column(name="course_comment")
 	private String courseComment;
+
+	@JsonIgnore
+	@ManyToOne
+	private Salary salary;
 
 	public List<Teacher> getTeachers() {
 		return teachers;
@@ -188,14 +183,6 @@ public class Imp implements Serializable {
 	public void setLocator(Locator locator) {
 		this.locator = locator;
 	}
-	public int getRejected() {
-		return this.rejected;
-	}
-
-	public void setRejected(int rejected) {
-		this.rejected = rejected;
-	}
-
 	public MergedClass getMergedClass() {
 		return this.mergedClass;
 	}
@@ -204,27 +191,19 @@ public class Imp implements Serializable {
 		this.mergedClass = mergedClass;
 	}
 
-	public String getMergeComment() {
-		return mergeComment;
-	}
-
 	public void setMergeComment(final String mergeComment) {
 		this.mergeComment = mergeComment;
 	}
 
-	public String getRejectComment() {
-		return rejectComment;
+	public String getMergeComment() {
+		return mergeComment;
 	}
 
-	public void setRejectComment(final String rejectComment) {
-		this.rejectComment = rejectComment;
-	}
-
-	public float getSalary() {
+	public Salary getSalary() {
 		return salary;
 	}
 
-	public void setSalary(final float salary) {
+	public void setSalary(final Salary salary) {
 		this.salary = salary;
 	}
 }

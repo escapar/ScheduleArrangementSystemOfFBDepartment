@@ -16,7 +16,7 @@ public class UserRepository {
     public User authOK(String username , String password){
         User user = userDao.findByUsernameEquals(username);
         if(user == null) return null;
-        else if(user.getPassword().equals(password)){
+        else if(((user.getPassword()==null) && password.equals(user.getUsername())) || ((user.getPassword()!=null) && user.getPassword().equals(password))){
             return user;
         }else{
             return null;

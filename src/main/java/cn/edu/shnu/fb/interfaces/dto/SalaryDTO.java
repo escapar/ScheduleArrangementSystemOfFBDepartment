@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.edu.shnu.fb.domain.Imp.Imp;
+import cn.edu.shnu.fb.domain.Imp.Salary;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.user.Teacher;
 
@@ -34,7 +35,16 @@ public class SalaryDTO {
     private float monthlySalary;
     private int monthlySalaryRound;
     private String comment;
+    private int rejected;
+    private String rejectComment;
 
+    private int teacherId;
+    private int id;
+    private List<Integer> impId = new ArrayList<>();
+
+    public SalaryDTO(){
+
+    }
     public SalaryDTO(List<Imp> imps , String majorType , Teacher teacher , int state){
         //state 0 for normal , 1 for underGraduate , 2 for others(more to add..)
         //imps should be in same course , could be a set of merged course
@@ -43,24 +53,31 @@ public class SalaryDTO {
         departmentType = teacher.getDepartment();
         this.teacher = teacher.getName();
         proTitle = teacher.getProTitle();
+        teacherId = teacher.getId();
         salaryPerHour = getProTitleSalary(teacher);
         courseTitle = imps.get(0).getCourse().getTitle();
         periodHours = 0;
         majorPopulation = 0;
         for(Imp imp : imps) {
-            majorTitle = appendString(majorTitle, imp.getLocator().getMajor().getMajorType().getTitle());
+            impId.add(imp.getId());
+            if(imp.getSalary()!=null) {
+                id = imp.getSalary().getId();
+            }
+            majorTitle = appendString(majorTitle, Integer.toString(imp.getLocator().getMajor().getGrade()) + '级' + imp.getLocator().getMajor().getMajorType().getTitle());
             majorPopulation += imp.getLocator().getMajor().getPopulation();
             periodHours += imp.getPeriodHours();
+            /*if(imp.getRejected()==1){
+                rejected = true;
+            }*/
         }
         if(imps.get(0).getLocator().getMajor().getSuburb() == 1 ) {
             location = "奉贤";
-            suburbAllowance = getSuburbAllowance(imps.get(0));
+            suburbAllowance = getSuburbAllowance(periodHours);
         }else{
             location = "徐汇";
             suburbAllowance = 0;
         }
         populationFactor = getPopulationFactor(majorPopulation);
-        basicSalaryDeduction = getSalaryDeduction(teacher);
         if(salaryPerHour != 0) {
             underGraduateFactor = (float) (state == 1 ? 0.2 : 0);
             overseaStudentFactor = 0;
@@ -68,13 +85,90 @@ public class SalaryDTO {
             foreignLanguageFactor = 0;
             firstCourseAllowance = 0;
             float finalFactor = 1 + underGraduateFactor + overseaStudentFactor + hanFactor + foreignLanguageFactor + populationFactor;
-            termSalary = ((salaryPerHour) * (periodHours - basicSalaryDeduction)) * finalFactor + suburbAllowance;
+            termSalary = ((salaryPerHour) * (periodHours)) * finalFactor + suburbAllowance;
             monthlySalary = termSalary / 5;
-            monthlySalaryRound = (int) monthlySalary;
+            monthlySalaryRound = getRound(monthlySalary);
         }
         comment = "";
     }
 
+    public SalaryDTO(Teacher teacher){
+        //state 0 for normal , 1 for underGraduate , 2 for others(more to add..) , 99 for adjustment , 98 for sum up
+        //imps should be in same course , could be a set of merged course
+        teacherId = teacher.getId();
+        this.teacher = teacher.getName();
+        proTitle = teacher.getProTitle();
+        courseType = "扣基本课时费";
+        departmentType = teacher.getDepartment();
+        this.teacher = teacher.getName();
+        proTitle = teacher.getProTitle();
+        salaryPerHour = getProTitleSalary(teacher);
+
+        basicSalaryDeduction = - (getSalaryDeduction(teacher) * salaryPerHour);
+        if(basicSalaryDeduction>0) basicSalaryDeduction=-basicSalaryDeduction;
+        if(salaryPerHour != 0) {
+            termSalary = (basicSalaryDeduction);
+            monthlySalary = termSalary / 5;
+            monthlySalaryRound = getRound(monthlySalary);
+        }
+        comment = "";
+    }
+
+    public SalaryDTO(List<SalaryDTO> dtos){
+        //state 0 for normal , 1 for underGraduate , 2 for others(more to add..) , 99 for adjustment , 98 for sum up
+        //imps should be in same course , could be a set of merged course
+        courseType = "总计";
+        departmentType = dtos.get(0).getDepartmentType();
+        teacher = dtos.get(0).getTeacher();
+        proTitle = dtos.get(0).getProTitle();
+        salaryPerHour = dtos.get(0).getSalaryPerHour();
+        for(SalaryDTO dto : dtos) {
+            termSalary += dto.getTermSalary();
+        }
+        monthlySalary = termSalary / 5;
+        monthlySalaryRound = getRound(monthlySalary);
+        comment = "";
+    }
+
+    public SalaryDTO(Salary salaryDTO , Teacher teacher , Integer impId){
+        this.impId.add(impId);
+        id = salaryDTO.getId();
+        proTitle = teacher.getProTitle();
+        rejectComment = salaryDTO.getRejectComment();
+        rejected = salaryDTO.getRejected();
+        this.teacher = teacher.getName();
+        majorTitle = salaryDTO.getMajorTitle();
+        courseType = salaryDTO.getCourseType();
+        majorType = salaryDTO.getMajorType();
+        departmentType = salaryDTO.getDepartmentType();
+        teacherId = salaryDTO.getTeacherId();
+        salaryPerHour = salaryDTO.getSalaryPerHour();
+        majorType = salaryDTO.getMajorType();
+        courseTitle = salaryDTO.getCourseTitle();
+        periodHours = salaryDTO.getPeriodHours();
+        majorPopulation = salaryDTO.getMajorPopulation();
+        location = salaryDTO.getLocation();
+        underGraduateFactor = salaryDTO.getUnderGraduateFactor();
+        overseaStudentFactor = salaryDTO.getOverseaStudentFactor();
+        hanFactor = salaryDTO.getHanFactor();
+        foreignLanguageFactor = salaryDTO.getForeignLanguageFactor();
+        populationFactor = salaryDTO.getPopulationFactor();
+        suburbAllowance = salaryDTO.getSuburbAllowance();
+        firstCourseAllowance = salaryDTO.getFirstCourseAllowance();
+        basicSalaryDeduction = salaryDTO.getBasicSalaryDeduction();
+        termSalary = salaryDTO.getTermSalary();
+        monthlySalary = salaryDTO.getMonthlySalary();
+        monthlySalaryRound = salaryDTO.getMonthlySalaryRound();
+        comment = salaryDTO.getComment();
+    }
+
+    int getRound(float value){
+        if(value - (int)value >= 0.5){
+            return (int)value+1;
+        }else{
+            return (int)value;
+        }
+    }
     float getSalaryDeduction(Teacher teacher){
         String type = teacher.getType();
         float period = 0;
@@ -105,9 +199,7 @@ public class SalaryDTO {
             return (float)(res > 0.8 ? 0.8 : res);
         }
     }
-    float getSuburbAllowance(Imp imp){
-        if(imp.getLocator().getMajor().getSuburb() != 0) {
-            float hours = imp.getPeriodHours();
+    float getSuburbAllowance(float hours){
             float allowance = hours * 20;
             if (allowance < 50)
                 return 50;
@@ -115,14 +207,12 @@ public class SalaryDTO {
                 return 120;
             else
                 return allowance;
-        }
-        return 0;
     }
 
     float getProTitleSalary(Teacher teacher){
         String title = teacher.getProTitle();
         if(title == null || title.isEmpty()){
-            return 0;
+            return 1;
         }else if(title.contains("初级")){
             return 85;
         }else if(title.contains("中级")){
@@ -284,7 +374,8 @@ public class SalaryDTO {
         return basicSalaryDeduction;
     }
 
-    public void setBasicSalaryDeduction(final float basicSalaryDeduction) {
+    public void setBasicSalaryDeduction(float basicSalaryDeduction) {
+        if(basicSalaryDeduction >0) basicSalaryDeduction=-basicSalaryDeduction;
         this.basicSalaryDeduction = basicSalaryDeduction;
     }
 
@@ -302,10 +393,11 @@ public class SalaryDTO {
 
     public void setMonthlySalary(final float monthlySalary) {
         this.monthlySalary = monthlySalary;
+        this.setMonthlySalaryRound(getRound(monthlySalary));
     }
 
     public int getMonthlySalaryRound() {
-        return monthlySalaryRound;
+        return getRound(monthlySalary);
     }
 
     public void setMonthlySalaryRound(final int monthlySalaryRound) {
@@ -318,5 +410,41 @@ public class SalaryDTO {
 
     public void setComment(final String comment) {
         this.comment = comment;
+    }
+
+    public int getRejected() {
+        return rejected;
+    }
+
+    public void setRejected(final int rejected) {
+        this.rejected = rejected;
+    }
+
+    public int getTeacherId() {
+        return teacherId;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public List<Integer> getImpId() {
+        return impId;
+    }
+
+    public void setImpId(final List<Integer> impId) {
+        this.impId = impId;
+    }
+
+    public void setId(final int id) {
+        this.id = id;
+    }
+
+    public String getRejectComment() {
+        return rejectComment;
+    }
+
+    public void setRejectComment(final String rejectComment) {
+        this.rejectComment = rejectComment;
     }
 }

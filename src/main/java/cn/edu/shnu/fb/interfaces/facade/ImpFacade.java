@@ -28,6 +28,8 @@ import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.Imp.Imp;
+import cn.edu.shnu.fb.domain.term.Term;
+import cn.edu.shnu.fb.domain.term.TermRepository;
 import cn.edu.shnu.fb.infrastructure.persistence.LocatorDao;
 import cn.edu.shnu.fb.interfaces.assembler.ImpAssembler;
 import cn.edu.shnu.fb.interfaces.dto.CreditsDTO;
@@ -52,6 +54,8 @@ public class ImpFacade {
     CautionService cautionService;
     @Autowired
     ExcelService excelService;
+    @Autowired
+    TermRepository termRepository;
     @ResponseBody
     @RequestMapping(value="/i/o/m/{majorId}/t/{termCount}/grid",method=RequestMethod.GET) // o for oblige
     public List<GridEntityDTO> getImpOblige(@PathVariable Integer majorId,@PathVariable Integer termCount){
@@ -194,9 +198,10 @@ public class ImpFacade {
     }
 
     @ResponseBody
-    @RequestMapping(value="/i/merge/dto",method=RequestMethod.GET)
-    public List<MergePageEntityDTO> getImpsForMerge(){
-        return impRepository.getImpsForMerge();
+    @RequestMapping(value="/i/term/{termYear}/{termPart}/merge/dto",method=RequestMethod.GET)
+    public List<MergePageEntityDTO> getImpsForMerge(@PathVariable Integer termYear,@PathVariable Integer termPart){
+        Term term = termRepository.findTermByYearAndPart(termYear , termPart);
+        return impRepository.getImpsForMerge(term);
     }
 
     @ResponseBody

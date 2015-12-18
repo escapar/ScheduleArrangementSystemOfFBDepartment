@@ -19,7 +19,12 @@ public class TermRepository {
         int termPart = termCount % 2 == 0 ? 2 : 1;
         return termDao.findTermByYearAndPart(termYear,termPart);
     }
-
+    public Term findTermById(int termId){
+        return termDao.findOne(termId);
+    }
+    public Term findTermByYearAndPart(int termYear , int termPart){
+        return termDao.findTermByYearAndPart(termYear,termPart);
+    }
     public void save(Term term){
         termDao.save(term);
     }

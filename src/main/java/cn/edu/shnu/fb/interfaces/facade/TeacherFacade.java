@@ -35,6 +35,12 @@ public class TeacherFacade {
         return teacherDao.findByNameLike(name+"%");
     }
 
+    @ResponseBody
+    @RequestMapping(value="/t/update",method= RequestMethod.POST)
+    public void updateTeacher(@RequestBody Teacher teacher){
+        teacherDao.save(teacher);
+    }
+
     @RequestMapping(value="/t/all",method= RequestMethod.GET)
     public Iterable<Teacher> getAll(){
         return teacherDao.findByNameIsNotNullOrderByIdCode();

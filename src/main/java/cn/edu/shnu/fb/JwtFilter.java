@@ -8,6 +8,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.log4j.MDC;
 import org.springframework.web.filter.GenericFilterBean;
 
 import io.jsonwebtoken.Claims;
@@ -22,7 +23,7 @@ public class JwtFilter extends GenericFilterBean {
             final FilterChain chain) throws IOException, ServletException {
         final HttpServletRequest request = (HttpServletRequest) req;
 
-/*        final String authHeader = request.getHeader("Authorization");
+        final String authHeader = request.getHeader("Authorization");
         if (authHeader == null || !authHeader.startsWith("FBSA ")) {
             throw new ServletException("Missing or invalid Authorization header.");
         }
@@ -33,10 +34,11 @@ public class JwtFilter extends GenericFilterBean {
             final Claims claims = Jwts.parser().setSigningKey("FBSASECRET!")
                     .parseClaimsJws(token).getBody();
             request.setAttribute("claims", claims);
+            MDC.put("name",claims.get("name"));
         }
         catch (final SignatureException e) {
             throw new ServletException("Invalid token.");
-        }*/
+        }
 
         chain.doFilter(req, res);
     }

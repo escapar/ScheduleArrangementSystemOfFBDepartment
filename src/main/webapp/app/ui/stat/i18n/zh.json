@@ -2,7 +2,10 @@
     "MENU": {
         "UI": {
             "STAT-MODULE": "统计",
-            "STAT-PAGE": "工作量"
+            "STAT-PAGE": "教师工作量查看",
+            "STAT-CORRECTION-PAGE": "被拒课程调整",
+            "STAT-MODIFY-PAGE": "财务界面",
+            "STAT-LOG": "日志"
         }
     }
 }
