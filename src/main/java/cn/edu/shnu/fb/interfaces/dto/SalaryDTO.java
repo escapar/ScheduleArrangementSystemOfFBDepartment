@@ -37,11 +37,10 @@ public class SalaryDTO {
     private String comment;
     private int rejected;
     private String rejectComment;
+    private String split;
 
     private int teacherId;
     private int id;
-    private String teacherIdCode;
-
     private List<Integer> impId = new ArrayList<>();
 
     public SalaryDTO(){
@@ -56,7 +55,6 @@ public class SalaryDTO {
         this.teacher = teacher.getName();
         proTitle = teacher.getProTitle();
         teacherId = teacher.getId();
-        teacherIdCode = teacher.getIdCode();
         salaryPerHour = getProTitleSalary(teacher);
         courseTitle = imps.get(0).getCourse().getTitle();
         periodHours = 0;
@@ -92,7 +90,9 @@ public class SalaryDTO {
             monthlySalary = termSalary / 5;
             monthlySalaryRound = getRound(monthlySalary);
         }
-        comment = "";
+        comment = " ";
+        split=" ";
+
     }
 
     public SalaryDTO(Teacher teacher){
@@ -101,7 +101,6 @@ public class SalaryDTO {
         teacherId = teacher.getId();
         this.teacher = teacher.getName();
         proTitle = teacher.getProTitle();
-        teacherIdCode = teacher.getIdCode();
         courseType = "扣基本课时费";
         departmentType = teacher.getDepartment();
         this.teacher = teacher.getName();
@@ -115,7 +114,13 @@ public class SalaryDTO {
             monthlySalary = termSalary / 5;
             monthlySalaryRound = getRound(monthlySalary);
         }
-        comment = "";
+        comment = " ";
+        split=" ";
+        majorType="";
+        majorTitle="";
+        courseTitle="";
+        location="";
+
     }
 
     public SalaryDTO(List<SalaryDTO> dtos){
@@ -124,7 +129,6 @@ public class SalaryDTO {
         courseType = "总计";
         departmentType = dtos.get(0).getDepartmentType();
         teacher = dtos.get(0).getTeacher();
-        teacherIdCode = dtos.get(0).getTeacherIdCode();
         proTitle = dtos.get(0).getProTitle();
         salaryPerHour = dtos.get(0).getSalaryPerHour();
         for(SalaryDTO dto : dtos) {
@@ -132,14 +136,18 @@ public class SalaryDTO {
         }
         monthlySalary = termSalary / 5;
         monthlySalaryRound = getRound(monthlySalary);
-        comment = "";
+        comment = " ";
+        split=" ";
+        majorType="";
+        majorTitle="";
+        courseTitle="";
+        location="";
     }
 
     public SalaryDTO(Salary salaryDTO , Teacher teacher , Integer impId){
         this.impId.add(impId);
         id = salaryDTO.getId();
         proTitle = teacher.getProTitle();
-        teacherIdCode = teacher.getIdCode();
         rejectComment = salaryDTO.getRejectComment();
         rejected = salaryDTO.getRejected();
         this.teacher = teacher.getName();
@@ -166,6 +174,9 @@ public class SalaryDTO {
         monthlySalary = salaryDTO.getMonthlySalary();
         monthlySalaryRound = salaryDTO.getMonthlySalaryRound();
         comment = salaryDTO.getComment();
+        split=salaryDTO.getSplit();
+
+
     }
 
     int getRound(float value){
@@ -454,11 +465,15 @@ public class SalaryDTO {
         this.rejectComment = rejectComment;
     }
 
-    public String getTeacherIdCode() {
-        return teacherIdCode;
+    public void setTeacherId(int teacherId) {
+        this.teacherId = teacherId;
     }
 
-    public void setTeacherIdCode(final String teacherIdCode) {
-        this.teacherIdCode = teacherIdCode;
+    public String getSplit() {
+        return split;
+    }
+
+    public void setSplit(String split) {
+        this.split = split;
     }
 }

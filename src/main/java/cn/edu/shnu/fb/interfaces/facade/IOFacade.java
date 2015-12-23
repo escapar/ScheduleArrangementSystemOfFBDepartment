@@ -4,11 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.edu.shnu.fb.domain.Imp.Salary;
-import cn.edu.shnu.fb.domain.Imp.SalaryRepository;
+import cn.edu.shnu.fb.application.LogService;
 import cn.edu.shnu.fb.domain.term.Term;
-import cn.edu.shnu.fb.domain.term.TermRepository;
-import cn.edu.shnu.fb.interfaces.dto.ImpCreditsDTO;
+import cn.edu.shnu.fb.interfaces.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -21,14 +19,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 import cn.edu.shnu.fb.application.ExcelService;
 import cn.edu.shnu.fb.application.WordService;
+import cn.edu.shnu.fb.application.SalaryService;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
+import cn.edu.shnu.fb.domain.term.TermRepository;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.plan.PlanRepository;
-import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
-import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
-import cn.edu.shnu.fb.interfaces.dto.ImpExcelHeaderDTO;
-import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
-import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
 
 /**
  * Created by bytenoob on 15/11/10.
@@ -43,6 +38,13 @@ public class IOFacade {
     WordService wordService;
 
     @Autowired
+    SalaryService salaryService;
+
+    @Autowired
+    LogService logService;
+
+
+    @Autowired
     PlanRepository planRepository;
 
     @Autowired
@@ -50,9 +52,6 @@ public class IOFacade {
 
     @Autowired
     TermRepository termRepository;
-
-    @Autowired
-    SalaryRepository salaryRepository;
     @RequestMapping(value = "/o/i/m/{majorId}/t/{termCount}", method = RequestMethod.GET)
     public ModelAndView downloadImpExcel(@PathVariable Integer majorId,@PathVariable Integer termCount) {
         //impRepository.persistImpComment(majorId,termCount,comment);
@@ -69,21 +68,9 @@ public class IOFacade {
         }catch (Exception e){
 
         }
+         logService.action("培养方案","导入");
     }
 
-    @RequestMapping(value = "/s/term/{termYear}/{termPart}", method = RequestMethod.POST)
-    public void importAdditionalCourseExcel(@RequestParam(value = "file[0]", required = false) MultipartFile file, @PathVariable Integer termYear,@PathVariable Integer termPart) {
-        Term term = termRepository.findTermByYearAndPart(termYear, termPart);
-        try {
-
-            List<SalaryDTO> salaryDTOs = excelService.generateSalaryDTOs(file.getInputStream());
-            for(SalaryDTO s : salaryDTOs) {
-                salaryRepository.persistSalary(s);
-            }
-        }catch (Exception e){
-
-        }
-    }
 
     @RequestMapping(value = "/i/p/e/m/{majorId}", method = RequestMethod.POST)
     public void importElectableCourse(@RequestParam(value = "file[0]", required = false) MultipartFile file, @PathVariable Integer majorId) {
@@ -94,11 +81,18 @@ public class IOFacade {
         }catch (Exception e){
             System.out.println(e.toString());
         }
+        logService.action("选修课","导入");
     }
     @RequestMapping(value = "/o/i/m/{majorId}", method = RequestMethod.GET)
     public ModelAndView downloadImpCreditsExcel(@PathVariable Integer majorId) {
         ImpCreditsDTO res = excelService.generateImpCreditsDTO(majorId);
         return new ModelAndView("impCreditsExcelView", "impCreditsDTOS", res);
+    }
+    @RequestMapping(value = "/o/s/term/{termYear}/{termPart}/s", method = RequestMethod.GET)
+    public ModelAndView downloadsalaryExcel(@PathVariable Integer termYear , @PathVariable Integer termPart) {
+        Term term = termRepository.findTermByYearAndPart(termYear , termPart);
+        SalaryExcelDTO res=salaryService.getSalaryExcelDTO(term.getId());
+        return new ModelAndView("salaryExcelView", "SalaryExcelDTOS", res);
     }
 }
 

@@ -30,7 +30,6 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.util.StringUtils;
 
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
-import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
 
 /**
  *
@@ -137,7 +136,8 @@ public class ExcelTemplate {
         }
     }
 
-    public void createRowByHashMap(ArrayList<Map> props , String keyword) {
+    public void createRowByHashMap(ArrayList<Map> props , String keyword,int type) {
+        //type=0 not merge ,1 merge
         int index = findRowByKeyword(keyword);
         int tmpIndex = index+1;
         int mergeFlag = -1;
@@ -156,6 +156,10 @@ public class ExcelTemplate {
                         for (Iterator iter = propsets.iterator(); iter.hasNext();) {
                             Map.Entry entry = (Map.Entry) iter.next();
                             value = value.replaceAll(keyword+entry.getKey(),subZeroAndDot(String.valueOf(entry.getValue())));
+                            if(type==0){
+                                if(value.equals("0")) value=value.replaceAll("0","");
+                                if(value.equals("-0")) value=value.replaceAll("-0","");
+                            }
                         }
                         if(mergeFlag >= 0) {
                             sheet.addMergedRegion(new CellRangeAddress(tmpIndex, tmpIndex, mergeFlag, i-1));
@@ -169,13 +173,16 @@ public class ExcelTemplate {
                     // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
                     cell.setCellValue(value);
                 }
-                if(i >= cellLength ){
+            if(type==1){
+                if(i >= cellLength){
                     sheet.addMergedRegion(new CellRangeAddress(tmpIndex, tmpIndex, mergeFlag, i-1));
                 }
+            }
+
                 mergeFlag = -1;
                 tmpIndex++;
         }
-        sheet.shiftRows(index + 1 , 100 , -1);
+        sheet.shiftRows(index + 1 , 10000 , -1);
 
     }
 
@@ -186,6 +193,7 @@ public class ExcelTemplate {
         }
         return s;
     }
+
     public void createRow(int index){
         //如果在当前插入数据的区域有后续行，则将其后面的行往后移动
         if(lastLowNum > initrow && index > 0){
@@ -542,11 +550,12 @@ public class ExcelTemplate {
          */
         public void copyCell(HSSFCell srcCell, HSSFCell distCell,
                 boolean copyValueFlag) {
-
-       /*     HSSFCellStyle newstyle=workbook.createCellStyle();
-            copyCellStyle(srcCell.getCellStyle(), newstyle);*/
-            //样式
-            distCell.setCellStyle(srcCell.getCellStyle());
+//            HSSFCellStyle newstyle=workbook.createCellStyle();
+//            copyCellStyle(srcCell.getCellStyle(), newstyle);
+//            //样式
+//            distCell.setCellStyle(newstyle);
+            HSSFCellStyle newstyle=srcCell.getCellStyle();
+            distCell.setCellStyle(newstyle);
             //评论
             if (srcCell.getCellComment() != null) {
                 distCell.setCellComment(srcCell.getCellComment());
@@ -575,65 +584,6 @@ public class ExcelTemplate {
                 }
             }
         }
-
-    public List<SalaryDTO> getSalaryDTOs(Integer type){
-        List<SalaryDTO> res = new ArrayList<>();
-        if(type == 0) { //文修副修
-            for (Integer s = 0; s < workbook.getNumberOfSheets(); s++) {
-                sheet = workbook.getSheetAt(s);
-                if (sheet != null) {
-                    String location = getLocation(sheet.getSheetName());
-                    if (location != null) {
-                        res.addAll(getSalaryDTOsFromSingleWorkbook(location));
-                    }
-                }
-            }
-        }else if(type == 1){ // 研究生专科
-
-        }
-        return res;
-    }
-
-    private String getLocation(String name){
-        if (name.contains("奉贤"))
-             return "奉贤";
-        if (name.contains("徐汇"))
-             return "徐汇";
-        return null;
-    }
-    public List<SalaryDTO> getSalaryDTOsFromSingleWorkbook(String location){
-        List<SalaryDTO> res = new ArrayList<>();
-        int allRows = sheet.getPhysicalNumberOfRows();
-        int cellNum ;
-        for(int j=4;j < allRows;j++){
-            HSSFRow row = sheet.getRow(j);
-            cellNum = row.getPhysicalNumberOfCells();
-            SalaryDTO sDTO = new SalaryDTO();
-                for (int i = 0; i < cellNum; i++) {
-                        HSSFCell cell = row.getCell(i);
-                        if (i == 2) {
-                            String title = getCellValue(cell);
-                            sDTO.setCourseTitle(title);
-                        } else if (i == 4) {
-                            sDTO.setMajorPopulation(Integer.valueOf(getCellValue(cell)));
-                        } else if (i == 5) {
-                            String idCode = getCellValue(cell);
-                            sDTO.setTeacherIdCode(idCode);
-                        } else if (i == 6) {
-                            sDTO.setTeacher(getCellValue(cell));
-                        } else if (i == 7) {
-                            sDTO.setProTitle(getCellValue(cell));
-                        } else if (i == 9) {
-                            sDTO.setComment(getCellValue(cell));
-                        }
-                }
-                sDTO.setLocation(location);
-
-                res.add(sDTO);
-            }
-        return res;
-    }
-
 
     public List<GridEntityDTO> getCourseGridEntity(){
         List<GridEntityDTO> geDTOs = new ArrayList<>();

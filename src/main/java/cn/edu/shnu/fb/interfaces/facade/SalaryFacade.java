@@ -51,7 +51,6 @@ public class SalaryFacade {
     @RequestMapping(value="/s/term/{termYear}/{termPart}/s",method= RequestMethod.GET)
     public List<SalaryDTO> exportExcel(@PathVariable Integer termYear , @PathVariable Integer termPart){
         Term term = termRepository.findTermByYearAndPart(termYear , termPart);
-        logService.action("工作量", "查看数据");
         return salaryService.buildAllDTOS(term.getId());
     }
 
@@ -59,12 +58,14 @@ public class SalaryFacade {
     @RequestMapping(value="/s/update",method= RequestMethod.POST, consumes = "application/json")
     public void saveTeacherSalaries(@RequestBody FrontEndSalaryDTO fesDTO){
         salaryService.saveSalariesFromDTOS(fesDTO.getSalaryDTOs(),fesDTO.getSalaryAdjustments());
+        logService.action("工作量","更新");
     }
 
     @ResponseBody
     @RequestMapping(value="/i/{impId}/t/{teacherId}/reject",method= RequestMethod.POST, consumes = "application/json")
     public void rejectTeacherSalaries(@PathVariable Integer impId , @PathVariable Integer teacherId, @RequestBody String comment){
         salaryService.rejectSalary(impId, teacherId, comment);
+        logService.action("课程","拒绝");
     }
 
     @ResponseBody

@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.xml.bind.annotation.XmlElementWrapper;
 
+import cn.edu.shnu.fb.application.LogService;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -54,6 +55,8 @@ public class ImpFacade {
     CautionService cautionService;
     @Autowired
     ExcelService excelService;
+    @Autowired
+    LogService logService;
     @Autowired
     TermRepository termRepository;
     @ResponseBody
@@ -116,12 +119,14 @@ public class ImpFacade {
                 impRepository.deleteImp(dImp);
             }
         }
+        logService.action("执行计划","调整");
     }
 
     @ResponseBody
     @RequestMapping(value="/i/update/t/{termCount}",method=RequestMethod.POST , consumes = "application/json")  //  l for location
     public void updateImp(@RequestBody GridEntityDTO grid , @PathVariable Integer termCount){
          impRepository.updateImpByGridEntity(grid,termCount);
+         logService.action("执行计划", "调整");
     }
 
     @ResponseBody
@@ -134,6 +139,7 @@ public class ImpFacade {
     @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}/update",method=RequestMethod.POST , consumes = "application/json")
     public void updateImpComment(@PathVariable Integer majorId , @PathVariable Integer termCount,@RequestBody String comment){
         impRepository.persistImpComment(majorId, termCount, comment);
+        logService.action("执行计划调整说明","更新");
     }
 
     @ResponseBody
@@ -183,6 +189,7 @@ public class ImpFacade {
     @RequestMapping(value="/i/merge",method=RequestMethod.POST  , consumes = "application/json")
     public void mergeImps(@RequestBody List<MergeDTO> mergeDTO){
         impRepository.mergeImps(mergeDTO);
+        logService.action("合并班级","请求");
     }
 
     @ResponseBody
@@ -195,6 +202,7 @@ public class ImpFacade {
     @RequestMapping(value="/i/merge/undo",method=RequestMethod.POST)
     public void undoMergeImps(@RequestBody List<MergeDTO> mergeDTO){
         impRepository.undoMergeImps(mergeDTO);
+        logService.action("合并班级","撤销");
     }
 
     @ResponseBody
@@ -214,5 +222,6 @@ public class ImpFacade {
     @RequestMapping(value="/i/merge/verify",method=RequestMethod.POST , consumes = "application/json")
     public void verifyMerge(@RequestBody List<MergeDTO> mergeDTO){
         impRepository.verifyMergeImps(mergeDTO);
+        logService.action("合并班级","审核");
     }
 }

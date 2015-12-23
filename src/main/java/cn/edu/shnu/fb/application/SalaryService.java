@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.edu.shnu.fb.interfaces.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,6 @@ import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
 import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
-import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
-import cn.edu.shnu.fb.interfaces.dto.RejectedCourseInspectionDTO;
-import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
 
 /**
  * Created by bytenoob on 15/12/7.
@@ -61,8 +59,6 @@ public class SalaryService {
         }
         return RCIs;
     }
-
-
     public List<SalaryDTO> buildDTOSForTeacher(Integer teacherId ,Integer termId){
         Teacher teacher = teacherDao.findOne(teacherId);
         List<SalaryDTO> salaryDTOs = new ArrayList<>();
@@ -173,8 +169,15 @@ public class SalaryService {
         Iterable<Teacher> teachers = teacherDao.findAll();
         List<SalaryDTO> salaryDTOs = new ArrayList<>();
         for(Teacher teacher : teachers){
-            salaryDTOs.addAll(buildDTOSForTeacher(teacher.getId(),termId));
+            salaryDTOs.addAll(buildDTOSForTeacher(teacher.getId(), termId));
         }
         return salaryDTOs;
+    }
+
+    public SalaryExcelDTO getSalaryExcelDTO(Integer termId){
+
+        List<SalaryDTO> salaryDTOs=buildAllDTOS(termId);
+        Term term=termRepository.findTermById(termId);
+        return new SalaryExcelDTO(salaryDTOs,new SalaryHeaderDTO(term.getYear(),term.getPart()));
     }
 }
