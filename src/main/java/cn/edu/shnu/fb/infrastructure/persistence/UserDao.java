@@ -12,4 +12,8 @@ import cn.edu.shnu.fb.domain.user.User;
  */
 public interface UserDao extends PagingAndSortingRepository<User,Integer> {
     User findByUsernameEquals(String name);
+    User findByTeacher(Teacher teacher);
+
+    List<User> findByRole(Integer role);
+
 }

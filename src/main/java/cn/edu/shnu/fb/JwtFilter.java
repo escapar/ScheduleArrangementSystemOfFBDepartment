@@ -1,6 +1,9 @@
 package cn.edu.shnu.fb;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -9,14 +12,17 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.MDC;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.filter.GenericFilterBean;
 
+import cn.edu.shnu.fb.domain.common.SystemInfo;
+import cn.edu.shnu.fb.infrastructure.persistence.SystemInfoDao;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureException;
 
 public class JwtFilter extends GenericFilterBean {
-
     @Override
     public void doFilter(final ServletRequest req,
             final ServletResponse res,
@@ -34,9 +40,20 @@ public class JwtFilter extends GenericFilterBean {
             final Claims claims = Jwts.parser().setSigningKey("FBSASECRET!")
                     .parseClaimsJws(token).getBody();
             request.setAttribute("claims", claims);
-            MDC.put("name",claims.get("name"));
+            Long date = (long)claims.get("deadline");
+            Date d = new Date(date);
+
+
+            Calendar c = Calendar.getInstance();
+            if(d == null){
+                throw new ServletException("Invalid header");
+            }
+            if(d.before(c.getTime())){
+                throw new ServletException("System Closed");
+            }
+            MDC.put("name", claims.get("name"));
         }
-        catch (final SignatureException e) {
+        catch (final Exception e) {
             throw new ServletException("Invalid token.");
         }
 

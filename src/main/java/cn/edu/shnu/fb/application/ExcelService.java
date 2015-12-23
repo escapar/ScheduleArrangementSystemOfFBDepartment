@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import cn.edu.shnu.fb.domain.Imp.Imp;
 import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
+import cn.edu.shnu.fb.domain.Imp.Salary;
 import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.common.LocatorRepository;
@@ -62,6 +63,10 @@ public class ExcelService {
     @Autowired
     ImpCommentDao impCommentDao;
 
+    public List<SalaryDTO> generateSalaryDTOs(InputStream is){
+        ExcelTemplate template = ExcelTemplate.newInstance(is);
+        return template.getSalaryDTOs(0);
+    }
 
     public ImpExcelDTO generateImpExcelDTO(int  majorId, int termCount){
 

@@ -9,6 +9,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
@@ -24,6 +26,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.context.annotation.Lazy;
 
 import cn.edu.shnu.fb.domain.Imp.Imp;
+import cn.edu.shnu.fb.domain.major.MajorType;
 
 /**
  * The persistent class for the teacher database table.
@@ -34,7 +37,9 @@ import cn.edu.shnu.fb.domain.Imp.Imp;
 public class Teacher implements Serializable {
 	private static final long serialVersionUID = 1L;
 	@Id
-	private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+
+    private int id;
 
 	@Lob
 	private String name;
@@ -55,6 +60,20 @@ public class Teacher implements Serializable {
 	@ManyToMany(mappedBy="teachers")
 	@JsonIgnore
 	private List<Imp> imps;
+
+	//bi-directional many-to-many association to MajorType
+	@ManyToMany
+	@JoinTable(
+			name="teacher_major_type"
+			, joinColumns={
+			@JoinColumn(name="teacher_id")
+	}
+			, inverseJoinColumns={
+			@JoinColumn(name="major_type_id")
+	}
+	)
+	private List<MajorType> majorTypes;
+
 	public Teacher() {
 	}
 
@@ -125,4 +144,13 @@ public class Teacher implements Serializable {
 	public void setType(final String type) {
 		this.type = type;
 	}
+
+	public List<MajorType> getMajorTypes() {
+		return this.majorTypes;
+	}
+
+	public void setMajorTypes(List<MajorType> majorTypes) {
+		this.majorTypes = majorTypes;
+	}
+
 }

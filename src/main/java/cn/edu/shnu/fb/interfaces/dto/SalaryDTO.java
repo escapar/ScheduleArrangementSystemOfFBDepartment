@@ -40,6 +40,8 @@ public class SalaryDTO {
 
     private int teacherId;
     private int id;
+    private String teacherIdCode;
+
     private List<Integer> impId = new ArrayList<>();
 
     public SalaryDTO(){
@@ -54,6 +56,7 @@ public class SalaryDTO {
         this.teacher = teacher.getName();
         proTitle = teacher.getProTitle();
         teacherId = teacher.getId();
+        teacherIdCode = teacher.getIdCode();
         salaryPerHour = getProTitleSalary(teacher);
         courseTitle = imps.get(0).getCourse().getTitle();
         periodHours = 0;
@@ -98,6 +101,7 @@ public class SalaryDTO {
         teacherId = teacher.getId();
         this.teacher = teacher.getName();
         proTitle = teacher.getProTitle();
+        teacherIdCode = teacher.getIdCode();
         courseType = "扣基本课时费";
         departmentType = teacher.getDepartment();
         this.teacher = teacher.getName();
@@ -120,6 +124,7 @@ public class SalaryDTO {
         courseType = "总计";
         departmentType = dtos.get(0).getDepartmentType();
         teacher = dtos.get(0).getTeacher();
+        teacherIdCode = dtos.get(0).getTeacherIdCode();
         proTitle = dtos.get(0).getProTitle();
         salaryPerHour = dtos.get(0).getSalaryPerHour();
         for(SalaryDTO dto : dtos) {
@@ -134,6 +139,7 @@ public class SalaryDTO {
         this.impId.add(impId);
         id = salaryDTO.getId();
         proTitle = teacher.getProTitle();
+        teacherIdCode = teacher.getIdCode();
         rejectComment = salaryDTO.getRejectComment();
         rejected = salaryDTO.getRejected();
         this.teacher = teacher.getName();
@@ -446,5 +452,13 @@ public class SalaryDTO {
 
     public void setRejectComment(final String rejectComment) {
         this.rejectComment = rejectComment;
+    }
+
+    public String getTeacherIdCode() {
+        return teacherIdCode;
+    }
+
+    public void setTeacherIdCode(final String teacherIdCode) {
+        this.teacherIdCode = teacherIdCode;
     }
 }
