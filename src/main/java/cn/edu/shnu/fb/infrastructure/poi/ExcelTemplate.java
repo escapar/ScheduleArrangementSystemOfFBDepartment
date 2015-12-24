@@ -30,6 +30,7 @@ import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.util.StringUtils;
 
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
+import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
 
 /**
  *
@@ -70,8 +71,8 @@ public class ExcelTemplate {
         try {
             ExcelTemplate excel = new ExcelTemplate();
             POIFSFileSystem fs = new POIFSFileSystem(is);
-        //            Thread.currentThread().getContextClassLoader()
-         //                   ExcelTemplate.class.getResourceAsStream(templates));
+            //            Thread.currentThread().getContextClassLoader()
+            //                   ExcelTemplate.class.getResourceAsStream(templates));
 
             excel.workbook = new HSSFWorkbook(fs);
             excel.sheet = excel.workbook.getSheetAt(0);
@@ -109,7 +110,19 @@ public class ExcelTemplate {
         cellStyle = null;
     }
 
+    public List<SalaryDTO> getSalaryDTOs(int type){
+        List<SalaryDTO> res = new ArrayList<>();
 
+        if(type == 0){ //文修
+
+        }else if(type == 1){ //副修
+
+        }else if(type == 2){ //研究生
+            //在这里填代码
+        }
+
+        return res;
+    }
     public void replaceParameters(Map props){
         if(props == null || props.size() == 0){
             return;
@@ -146,43 +159,43 @@ public class ExcelTemplate {
             Set propsets = map.entrySet();
             createRow(tmpIndex);
             copyRow(src,currentRow,true);
-                int cellLength = currentRow.getLastCellNum();
-                int i;
-                for(i=0; i<cellLength; i++){
-                    HSSFCell cell = (HSSFCell)currentRow.getCell((short)i);
-                    if(cell == null) continue;
-                    String value = poiGetCellStringValue(cell);
-                    if(value != null && value.indexOf(keyword) != -1){
-                        for (Iterator iter = propsets.iterator(); iter.hasNext();) {
-                            Map.Entry entry = (Map.Entry) iter.next();
-                            value = value.replaceAll(keyword+entry.getKey(),subZeroAndDot(String.valueOf(entry.getValue())));
-                            if(type==0){
-                                if(value.equals("0")) value=value.replaceAll("0","");
-                                if(value.equals("-0")) value=value.replaceAll("-0","");
-                            }
-                        }
-                        if(mergeFlag >= 0) {
-                            sheet.addMergedRegion(new CellRangeAddress(tmpIndex, tmpIndex, mergeFlag, i-1));
-                            mergeFlag = -1;
-                        }
-                    }else if (value == null || StringUtils.isEmpty(value)){
-                        if(mergeFlag < 0) { // not merged
-                            mergeFlag = i - 1;  // set merge flag
+            int cellLength = currentRow.getLastCellNum();
+            int i;
+            for(i=0; i<cellLength; i++){
+                HSSFCell cell = (HSSFCell)currentRow.getCell((short)i);
+                if(cell == null) continue;
+                String value = poiGetCellStringValue(cell);
+                if(value != null && value.indexOf(keyword) != -1){
+                    for (Iterator iter = propsets.iterator(); iter.hasNext();) {
+                        Map.Entry entry = (Map.Entry) iter.next();
+                        value = value.replaceAll(keyword+entry.getKey(),subZeroAndDot(String.valueOf(entry.getValue())));
+                        if(type==0){
+                            if(value.equals("0")) value=value.replaceAll("0","");
+                            if(value.equals("-0")) value=value.replaceAll("-0","");
                         }
                     }
-                    // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
-                    cell.setCellValue(value);
+                    if(mergeFlag >= 0) {
+                        sheet.addMergedRegion(new CellRangeAddress(tmpIndex, tmpIndex, mergeFlag, i-1));
+                        mergeFlag = -1;
+                    }
+                }else if (value == null || StringUtils.isEmpty(value)){
+                    if(mergeFlag < 0) { // not merged
+                        mergeFlag = i - 1;  // set merge flag
+                    }
                 }
+                // cell.setEncoding(HSSFCell.ENCODING_UTF_16);
+                cell.setCellValue(value);
+            }
             if(type==1){
                 if(i >= cellLength){
                     sheet.addMergedRegion(new CellRangeAddress(tmpIndex, tmpIndex, mergeFlag, i-1));
                 }
             }
 
-                mergeFlag = -1;
-                tmpIndex++;
+            mergeFlag = -1;
+            tmpIndex++;
         }
-        sheet.shiftRows(index + 1 , 10000 , -1);
+        sheet.shiftRows(index + 1, 10000, -1);
 
     }
 
@@ -348,7 +361,7 @@ public class ExcelTemplate {
                         Map.Entry entry = (Map.Entry) iter.next();
                         String replaceValue = String.valueOf(entry.getValue());
                         strValue = strValue.replaceAll(keyword + entry.getKey(), replaceValue);
-                       // value.applyFont(strValue.indexOf(replaceValue), strValue.indexOf(replaceValue) + replaceValue.length(), underLine);
+                        // value.applyFont(strValue.indexOf(replaceValue), strValue.indexOf(replaceValue) + replaceValue.length(), underLine);
                     }
                     value = new HSSFRichTextString(strValue);
                     for (Iterator iter = propsets.iterator(); iter.hasNext();) {
@@ -442,7 +455,7 @@ public class ExcelTemplate {
     private void readCellStyle(HSSFCell cell){
         HSSFCellStyle style = cell.getCellStyle();
         if(style == null) return;
-        styles.put(new Integer(cell.getCellNum()),style);
+        styles.put(new Integer(cell.getCellNum()), style);
     }
 
     /**
@@ -470,120 +483,120 @@ public class ExcelTemplate {
         }
     }
 
-        public  void copyCellStyle(HSSFCellStyle fromStyle,
-                HSSFCellStyle toStyle) {
-            toStyle.setAlignment(fromStyle.getAlignment());
-            //边框和边框颜色
-            toStyle.setBorderBottom(fromStyle.getBorderBottom());
-            toStyle.setBorderLeft(fromStyle.getBorderLeft());
-            toStyle.setBorderRight(fromStyle.getBorderRight());
-            toStyle.setBorderTop(fromStyle.getBorderTop());
-            toStyle.setTopBorderColor(fromStyle.getTopBorderColor());
-            toStyle.setBottomBorderColor(fromStyle.getBottomBorderColor());
-            toStyle.setRightBorderColor(fromStyle.getRightBorderColor());
-            toStyle.setLeftBorderColor(fromStyle.getLeftBorderColor());
+    public  void copyCellStyle(HSSFCellStyle fromStyle,
+            HSSFCellStyle toStyle) {
+        toStyle.setAlignment(fromStyle.getAlignment());
+        //边框和边框颜色
+        toStyle.setBorderBottom(fromStyle.getBorderBottom());
+        toStyle.setBorderLeft(fromStyle.getBorderLeft());
+        toStyle.setBorderRight(fromStyle.getBorderRight());
+        toStyle.setBorderTop(fromStyle.getBorderTop());
+        toStyle.setTopBorderColor(fromStyle.getTopBorderColor());
+        toStyle.setBottomBorderColor(fromStyle.getBottomBorderColor());
+        toStyle.setRightBorderColor(fromStyle.getRightBorderColor());
+        toStyle.setLeftBorderColor(fromStyle.getLeftBorderColor());
 
-            //背景和前景
-            toStyle.setFillBackgroundColor(fromStyle.getFillBackgroundColor());
-            toStyle.setFillForegroundColor(fromStyle.getFillForegroundColor());
+        //背景和前景
+        toStyle.setFillBackgroundColor(fromStyle.getFillBackgroundColor());
+        toStyle.setFillForegroundColor(fromStyle.getFillForegroundColor());
 
-            toStyle.setDataFormat(fromStyle.getDataFormat());
-            toStyle.setFillPattern(fromStyle.getFillPattern());
-            //		toStyle.setFont(fromStyle.getFont(null));
-            toStyle.setHidden(fromStyle.getHidden());
-            toStyle.setIndention(fromStyle.getIndention());//首行缩进
-            toStyle.setLocked(fromStyle.getLocked());
-            toStyle.setRotation(fromStyle.getRotation());//旋转
-            toStyle.setVerticalAlignment(fromStyle.getVerticalAlignment());
-            toStyle.setWrapText(fromStyle.getWrapText());
+        toStyle.setDataFormat(fromStyle.getDataFormat());
+        toStyle.setFillPattern(fromStyle.getFillPattern());
+        //		toStyle.setFont(fromStyle.getFont(null));
+        toStyle.setHidden(fromStyle.getHidden());
+        toStyle.setIndention(fromStyle.getIndention());//首行缩进
+        toStyle.setLocked(fromStyle.getLocked());
+        toStyle.setRotation(fromStyle.getRotation());//旋转
+        toStyle.setVerticalAlignment(fromStyle.getVerticalAlignment());
+        toStyle.setWrapText(fromStyle.getWrapText());
 
+    }
+    /**
+     * Sheet复制
+     * @param fromSheet
+     * @param toSheet
+     * @param copyValueFlag
+     */
+    public  void copySheet(HSSFWorkbook wb,HSSFSheet fromSheet, HSSFSheet toSheet,
+            boolean copyValueFlag) {
+        //合并区域处理
+        mergerRegion(fromSheet, toSheet);
+        for (Iterator rowIt = fromSheet.rowIterator(); rowIt.hasNext();) {
+            HSSFRow tmpRow = (HSSFRow) rowIt.next();
+            HSSFRow newRow = toSheet.createRow(tmpRow.getRowNum());
+            //行复制
+            copyRow(tmpRow, newRow, copyValueFlag);
         }
-        /**
-         * Sheet复制
-         * @param fromSheet
-         * @param toSheet
-         * @param copyValueFlag
-         */
-        public  void copySheet(HSSFWorkbook wb,HSSFSheet fromSheet, HSSFSheet toSheet,
-                boolean copyValueFlag) {
-            //合并区域处理
-            mergerRegion(fromSheet, toSheet);
-            for (Iterator rowIt = fromSheet.rowIterator(); rowIt.hasNext();) {
-                HSSFRow tmpRow = (HSSFRow) rowIt.next();
-                HSSFRow newRow = toSheet.createRow(tmpRow.getRowNum());
-                //行复制
-                copyRow(tmpRow, newRow, copyValueFlag);
-            }
+    }
+    /**
+     * 行复制功能
+     * @param fromRow
+     * @param toRow
+     */
+    public void copyRow(HSSFRow fromRow,HSSFRow toRow,boolean copyValueFlag){
+        for (Iterator cellIt = fromRow.cellIterator(); cellIt.hasNext();) {
+            HSSFCell tmpCell = (HSSFCell) cellIt.next();
+            HSSFCell newCell = toRow.createCell(tmpCell.getCellNum());
+            copyCell(tmpCell, newCell, copyValueFlag);
         }
-        /**
-         * 行复制功能
-         * @param fromRow
-         * @param toRow
-         */
-        public void copyRow(HSSFRow fromRow,HSSFRow toRow,boolean copyValueFlag){
-            for (Iterator cellIt = fromRow.cellIterator(); cellIt.hasNext();) {
-                HSSFCell tmpCell = (HSSFCell) cellIt.next();
-                HSSFCell newCell = toRow.createCell(tmpCell.getCellNum());
-                copyCell(tmpCell, newCell, copyValueFlag);
-            }
+    }
+    /**
+     * 复制原有sheet的合并单元格到新创建的sheet
+     *
+     * @param sheetCreat 新创建sheet
+     * @param sheet      原有的sheet
+     */
+    public void mergerRegion(HSSFSheet fromSheet, HSSFSheet toSheet) {
+        int sheetMergerCount = fromSheet.getNumMergedRegions();
+        for (int i = 0; i < sheetMergerCount; i++) {
+            Region mergedRegionAt = fromSheet.getMergedRegionAt(i);
+            toSheet.addMergedRegion(mergedRegionAt);
         }
-        /**
-         * 复制原有sheet的合并单元格到新创建的sheet
-         *
-         * @param sheetCreat 新创建sheet
-         * @param sheet      原有的sheet
-         */
-        public void mergerRegion(HSSFSheet fromSheet, HSSFSheet toSheet) {
-            int sheetMergerCount = fromSheet.getNumMergedRegions();
-            for (int i = 0; i < sheetMergerCount; i++) {
-                Region mergedRegionAt = fromSheet.getMergedRegionAt(i);
-                toSheet.addMergedRegion(mergedRegionAt);
-            }
+    }
+    /**
+     * 复制单元格
+     *
+     * @param srcCell
+     * @param distCell
+     * @param copyValueFlag
+     *            true则连同cell的内容一起复制
+     */
+    public void copyCell(HSSFCell srcCell, HSSFCell distCell,
+            boolean copyValueFlag) {
+        //            HSSFCellStyle newstyle=workbook.createCellStyle();
+        //            copyCellStyle(srcCell.getCellStyle(), newstyle);
+        //            //样式
+        //            distCell.setCellStyle(newstyle);
+        HSSFCellStyle newstyle=srcCell.getCellStyle();
+        distCell.setCellStyle(newstyle);
+        //评论
+        if (srcCell.getCellComment() != null) {
+            distCell.setCellComment(srcCell.getCellComment());
         }
-        /**
-         * 复制单元格
-         *
-         * @param srcCell
-         * @param distCell
-         * @param copyValueFlag
-         *            true则连同cell的内容一起复制
-         */
-        public void copyCell(HSSFCell srcCell, HSSFCell distCell,
-                boolean copyValueFlag) {
-//            HSSFCellStyle newstyle=workbook.createCellStyle();
-//            copyCellStyle(srcCell.getCellStyle(), newstyle);
-//            //样式
-//            distCell.setCellStyle(newstyle);
-            HSSFCellStyle newstyle=srcCell.getCellStyle();
-            distCell.setCellStyle(newstyle);
-            //评论
-            if (srcCell.getCellComment() != null) {
-                distCell.setCellComment(srcCell.getCellComment());
-            }
-            // 不同数据类型处理
-            int srcCellType = srcCell.getCellType();
-            distCell.setCellType(srcCellType);
-            if (copyValueFlag) {
-                if (srcCellType == HSSFCell.CELL_TYPE_NUMERIC) {
-                    if (HSSFDateUtil.isCellDateFormatted(srcCell)) {
-                        distCell.setCellValue(srcCell.getDateCellValue());
-                    } else {
-                        distCell.setCellValue(srcCell.getNumericCellValue());
-                    }
-                } else if (srcCellType == HSSFCell.CELL_TYPE_STRING) {
-                    distCell.setCellValue(srcCell.getRichStringCellValue());
-                } else if (srcCellType == HSSFCell.CELL_TYPE_BLANK) {
-                    // nothing21
-                } else if (srcCellType == HSSFCell.CELL_TYPE_BOOLEAN) {
-                    distCell.setCellValue(srcCell.getBooleanCellValue());
-                } else if (srcCellType == HSSFCell.CELL_TYPE_ERROR) {
-                    distCell.setCellErrorValue(srcCell.getErrorCellValue());
-                } else if (srcCellType == HSSFCell.CELL_TYPE_FORMULA) {
-                    distCell.setCellFormula(srcCell.getCellFormula());
-                } else { // nothing29
+        // 不同数据类型处理
+        int srcCellType = srcCell.getCellType();
+        distCell.setCellType(srcCellType);
+        if (copyValueFlag) {
+            if (srcCellType == HSSFCell.CELL_TYPE_NUMERIC) {
+                if (HSSFDateUtil.isCellDateFormatted(srcCell)) {
+                    distCell.setCellValue(srcCell.getDateCellValue());
+                } else {
+                    distCell.setCellValue(srcCell.getNumericCellValue());
                 }
+            } else if (srcCellType == HSSFCell.CELL_TYPE_STRING) {
+                distCell.setCellValue(srcCell.getRichStringCellValue());
+            } else if (srcCellType == HSSFCell.CELL_TYPE_BLANK) {
+                // nothing21
+            } else if (srcCellType == HSSFCell.CELL_TYPE_BOOLEAN) {
+                distCell.setCellValue(srcCell.getBooleanCellValue());
+            } else if (srcCellType == HSSFCell.CELL_TYPE_ERROR) {
+                distCell.setCellErrorValue(srcCell.getErrorCellValue());
+            } else if (srcCellType == HSSFCell.CELL_TYPE_FORMULA) {
+                distCell.setCellFormula(srcCell.getCellFormula());
+            } else { // nothing29
             }
         }
+    }
 
     public List<GridEntityDTO> getCourseGridEntity(){
         List<GridEntityDTO> geDTOs = new ArrayList<>();

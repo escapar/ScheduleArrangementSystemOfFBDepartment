@@ -1,5 +1,6 @@
 package cn.edu.shnu.fb.domain.major;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,9 +9,11 @@ import org.springframework.stereotype.Repository;
 import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.LocatorRepository;
+import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.infrastructure.persistence.ImpCommentDao;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorTypeDao;
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 
 /**
  * Created by bytenoob on 15/11/21.
@@ -25,6 +28,18 @@ public class MajorRepository {
     ImpCommentDao impCommentDao;
     @Autowired
     MajorTypeDao majorTypeDao;
+
+    @Autowired
+    TeacherDao teacherDao;
+
+    public void changeRespRight(Integer respId , List<MajorType> majorTypes){
+        Teacher teacher = teacherDao.findOne(respId);
+        if(teacher!=null){
+            teacher.setMajorTypes(majorTypes);
+            teacherDao.save(teacher);
+        }
+    }
+
     public void initMajor(Major major){
         try{
             Major majorP = majorDao.save(major);
@@ -39,7 +54,26 @@ public class MajorRepository {
         majorDao.save(major);
     }
 
+    public List<Major> findByResponsableTeacherId(Integer id){
+        Teacher teacher = teacherDao.findOne(id);
+        List<Major> res = new ArrayList<>();
+        if(teacher!=null){
+            List<MajorType> mts = teacher.getMajorTypes();
+            for(MajorType mt : mts){
+                res.addAll(majorDao.findMajorByMajorType(mt));
+            }
+        }
+        return res;
+    }
 
+    public List<MajorType> findMajorTypeByResponsableTeacherId(Integer id){
+        Teacher teacher = teacherDao.findOne(id);
+        if(teacher!=null){
+            return teacher.getMajorTypes();
+        }else{
+            return null;
+        }
+    }
     public Iterable<Major> findAll(){
         return majorDao.findAll();
     }

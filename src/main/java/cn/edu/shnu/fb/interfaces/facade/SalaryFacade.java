@@ -1,5 +1,6 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -19,6 +20,8 @@ import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
+import cn.edu.shnu.fb.domain.user.Teacher;
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.interfaces.assembler.PlanAssembler;
 import cn.edu.shnu.fb.interfaces.dto.FrontEndSalaryDTO;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
@@ -37,14 +40,14 @@ public class SalaryFacade {
     TermRepository termRepository;
     @Autowired
     LogService logService;
-
+    @Autowired
+    TeacherDao teacherDao;
 
     @ResponseBody
     @RequestMapping(value="/t/{teacherId}/term/{termYear}/{termPart}/s",method= RequestMethod.GET)
     public List<SalaryDTO> getTeacherSalaries(@PathVariable Integer teacherId , @PathVariable Integer termYear , @PathVariable Integer termPart){
         Term term = termRepository.findTermByYearAndPart(termYear , termPart);
-        logService.event("attribute","operation","originVal","currentVal");
-        return salaryService.buildDTOSForTeacher(teacherId , term.getId());
+        return salaryService.buildDTOSForTeacher(teacherId , term.getId(),false);
     }
 
     @ResponseBody
@@ -55,16 +58,35 @@ public class SalaryFacade {
     }
 
     @ResponseBody
+    @RequestMapping(value="/s/add",method= RequestMethod.POST)
+    public void demandNewCourse(@RequestBody SalaryDTO salaryDTO){
+        Teacher teacher = teacherDao.findOne(salaryDTO.getTeacherId());
+        if(teacher!=null) {
+            salaryDTO.setTeacherEntity(teacher);
+            List<SalaryDTO> salaryDTOs = new ArrayList<>();
+            salaryDTOs.add(salaryDTO);
+            salaryService.persistSalaryDTOs(salaryDTOs);
+        }
+        logService.action("文修副修","申报");
+
+    }
+
+
+    @ResponseBody
     @RequestMapping(value="/s/update",method= RequestMethod.POST, consumes = "application/json")
     public void saveTeacherSalaries(@RequestBody FrontEndSalaryDTO fesDTO){
-        salaryService.saveSalariesFromDTOS(fesDTO.getSalaryDTOs(),fesDTO.getSalaryAdjustments());
+        salaryService.saveSalariesFromDTOS(fesDTO.getSalaryDTOs(), fesDTO.getSalaryAdjustments());
         logService.action("工作量","更新");
     }
 
     @ResponseBody
-    @RequestMapping(value="/i/{impId}/t/{teacherId}/reject",method= RequestMethod.POST, consumes = "application/json")
-    public void rejectTeacherSalaries(@PathVariable Integer impId , @PathVariable Integer teacherId, @RequestBody String comment){
-        salaryService.rejectSalary(impId, teacherId, comment);
+    @RequestMapping(value="/i/{impId}/t/{teacherId}/s/{salaryId}/reject",method= RequestMethod.POST, consumes = "application/json")
+    public void rejectTeacherSalaries(@PathVariable Integer impId , @PathVariable Integer teacherId, @PathVariable Integer salaryId,@RequestBody String comment){
+        if(impId!=0) {
+            salaryService.rejectSalary(impId, teacherId, comment);
+        }else{
+            salaryService.deleteSalary(salaryId);
+        }
         logService.action("课程","拒绝");
     }
 

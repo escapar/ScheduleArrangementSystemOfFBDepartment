@@ -20,6 +20,6 @@ public class LogService {
     }
 
     public void action(String property , String operation){
-        log.trace("对象属性 {} ，行为 {}",property,operation);
+        log.trace("{}{}",operation,property);
     }
 }

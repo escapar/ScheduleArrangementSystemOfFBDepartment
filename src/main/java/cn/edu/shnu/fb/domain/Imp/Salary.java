@@ -41,6 +41,7 @@ public class Salary {
     private float termSalary;
     private float monthlySalary;
     private int monthlySalaryRound;
+    private String split;
     private String comment;
 
     @Lob
@@ -281,5 +282,13 @@ public class Salary {
 
     public void setRejected(final int rejected) {
         this.rejected = rejected;
+    }
+
+    public String getSplit() {
+        return split;
+    }
+
+    public void setSplit(final String split) {
+        this.split = split;
     }
 }

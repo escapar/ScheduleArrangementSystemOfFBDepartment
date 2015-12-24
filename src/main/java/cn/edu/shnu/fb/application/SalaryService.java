@@ -47,6 +47,14 @@ public class SalaryService {
         }
         salaryRepository.deleteById(salaryId);
     }
+
+    public void persistSalaryDTOs(List<SalaryDTO> salaryDTOs){
+        if(salaryDTOs != null) {
+            for (SalaryDTO salaryDTO : salaryDTOs) {
+                salaryRepository.persistSalary(salaryDTO);
+            }
+        }
+    }
     public List<RejectedCourseInspectionDTO> buildRejectedDTOs(Integer termId){
         List<RejectedCourseInspectionDTO> RCIs = new ArrayList<>();
         Term term = termRepository.findTermById(termId);
@@ -59,13 +67,16 @@ public class SalaryService {
         }
         return RCIs;
     }
-    public List<SalaryDTO> buildDTOSForTeacher(Integer teacherId ,Integer termId){
+    public List<SalaryDTO> buildDTOSForTeacher(Integer teacherId ,Integer termId,boolean exportExcel){
         Teacher teacher = teacherDao.findOne(teacherId);
         List<SalaryDTO> salaryDTOs = new ArrayList<>();
         SalaryDTO adjustDTO = new SalaryDTO(teacher);
-
+        List<Integer> impSalaryIds = new ArrayList<>();
         if(teacher!=null) {
             List<Imp> imps = impRepository.getImpByTeacherIdAndTermId(teacherId, termId);
+            if(imps.size()<=0 && exportExcel){
+                return null;
+            }
             Map<String, List<Imp>> groupedImp = groupByCategoryType(imps);
             for (Map.Entry<String, List<Imp>> entry : groupedImp.entrySet()) {
                 List<Imp> impGrouped = entry.getValue();
@@ -76,10 +87,23 @@ public class SalaryService {
                     }else{
                         //Override
                         salaryDTOs.add(new SalaryDTO(impGrouped.get(0).getSalary(),teacher,impGrouped.get(0).getId()));
+                        impSalaryIds.add(impGrouped.get(0).getSalary().getId());
+                    }
+                }
+            }
+
+            // 文修副修研究生
+            List<Salary> salaries = salaryRepository.findByTeacherId(teacherId);
+            if(salaries.size()!=impSalaryIds.size()){
+                for(Salary salary : salaries){
+                    if(impSalaryIds.indexOf(salary.getId()) == -1){
+                        salaryDTOs.add(new SalaryDTO(salary,teacher,0));
                     }
                 }
             }
         }
+
+
         //Override
         Salary deduction = salaryRepository.findDedection(teacherId);
         if(deduction!=null){
@@ -169,7 +193,9 @@ public class SalaryService {
         Iterable<Teacher> teachers = teacherDao.findAll();
         List<SalaryDTO> salaryDTOs = new ArrayList<>();
         for(Teacher teacher : teachers){
-            salaryDTOs.addAll(buildDTOSForTeacher(teacher.getId(), termId));
+            List<SalaryDTO> tmp = buildDTOSForTeacher(teacher.getId(), termId, true);
+            if(tmp!=null)
+                salaryDTOs.addAll(tmp);
         }
         return salaryDTOs;
     }

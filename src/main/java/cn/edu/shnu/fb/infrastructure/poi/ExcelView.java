@@ -93,11 +93,11 @@ public class ExcelView extends AbstractXlsView {
             tmapList.add(map);
         }
 
-        template.createRowByHashMap(pomapList, "#PO");
-        template.createRowByHashMap(momapList, "#MO");
-        template.createRowByHashMap(remapList, "#RE");
-        template.createRowByHashMap(femapList,"#FE");
-        template.createRowByHashMap(tmapList,"#T");
+        template.createRowByHashMap(pomapList, "#PO",1);
+        template.createRowByHashMap(momapList, "#MO",1);
+        template.createRowByHashMap(remapList, "#RE",1);
+        template.createRowByHashMap(femapList,"#FE",1);
+        template.createRowByHashMap(tmapList,"#T",1);
 
 
 

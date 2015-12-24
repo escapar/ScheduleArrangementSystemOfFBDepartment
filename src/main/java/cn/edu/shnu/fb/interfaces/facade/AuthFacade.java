@@ -85,8 +85,17 @@ public class AuthFacade {
             id = user.getTeacher().getId();
         }
         return new LoginResponse(Jwts.builder().setSubject(login.username)
-                .claim("roles", user.getRole()).claim("name", name).claim("id",id).claim("deadline",d).setIssuedAt(new Date())
+                .claim("roles", user.getRole()).claim("name", name).claim("id",id).claim("userId",user.getId()).claim("deadline",d).setIssuedAt(new Date())
                 .signWith(SignatureAlgorithm.HS256, "FBSASECRET!").compact());
+    }
+
+
+    @RequestMapping(value = "/role/pass/{oldPass}/change", method = RequestMethod.POST)
+    public void changePass(@RequestBody final String newPass , @PathVariable final String oldPass , HttpServletRequest request)
+            throws ServletException {
+        final Claims claims = (Claims) request.getAttribute("claims");
+        Integer userId = (Integer)claims.get("userId");
+        userRepository.changePass(userId,oldPass,newPass);
     }
 
     @SuppressWarnings("unchecked")

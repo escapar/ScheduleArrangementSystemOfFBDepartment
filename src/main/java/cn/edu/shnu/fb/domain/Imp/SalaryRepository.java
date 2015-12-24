@@ -17,6 +17,9 @@ public class SalaryRepository {
     @Autowired
     SalaryDao salaryDao;
 
+    public List<Salary> findByTeacherId(Integer teacherId){
+        return salaryDao.findByTeacherId(teacherId);
+    }
     public Salary persistSalary(SalaryDTO salaryDTO){
         Salary salary = new Salary(salaryDTO);
         return salaryDao.save(salary);

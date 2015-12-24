@@ -175,6 +175,9 @@ public class SalaryDTO {
         monthlySalaryRound = salaryDTO.getMonthlySalaryRound();
         comment = salaryDTO.getComment();
         split=salaryDTO.getSplit();
+        if(split == null || split.isEmpty()){
+            split = " ";
+        }
 
 
     }
@@ -271,6 +274,11 @@ public class SalaryDTO {
         return teacher;
     }
 
+    public void setTeacherEntity(Teacher teacher){
+        this.teacher = teacher.getName();
+        this.departmentType = teacher.getDepartment();
+        this.proTitle = teacher.getProTitle();
+    }
     public void setTeacher(final String teacher) {
         this.teacher = teacher;
     }

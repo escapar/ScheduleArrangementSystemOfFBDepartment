@@ -13,4 +13,6 @@ import cn.edu.shnu.fb.domain.user.Teacher;
 public interface SalaryDao extends PagingAndSortingRepository<Salary,Integer> {
     List<Salary> findByRejected(Integer rejected);
     Salary findByTeacherIdAndCourseTypeLike(Integer teacherId,String courseType);
+    List<Salary> findByTeacherId(Integer teacherId);
+
 }

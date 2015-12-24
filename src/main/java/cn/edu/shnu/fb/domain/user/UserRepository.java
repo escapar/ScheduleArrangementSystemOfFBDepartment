@@ -22,4 +22,13 @@ public class UserRepository {
             return null;
         }
     }
+
+    public void changePass(Integer id, String oldPass , String newPass){
+        User user = userDao.findOne(id);
+        user = authOK(user.getUsername(),oldPass);
+        if(user!=null){
+            user.setPassword(newPass);
+            userDao.save(user);
+        }
+    }
 }

@@ -63,9 +63,10 @@ public class ExcelService {
     @Autowired
     ImpCommentDao impCommentDao;
 
-    public List<SalaryDTO> generateSalaryDTOs(InputStream is){
+    public List<SalaryDTO> generateSalaryDTOs(InputStream is , int type){
+        // type : 0 文修 1 副修 2 研究生
         ExcelTemplate template = ExcelTemplate.newInstance(is);
-        return template.getSalaryDTOs(0);
+        return template.getSalaryDTOs(type);
     }
 
     public ImpExcelDTO generateImpExcelDTO(int  majorId, int termCount){

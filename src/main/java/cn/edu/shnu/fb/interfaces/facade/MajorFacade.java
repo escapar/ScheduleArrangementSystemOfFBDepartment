@@ -1,5 +1,7 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
+import java.util.List;
+
 import cn.edu.shnu.fb.application.LogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -69,6 +71,25 @@ public class MajorFacade {
     @RequestMapping(value="/m/available",method= RequestMethod.GET)
     public Iterable<Major> findAvailable(){
         return majorRepository.findAll();
+    }
+
+
+    @ResponseBody
+    @RequestMapping(value="/m/t/{respId}",method= RequestMethod.GET)
+    public Iterable<Major> getAvailableMajors(@PathVariable Integer respId){
+        return majorRepository.findByResponsableTeacherId(respId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/mt/t/{respId}",method= RequestMethod.GET)
+    public Iterable<MajorType> getAvailableMajorTypes(@PathVariable Integer respId){
+        return majorRepository.findMajorTypeByResponsableTeacherId(respId);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/m/t/{respId}/update",method= RequestMethod.POST)
+    public void changeRespRight (@PathVariable Integer respId , @RequestBody List<MajorType> majorTypes){
+        majorRepository.changeRespRight(respId, majorTypes);
     }
 
 }
