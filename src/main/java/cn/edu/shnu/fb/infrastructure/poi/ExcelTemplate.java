@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import cn.edu.shnu.fb.domain.major.Major;
+import cn.edu.shnu.fb.domain.user.Teacher;
+import cn.edu.shnu.fb.domain.user.UserRepository;
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -27,10 +31,14 @@ import org.apache.poi.ss.usermodel.Font;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
+
+
 
 /**
  *
@@ -38,7 +46,11 @@ import cn.edu.shnu.fb.interfaces.dto.SalaryDTO;
  * 版本信息：1.0 <br>
  * Copyright: Copyright (c) 2005<br>
  */
+@Service
 public class ExcelTemplate {
+    @Autowired
+    TeacherDao teacherDao;
+
     private static Log logger = LogFactory.getLog(ExcelTemplate.class);
     private static final String DATAS = "datas";
 
@@ -110,7 +122,7 @@ public class ExcelTemplate {
         cellStyle = null;
     }
 
-    public List<SalaryDTO> getSalaryDTOs(int type){
+    public List<SalaryDTO> getSalaryDTOs(int type,ArrayList<Teacher> teachers){
         List<SalaryDTO> res = new ArrayList<>();
 
         if(type == 0){ //文修
@@ -119,10 +131,115 @@ public class ExcelTemplate {
 
         }else if(type == 2){ //研究生
             //在这里填代码
-        }
+            sheet = workbook.getSheetAt(0);
+            int allRows = sheet.getPhysicalNumberOfRows();
+            int cellNum;
+            for(int j=3;j<allRows;j++){
+                HSSFRow row=sheet.getRow(j);
+                if(getCellValue(row.getCell(6)).isEmpty()&&getCellValue(row.getCell(5)).isEmpty())
+                {
+                    continue;
+                }
+                cellNum=row.getPhysicalNumberOfCells();
+                SalaryDTO sdto=new SalaryDTO(teachers.get(j-3));
+                String grade="";
+                String major="";
+                String majorTitle="";
+                float periodHours=0;
+                int majorPopulation=0;
+                for(int i=2;i<cellNum;i++){
+                    HSSFCell cell=row.getCell(i);
+                    if(i==2){
+                        grade=subZeroAndDot("20"+getCellValue(cell))+"级";
 
+                    }
+                    else if(i==3){
+                        major=getCellValue(cell);
+                    }
+                    else if(i==4){
+                        sdto.setCourseTitle(getCellValue(cell));
+                    }
+                    else if(i==7){
+                        if(getCellValue(cell).isEmpty()){
+                            periodHours=0;
+                        }
+                        else{
+                            periodHours=Float.valueOf(getCellValue(cell));
+                        }
+
+                    }
+                    else if(i==9){
+                        if(getCellValue(cell).isEmpty()){
+                            majorPopulation=0;
+                        }
+                        else{
+                            float tmp=Float.valueOf(getCellValue(cell));
+                            majorPopulation=(int)tmp;
+                        }
+
+                    }
+                }
+                String[] majors = major.split("、");
+                if(major.isEmpty()){
+                    majorTitle=grade;
+                }
+                if(grade.isEmpty()){
+                    for(String m : majors){
+                        majorTitle=sdto.appendString(majorTitle,m);
+                    }
+                }
+                if(!major.isEmpty()&&!grade.isEmpty()){
+                    for(String m : majors){
+                        majorTitle=sdto.appendString(majorTitle,grade+m);
+                    }
+                }
+                sdto.setCourseType("研究生课程");
+                sdto.setMajorType("研究生");
+                sdto.setMajorTitle(majorTitle);
+                sdto.setMajorPopulation(majorPopulation);
+                sdto.setLocation("徐汇");
+                sdto.setUnderGraduateFactor(Float.valueOf("0.2"));
+                sdto.setOverseaStudentFactor(Float.valueOf("0"));
+                sdto.setHanFactor(Float.valueOf("0"));
+                sdto.setForeignLanguageFactor(Float.valueOf("0"));
+                sdto.setPopulationFactor(sdto.getPopulationFactor(majorPopulation));
+                sdto.setSuburbAllowance(sdto.getSuburbAllowance(periodHours));
+                sdto.setFirstCourseAllowance(Float.valueOf("0"));
+                sdto.setBasicSalaryDeduction(Float.valueOf("0"));
+                float finalFactor = (float)(1.2)+sdto.getPopulationFactor(majorPopulation);
+                float termSalary = ((sdto.getSalaryPerHour()) * (periodHours)) * finalFactor + sdto.getSuburbAllowance();
+                float monthlySalary = termSalary / 5;
+                int monthlySalaryRound = sdto.getRound(monthlySalary);
+                sdto.setTermSalary(termSalary);
+                sdto.setMonthlySalary(monthlySalary);
+                sdto.setMonthlySalaryRound(monthlySalaryRound);
+                res.add(sdto);
+                }
+            }
         return res;
     }
+
+    public ArrayList<String> getTeacherNames(){
+        ArrayList<String>  teacherNames=new ArrayList<>();
+        sheet = workbook.getSheetAt(0);
+        int allRows = sheet.getPhysicalNumberOfRows();
+        for(int j=3;j<=allRows;j++){
+            HSSFRow row=sheet.getRow(j);
+            teacherNames.add(getCellValue(row.getCell(6)));
+        }
+        return teacherNames;
+    }
+    public ArrayList<String> getTeacherIdCodes(){
+        ArrayList<String>  teacherNameIdCodes=new ArrayList<>();
+        sheet = workbook.getSheetAt(0);
+        int allRows = sheet.getPhysicalNumberOfRows();
+        for(int j=3;j<allRows;j++){
+            HSSFRow row=sheet.getRow(j);
+            teacherNameIdCodes.add(getCellValue(row.getCell(5)));
+        }
+        return teacherNameIdCodes;
+    }
+
     public void replaceParameters(Map props){
         if(props == null || props.size() == 0){
             return;

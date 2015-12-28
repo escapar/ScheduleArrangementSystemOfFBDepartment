@@ -4,11 +4,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import cn.edu.shnu.fb.domain.user.User;
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
+import cn.edu.shnu.fb.infrastructure.persistence.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +39,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by bytenoob on 15/11/10.
@@ -63,10 +62,51 @@ public class ExcelService {
     @Autowired
     ImpCommentDao impCommentDao;
 
+    @Autowired
+    TeacherDao teacherDao;
+
+    @Autowired
+    UserDao userDao;
+
     public List<SalaryDTO> generateSalaryDTOs(InputStream is , int type){
         // type : 0 文修 1 副修 2 研究生
         ExcelTemplate template = ExcelTemplate.newInstance(is);
-        return template.getSalaryDTOs(type);
+        ArrayList<String> excelTeacherNames=template.getTeacherNames();
+        ArrayList<String> excelTeacherIdCodes=template.getTeacherIdCodes();
+        Iterable<Teacher> dbTeachers = teacherDao.findAll();
+        ArrayList<String> dbTeacherNames=new ArrayList<>();
+        ArrayList<Teacher> teachers=new ArrayList<>();
+        for(Teacher dbTeacher : dbTeachers){
+            dbTeacherNames.add(dbTeacher.getName());
+        }
+        for(String excelTeacherName : excelTeacherNames){
+            if(dbTeacherNames.contains(excelTeacherName)){
+                teachers.add(teacherDao.findByName(excelTeacherName));
+            }
+            else{
+                Teacher newTeacher=new Teacher();
+                newTeacher.setName(excelTeacherName);
+                int index=excelTeacherNames.indexOf(excelTeacherName);
+                newTeacher.setIdCode(excelTeacherIdCodes.get(index));
+                newTeacher.setDepartment("");
+                newTeacher.setProTitle("");
+                newTeacher.setType("");
+                teacherDao.save(newTeacher);
+                User user = userDao.findByTeacher(newTeacher);
+                if(user == null) user = new User();
+                user.setRole(1);
+                user.setTeacher(newTeacher);
+                if(newTeacher.getIdCode().isEmpty()||newTeacher.getIdCode()==null)
+                {user.setUsername(newTeacher.getName());}
+                else {user.setUsername(newTeacher.getIdCode());}
+                userDao.save(user);
+                dbTeacherNames.add(excelTeacherName);
+                teachers.add(newTeacher);
+            }
+        }
+
+        return template.getSalaryDTOs(type,teachers);
+
     }
 
     public ImpExcelDTO generateImpExcelDTO(int  majorId, int termCount){

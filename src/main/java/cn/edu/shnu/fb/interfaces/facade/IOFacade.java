@@ -75,13 +75,13 @@ public class IOFacade {
         planRepository.updatePlansByExcelAndMajorId(majorId, geDTOs);
         logService.action("培养方案", "导入");
     }
-
+    
     @RequestMapping(value = "/i/s/{type}", method = RequestMethod.POST)
-    public void importSalaryExcel(@RequestParam(value = "file[0]", required = false) MultipartFile file, @PathVariable Integer type) throws Exception {
+    public void importSalaryExcel(@RequestParam(value = "file[0]", required = false) MultipartFile file, @PathVariable Integer type) throws Exception{
         // type : 0 文修 1 副修 2 研究生
-        List<SalaryDTO> salaryDTOs = excelService.generateSalaryDTOs(file.getInputStream(), type);
+        List<SalaryDTO> salaryDTOs = excelService.generateSalaryDTOs(file.getInputStream(),2);
         salaryService.persistSalaryDTOs(salaryDTOs);
-        logService.action("系统外课程数据", "导入");
+        logService.action("系统外课程数据","导入");
     }
 
     @RequestMapping(value = "/i/p/e/m/{majorId}", method = RequestMethod.POST)
@@ -91,17 +91,15 @@ public class IOFacade {
         planRepository.updatePlanCoursesByWordAndMajorId(majorId, geDTOs);
         logService.action("选修课", "导入");
     }
-
     @RequestMapping(value = "/o/i/m/{majorId}", method = RequestMethod.GET)
     public ModelAndView downloadImpCreditsExcel(@PathVariable Integer majorId) {
         ImpCreditsDTO res = excelService.generateImpCreditsDTO(majorId);
         return new ModelAndView("impCreditsExcelView", "impCreditsDTOS", res);
     }
-
     @RequestMapping(value = "/o/s/term/{termYear}/{termPart}", method = RequestMethod.GET)
-    public ModelAndView downloadSalaryExcel(@PathVariable Integer termYear, @PathVariable Integer termPart) {
-        Term term = termRepository.findTermByYearAndPart(termYear, termPart);
-        SalaryExcelDTO res = salaryService.getSalaryExcelDTO(term.getId());
+    public ModelAndView downloadSalaryExcel(@PathVariable Integer termYear , @PathVariable Integer termPart) {
+        Term term = termRepository.findTermByYearAndPart(termYear , termPart);
+        SalaryExcelDTO res=salaryService.getSalaryExcelDTO(term.getId());
         return new ModelAndView("salaryExcelView", "SalaryExcelDTOS", res);
     }
 

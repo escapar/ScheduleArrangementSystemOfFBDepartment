@@ -182,14 +182,14 @@ public class SalaryDTO {
 
     }
 
-    int getRound(float value){
+    public int getRound(float value){
         if(value - (int)value >= 0.5){
             return (int)value+1;
         }else{
             return (int)value;
         }
     }
-    float getSalaryDeduction(Teacher teacher){
+    public float getSalaryDeduction(Teacher teacher){
         String type = teacher.getType();
         float period = 0;
         if(type.contains("教学岗")){
@@ -210,7 +210,7 @@ public class SalaryDTO {
         }
     }
 
-    float getPopulationFactor(int population){
+    public float getPopulationFactor(int population){
         if(population<50){
             return 0;
         }else{
@@ -219,7 +219,7 @@ public class SalaryDTO {
             return (float)(res > 0.8 ? 0.8 : res);
         }
     }
-    float getSuburbAllowance(float hours){
+    public float getSuburbAllowance(float hours){
             float allowance = hours * 20;
             if (allowance < 50)
                 return 50;
@@ -229,7 +229,7 @@ public class SalaryDTO {
                 return allowance;
     }
 
-    float getProTitleSalary(Teacher teacher){
+    public float getProTitleSalary(Teacher teacher){
         String title = teacher.getProTitle();
         if(title == null || title.isEmpty()){
             return 1;

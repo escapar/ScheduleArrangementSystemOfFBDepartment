@@ -1,5 +1,6 @@
 package cn.edu.shnu.fb.domain.user;
 
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -12,6 +13,8 @@ import cn.edu.shnu.fb.infrastructure.persistence.UserDao;
 public class UserRepository {
     @Autowired
     UserDao userDao;
+    @Autowired
+    TeacherDao teacherDao;
 
     public User authOK(String username , String password){
         User user = userDao.findByUsernameEquals(username);
