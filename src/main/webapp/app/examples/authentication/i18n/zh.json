@@ -2,7 +2,8 @@
     "MENU": {
         "AUTH": {
             "AUTH": "认证",
-            "LOGIN": "登陆"
+            "LOGIN": "登陆",
+            "PASS": "修改密码"
         }
     },
     "LOGIN": {
