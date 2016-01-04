@@ -79,7 +79,7 @@ public class IOFacade {
     @RequestMapping(value = "/i/s/{type}", method = RequestMethod.POST)
     public void importSalaryExcel(@RequestParam(value = "file[0]", required = false) MultipartFile file, @PathVariable Integer type) throws Exception{
         // type : 0 文修 1 副修 2 研究生
-        List<SalaryDTO> salaryDTOs = excelService.generateSalaryDTOs(file.getInputStream(),2);
+        List<SalaryDTO> salaryDTOs = excelService.generateSalaryDTOs(file.getInputStream(),type);
         salaryService.persistSalaryDTOs(salaryDTOs);
         logService.action("系统外课程数据","导入");
     }
@@ -102,21 +102,20 @@ public class IOFacade {
         SalaryExcelDTO res=salaryService.getSalaryExcelDTO(term.getId());
         return new ModelAndView("salaryExcelView", "SalaryExcelDTOS", res);
     }
-
+/*
     @RequestMapping(value = "/log", method = RequestMethod.GET)
     public LogDTO getLog(HttpServletRequest request) throws Exception {
         InputStream is = this.getClass().getResourceAsStream(request.getContextPath() + "/log.txt");
-
         BufferedReader in = new BufferedReader(new InputStreamReader(is));
         StringBuffer buffer = new StringBuffer();
         String line = "";
         while ((line = in.readLine()) != null) {
-            buffer.append(line);
+            buffer.append(line+'\n');
         }
         LogDTO log = new LogDTO();
         log.setLog(buffer.toString());
         return log;
-    }
+    }*/
 
 }
 

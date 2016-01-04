@@ -16,7 +16,7 @@ public class LogService {
     }
 
     public void event(String property , String operation , String origin , String result){
-        log.trace("对象属性 {} ，行为 {} ，原值为 {} ，现值为 {} ",property,operation,origin,result);
+        log.trace("对象属性 {} ，行为 {} ，原值为 {} ，现值为 {}",property,operation,origin,result);
     }
 
     public void action(String property , String operation){
