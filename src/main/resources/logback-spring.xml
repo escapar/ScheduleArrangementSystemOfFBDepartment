@@ -3,7 +3,7 @@
     <include resource="org/springframework/boot/logging/logback/base.xml"/>
 
     <appender name="FILEOUT" class="ch.qos.logback.core.FileAppender">
-        <file>target/sa-1.0/log/log.txt</file>
+        <file>src/main/webapp/log/log.txt</file>
         <append>true</append>
 
         <encoder>
