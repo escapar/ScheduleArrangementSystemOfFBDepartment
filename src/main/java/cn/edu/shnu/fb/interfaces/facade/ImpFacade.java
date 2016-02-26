@@ -145,10 +145,10 @@ public class ImpFacade {
 
     @ResponseBody
     @RequestMapping(value="/i/comment/m/{majorId}/t/{termCount}",method=RequestMethod.GET)
-    public String getImpComment(@PathVariable Integer majorId , @PathVariable Integer termCount){
+    public ImpComment getImpComment(@PathVariable Integer majorId , @PathVariable Integer termCount){
         ImpComment res = impRepository.getImpCommentByMajorIdAndTermCount(majorId, termCount);
         if(res!=null){
-            return res.getComment();
+            return res;
         }else{
             return null;
         }

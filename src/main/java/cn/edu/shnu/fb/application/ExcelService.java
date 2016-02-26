@@ -6,6 +6,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.*;
 
+import cn.edu.shnu.fb.domain.term.Term;
+import cn.edu.shnu.fb.domain.term.TermRepository;
 import cn.edu.shnu.fb.domain.user.User;
 import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.infrastructure.persistence.UserDao;
@@ -49,6 +51,9 @@ import java.util.List;
 public class ExcelService {
     @Autowired
     ImpRepository impRepository;
+
+    @Autowired
+    TermRepository termRepository;
 
     @Autowired
     LocatorRepository locatorRepository;
@@ -192,7 +197,8 @@ public class ExcelService {
 
         //获取impComment
         String impComment="";
-        ImpComment impcom=impCommentDao.findImpCommentByMajorIdAndTermId(new Integer(majorId), new Integer(termCount));
+        Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(),termCount);
+        ImpComment impcom = impCommentDao.findImpCommentByMajorIdAndTermId(majorId, term.getId());
         if(impcom!=null)
             impComment=impcom.getComment();
 
