@@ -301,7 +301,7 @@ public class ExcelService {
         moc=getImpCreditsByMajorAndTermAndCourseClass(majorId, termCount, 2);
         if(moc!=0){credits[1]=String.valueOf((int)moc);}
         rec=getImpCreditsByMajorAndTermAndCourseClass(majorId, termCount, 3);
-        if(rec!=0){credits[2]=String.valueOf((int)rec);}
+        if(rec != 0){credits[2]=String.valueOf((int)rec);}
         fec=getImpCreditsByMajorAndTermAndCourseClass(majorId, termCount, 4);
         if(fec!=0){credits[5]=String.valueOf((int)fec);}
         tc=getImpCreditsByMajorAndTermAndCourseClass(majorId, termCount, 5);

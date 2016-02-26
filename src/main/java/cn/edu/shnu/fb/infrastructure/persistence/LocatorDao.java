@@ -22,6 +22,7 @@ public interface LocatorDao extends PagingAndSortingRepository<Locator,Integer> 
     List<Locator> findByMajorAndCourseClass(Major major , CourseClass courseClass);
     List<Locator> findByMajor(Major major);
     Locator findByMajorAndTermAndCourseClassAndCourseType(Major major , Term term , CourseClass courseClass,CourseType courseType);
+    Locator findByMajorAndCourseClassAndCourseTypeAndTermIsNull(Major major , CourseClass courseClass,CourseType courseType);
 
 
 

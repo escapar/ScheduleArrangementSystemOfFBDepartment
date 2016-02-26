@@ -82,7 +82,10 @@ public class WordTemplate {
                     for (int j = 1; j < rowNum; j++) {
                         row = table.getRow(j);
 
-                        if(row.numCells()<3 || toStr(row.getCell(1)).isEmpty() || row.getCell(1).text().contains("以上修满") || row.getCell(1).text().contains("课程代码")){
+                        if(row.numCells()<3
+                                || toStr(row.getCell(1)).isEmpty()
+                                || row.getCell(1).text().contains("以上修满")
+                                || row.getCell(1).text().contains("课程代码")){
                             continue;
                         }
                         GridEntityDTO geDTO = new GridEntityDTO();

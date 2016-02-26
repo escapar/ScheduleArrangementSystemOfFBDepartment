@@ -41,13 +41,11 @@ public class JwtFilter extends GenericFilterBean {
                     .parseClaimsJws(token).getBody();
             request.setAttribute("claims", claims);
             Long date = (long)claims.get("deadline");
-            Date d = new Date(date);
-
-
-            Calendar c = Calendar.getInstance();
-            if(d == null){
+            if(date == 0){
                 throw new ServletException("Invalid header");
             }
+            Date d = new Date(date);
+            Calendar c = Calendar.getInstance();
             if(d.before(c.getTime())){
                 throw new ServletException("System Closed");
             }

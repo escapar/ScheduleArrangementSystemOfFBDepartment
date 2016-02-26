@@ -19,6 +19,15 @@ public class TermRepository {
         int termPart = termCount % 2 == 0 ? 2 : 1;
         return termDao.findTermByYearAndPart(termYear,termPart);
     }
+    public Term createTermByGradeAndTermCount(int grade , int termCount){
+        int termYear = grade + (termCount - 1) / 2 ;
+        int termPart = termCount % 2 == 0 ? 2 : 1;
+        Term term = new Term();
+        term.setYear(termYear);
+        term.setPart(termPart);
+        term.setWeeks(16);
+        return termDao.save(term);
+    }
     public Term findTermById(int termId){
         return termDao.findOne(termId);
     }

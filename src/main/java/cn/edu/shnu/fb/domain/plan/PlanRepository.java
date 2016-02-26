@@ -278,7 +278,7 @@ public class PlanRepository {
                                                 term.setPart(1);
                                                 term.setYear(major.getGrade() + 4);
                                             }else{
-                                                term.setPart(i % 2 == 0 ? 2 : 1);
+                                                term.setPart((i+1) % 2 == 0 ? 2 : 1);
                                                 term.setYear(major.getGrade() + i / 2);
                                             }
                                             term.setWeeks(16);

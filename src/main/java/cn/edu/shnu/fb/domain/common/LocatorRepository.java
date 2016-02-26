@@ -191,7 +191,7 @@ public class LocatorRepository {
         CourseClass courseClass = courseClassDao.findOne(courseClassId);
         CourseType courseType = courseTypeDao.findOne(courseTypeId);
         if(major!=null && courseClass!=null) {
-            return locatorDao.findByMajorAndTermAndCourseClassAndCourseType(major, null, courseClass, courseType);
+            return locatorDao.findByMajorAndCourseClassAndCourseTypeAndTermIsNull(major, courseClass, courseType);
         }else{
             return null;
         }
@@ -213,11 +213,17 @@ public class LocatorRepository {
         Iterable<CourseClass> courseClasses = courseClassDao.findAll();
         Iterable<CourseType> courseTypes = courseTypeDao.findAll();
         int termCount;
-        for(termCount = 1 ; termCount < 10; termCount++) {
+        for(termCount = 1 ; termCount < 11; termCount++) {
             Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+            if(term == null && termCount < 10) {
+                term = termRepository.createTermByGradeAndTermCount(major.getGrade(), termCount);
+            }else if(termCount == 10){
+                term = null;
+            }
             for(CourseClass cc : courseClasses){
                 if(!cc.getTitle().contains("限定选修")) {
-                    Locator locator = new Locator();
+                    Locator locator = locatorDao.findByMajorAndTermAndCourseClassAndCourseType(major , term , cc,null);
+                    if(locator == null) locator = new Locator();
                     locator.setMajor(major);
                     locator.setTerm(term);
                     locator.setCourseClass(cc);
@@ -225,7 +231,8 @@ public class LocatorRepository {
                     locatorDao.save(locator);
                 }else {
                     for (CourseType ct : courseTypes) {
-                        Locator locator = new Locator();
+                        Locator locator = locatorDao.findByMajorAndTermAndCourseClassAndCourseType(major , term , null ,ct);
+                        if(locator == null) locator = new Locator();
                         locator.setMajor(major);
                         locator.setTerm(term);
                         locator.setCourseClass(cc);

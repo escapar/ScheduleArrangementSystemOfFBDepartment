@@ -18,8 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 
 /**
  * Created by zhouziyi on 15/11/25.
@@ -154,8 +155,10 @@ public class CautionService {
                     plans.addAll(planRepository.getPlanCourseByLocatorId(oblidgeLocator.getId()));
                 }
                 ArrayList<Integer> impCourseIds=new ArrayList<>();
+                Map <Integer,String> impComments= new HashMap<>();
                 for(Imp imp : imps){
                     impCourseIds.add(imp.getCourse().getId());
+                    impComments.put(imp.getId(),imp.getCourseComment());
                 }
                 ArrayList<Integer> planCourseIds=new ArrayList<>();
                 for(PlanCourse plan : plans){
@@ -167,7 +170,10 @@ public class CautionService {
                 for(Integer impCourseId :impCourseIds){
                     if(!planCourseIds.contains(impCourseId)){
                         Course course=courseDao.findOne(impCourseId);
-                        addCourse=addCourse+"《"+course.getTitle()+"》 ";
+                        addCourse=addCourse+"《"+course.getTitle()+"》 "+"(备注：";
+                        String impComment = impComments.get(impCourseId) == null ? "无" : impComments.get(impCourseId);
+                        addCourse+=impComment;
+                        addCourse+=")  ";
                     }
 
                 }

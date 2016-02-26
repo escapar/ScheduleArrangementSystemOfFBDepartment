@@ -124,9 +124,10 @@ public class ImpFacade {
 
     @ResponseBody
     @RequestMapping(value="/i/update/t/{termCount}",method=RequestMethod.POST , consumes = "application/json")  //  l for location
-    public void updateImp(@RequestBody GridEntityDTO grid , @PathVariable Integer termCount){
-         impRepository.updateImpByGridEntity(grid,termCount);
+    public GridEntityDTO updateImp(@RequestBody GridEntityDTO grid , @PathVariable Integer termCount){
+         GridEntityDTO res = impRepository.updateImpByGridEntity(grid,termCount);
          logService.action("执行计划", "调整");
+         return res;
     }
 
     @ResponseBody

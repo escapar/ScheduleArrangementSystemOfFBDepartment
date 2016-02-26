@@ -198,7 +198,8 @@ public class ImpRepository {
         }
     }
 
-    public void updateImpByGridEntity(GridEntityDTO entity , Integer termCount){
+    public GridEntityDTO updateImpByGridEntity(GridEntityDTO entity , Integer termCount){
+        Imp res ;
         if(termCount>0 && termCount<9) {
             if (entity != null) {
                 Imp imp = impDao.findOne(entity.getId());
@@ -240,9 +241,11 @@ public class ImpRepository {
                         imp.setCourseComment(entity.getComment());
                     }
 
-                    impDao.save(imp);
+                res = impDao.save(imp);
+                return new GridEntityDTO(res);
                 }
             }
+        return entity;
     }
 
     public List<Imp> getElectedImp(Integer majorId ,Integer courseClassId ,Integer courseTypeId) {
