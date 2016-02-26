@@ -25,18 +25,18 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId> 
+            <artifactId>spring-boot-starter-web</artifactId> <!--
           <exclusions>
            	<exclusion>
            		<groupId>org.springframework.boot</groupId>
         		<artifactId>spring-boot-starter-tomcat</artifactId>
            	</exclusion>
-           </exclusions> 
+           </exclusions> -->
         </dependency>
         <dependency>
             <groupId>org.apache.tomcat</groupId>
             <artifactId>tomcat-servlet-api</artifactId>
-                        <version>7.0.42</version>  
+            <version>7.0.56</version>
             <scope>provided</scope>
         </dependency>
 
@@ -114,7 +114,7 @@
               <includes>
                 <include>**/*.xls</include>
                 <include>**/*.properties</include>
-				<include>**/*.txt</include>
+				  <include>**/*.txt</include>
 
               </includes>
             </resource>
