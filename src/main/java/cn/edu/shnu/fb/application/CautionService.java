@@ -158,7 +158,7 @@ public class CautionService {
                 Map <Integer,String> impComments= new HashMap<>();
                 for(Imp imp : imps){
                     impCourseIds.add(imp.getCourse().getId());
-                    impComments.put(imp.getId(),imp.getCourseComment());
+                    impComments.put(imp.getCourse().getId(),imp.getCourseComment());
                 }
                 ArrayList<Integer> planCourseIds=new ArrayList<>();
                 for(PlanCourse plan : plans){
