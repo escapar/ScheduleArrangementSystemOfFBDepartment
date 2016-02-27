@@ -268,28 +268,57 @@ public class PlanRepository {
                             }
                             for (int i = 0; i < 9; i++) {
                                 if (geDTO.getPeriod()[i] != 0 || geDTO.getCredits()[i] != 0) {
-                                    Locator locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i+1, cc.getId(), 0);
-                                    if (locator == null) {
-                                        locator = new Locator();
-                                        Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), i+1);
+                                    Locator locator ;
+                                    Term term;
+                                    Integer count = 0;
+                                    if(geDTO.getTitle()!=null && geDTO.getTitle().contains("形势与政策")) {
+                                        count = 2;
+                                    }else if(geDTO.getTitle()!=null && geDTO.getTitle().contains("毛泽东思想和中国特色社会主义") && geDTO.getTitle().contains("二")){
+                                        count = 8;
+                                    }
+                                    if(count!=0){
+                                        term = termRepository.findTermByGradeAndTermCount(major.getGrade(), count);
                                         if(term == null){
                                             term = new Term();
-                                            if(i==8) {
-                                                term.setPart(1);
-                                                term.setYear(major.getGrade() + 4);
-                                            }else{
-                                                term.setPart((i+1) % 2 == 0 ? 2 : 1);
-                                                term.setYear(major.getGrade() + i / 2);
-                                            }
-                                            term.setWeeks(16);
+                                            term.setPart(count % 2 == 0 ? 2 : 1);
+                                            term.setYear(major.getGrade() + (count-1) / 2);
                                             termRepository.save(term);
-                                            term = termRepository.findTermByGradeAndTermCount(major.getGrade(), i+1);
+                                            term = termRepository.findTermByGradeAndTermCount(major.getGrade(), count);
                                         }
-                                        locator.setTerm(term);
-                                        locator.setCourseClass(cc);
-                                        locator.setMajor(major);
-                                        locatorRepository.save(locator);
-                                        locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i+1, cc.getId(), 0);
+                                        locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, count, cc.getId(), 0);
+                                        if (locator == null) {
+                                            locator = new Locator();
+                                            locator.setTerm(term);
+                                            locator.setCourseClass(cc);
+                                            locator.setMajor(major);
+                                            locatorRepository.save(locator);
+                                            locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i + 1, cc.getId(), 0);
+                                        }
+                                    }
+                                    else {
+                                        locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i + 1, cc.getId(), 0);
+                                        if (locator == null) {
+                                            locator = new Locator();
+                                            term = termRepository.findTermByGradeAndTermCount(major.getGrade(), i + 1);
+                                            if (term == null) {
+                                                term = new Term();
+                                                if (i == 8) {
+                                                    term.setPart(1);
+                                                    term.setYear(major.getGrade() + 4);
+                                                } else {
+                                                    term.setPart((i + 1) % 2 == 0 ? 2 : 1);
+                                                    term.setYear(major.getGrade() + i / 2);
+                                                }
+                                                term.setWeeks(16);
+                                                termRepository.save(term);
+                                                term = termRepository.findTermByGradeAndTermCount(major.getGrade(), i + 1);
+                                            }
+                                            locator.setTerm(term);
+                                            locator.setCourseClass(cc);
+                                            locator.setMajor(major);
+                                            locatorRepository.save(locator);
+                                            locator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(majorId, i + 1, cc.getId(), 0);
+                                        }
                                     }
                                     PlanCourse planCourse = planCourseDao.findByCourseAndLocator(course,locator);
                                     if(planCourse == null) {
@@ -325,6 +354,7 @@ public class PlanRepository {
                                     }
                                     impRepository.save(imp);
                                 }
+
                             }
                         } else  {
                             for (int i = 0; i < 9; i++) {

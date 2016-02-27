@@ -476,12 +476,21 @@ public class ExcelService {
         float plancredits=0;
         List<Locator> locators= locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassId(majorId,termCount,courseClassId);
         List<PlanCourse> plans = new ArrayList<>();
+        List<PlanSpec> planspecs = new ArrayList<>();
         for(Locator locator : locators){
             plans.addAll(planRepository.getPlanCourseByLocatorId(locator.getId()));
+            PlanSpec tmp = planRepository.getPlanSpecByLocator(locator);
+            if(tmp!=null)
+                planspecs.add(tmp);
         }
         for(PlanCourse plan : plans){
 
             plancredits=plancredits+plan.getCredits();
+        }
+        if(plancredits <= 0){
+            for(PlanSpec planspec : planspecs){
+                plancredits=plancredits+planspec.getCredits();
+            }
         }
         return plancredits;
     }
