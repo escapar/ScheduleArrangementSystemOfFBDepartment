@@ -159,8 +159,11 @@ public class ExcelService {
             RELists.add(toExcelDTO(reimp));
         }
         //计算imp和plan的限定选修课的总学分
-        imprec=getImpCreditsByMajorAndTermAndCourseClass(majorId,termCount,3);
+        imprec=getImpCreditsByMajorAndTermAndCourseClass(majorId, termCount, 3);
         planrec=getPlanCreditsByMajorAndTermAndCourseClass(majorId, termCount, 3);
+        if(termCount == 3 || termCount == 4){
+            imprec+=2;
+        }
         //根据majoid,termcount,courseclassid找出任意选修课的imps和plans
 
         List<ImpExcelGridDTO> FELists = new ArrayList<>();
@@ -480,8 +483,9 @@ public class ExcelService {
         for(Locator locator : locators){
             plans.addAll(planRepository.getPlanCourseByLocatorId(locator.getId()));
             PlanSpec tmp = planRepository.getPlanSpecByLocator(locator);
-            if(tmp!=null)
+            if(tmp!=null) {
                 planspecs.add(tmp);
+            }
         }
         for(PlanCourse plan : plans){
 
