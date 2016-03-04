@@ -102,6 +102,7 @@ public class ExcelView extends AbstractXlsView {
 
 
         workbook = template.getWorkbook();
+        workbook.setSheetName(0,mtidto.getWorkBookName());
         /*
         List<ImpExcelHeaderDTO> impExcelDTOs = (List<ImpExcelHeaderDTO>) model.get("impExcelDTOs");
 

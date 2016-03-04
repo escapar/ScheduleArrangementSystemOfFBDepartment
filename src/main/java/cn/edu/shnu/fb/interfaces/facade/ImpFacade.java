@@ -131,6 +131,14 @@ public class ImpFacade {
     }
 
     @ResponseBody
+    @RequestMapping(value="/i/update/l/{locatorId}",method=RequestMethod.POST , consumes = "application/json")  //  l for location
+    public GridEntityDTO updateImpByLocator(@RequestBody GridEntityDTO grid , @PathVariable Integer locatorId){
+        Imp res = impRepository.updateImpByGridEntityAndLocatorId(grid, locatorId);
+        logService.action("执行计划", "新增计划外课程");
+        return new GridEntityDTO(res);
+    }
+
+    @ResponseBody
     @RequestMapping(value="/i/{impId}",method=RequestMethod.GET)
     public Imp findById(@PathVariable Integer impId){
         return impRepository.getImpById(impId);

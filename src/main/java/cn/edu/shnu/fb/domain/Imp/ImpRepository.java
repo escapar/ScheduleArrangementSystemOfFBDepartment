@@ -177,11 +177,18 @@ public class ImpRepository {
         }
     }
 
-    public void updateImpByGridEntityAndLocatorId(GridEntityDTO entity , int locatorId){
+    public Imp updateImpByGridEntityAndLocatorId(GridEntityDTO entity , int locatorId){
         Locator locator = locatorDao.findOne(locatorId);
+        Imp resimp = null;
         if(entity!=null && locator != null) {
             locator.setModified(1);
             Course course = courseDao.findOne(entity.getCourseId());
+            if(course == null){
+                course = new Course();
+                course.setTitle(entity.getTitle());
+                course.setCode(entity.getCode());
+                course = courseDao.save(course);
+            }
             Imp imp = impDao.findByLocatorAndCourse(locator, course);
             if (imp == null) {
                 imp = new Imp();
@@ -194,8 +201,20 @@ public class ImpRepository {
             imp.setLocator(locator);
             CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
             imp.setCourseExam(courseExam);
-            impDao.save(imp);
+            int[] teacherIds = entity.getTeacherIds();
+            List<Teacher> teacherList = new ArrayList<>();
+            for (Integer tId : teacherIds) {
+                if(tId!=0) {
+                    Teacher teacher = teacherDao.findOne(tId);
+                    if (teacher != null) {
+                        teacherList.add(teacher);
+                    }
+                }
+            }
+            imp.setTeachers(teacherList);
+            resimp = impDao.save(imp);
         }
+        return resimp;
     }
 
     public GridEntityDTO updateImpByGridEntity(GridEntityDTO entity , Integer termCount){

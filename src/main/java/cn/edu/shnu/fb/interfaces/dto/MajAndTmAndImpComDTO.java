@@ -8,6 +8,7 @@ public class MajAndTmAndImpComDTO {
     private String majorCode;
     private int termCount;
     private String impComment;
+    private String workBookName;
 
 
     public String getMajorCode() { return majorCode; }
@@ -21,6 +22,14 @@ public class MajAndTmAndImpComDTO {
 
     public void setMajorTitle(final String majorTitle) {
         this.majorTitle = majorTitle;
+    }
+
+    public String getWorkBookName() {
+        return workBookName;
+    }
+
+    public void setWorkBookName(final String workBookName) {
+        this.workBookName = workBookName;
     }
 
     public MajAndTmAndImpComDTO(String majorTitle,String majorCode, int termCount,String impComment){

@@ -196,16 +196,17 @@ public class ExcelService {
         String majorCode="";
         Major major=majorDao.findOne(majorId);
         majorCode=major.getMajorType().getMajorCode();
-        String majorTitle=major.getMajorType().getTitle();
+        String majorTitle=Integer.toString(major.getGrade())+'级'+major.getMajorType().getTitle();
 
         //获取impComment
         String impComment="";
-        Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(),termCount);
+        Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
         ImpComment impcom = impCommentDao.findImpCommentByMajorIdAndTermId(majorId, term.getId());
         if(impcom!=null)
             impComment=impcom.getComment();
-
-        ImpExcelDTO res = new ImpExcelDTO(new MajAndTmAndImpComDTO(majorTitle,majorCode,termCount,impComment),new ImpExcelHeaderDTO(planpoc,planmoc,planrec,planfec,plantc,imppoc,impmoc,imprec,impfec,imptc),POLists,MOLists,RELists,FELists,TLists);
+        MajAndTmAndImpComDTO md = new MajAndTmAndImpComDTO(majorTitle,majorCode,termCount,impComment);
+        md.setWorkBookName(Integer.toString(major.getGrade()));
+        ImpExcelDTO res = new ImpExcelDTO(md,new ImpExcelHeaderDTO(planpoc,planmoc,planrec,planfec,plantc,imppoc,impmoc,imprec,impfec,imptc),POLists,MOLists,RELists,FELists,TLists);
         return res;
     }
 

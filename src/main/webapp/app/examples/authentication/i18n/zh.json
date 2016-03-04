@@ -2,7 +2,7 @@
     "MENU": {
         "AUTH": {
             "AUTH": "认证",
-            "LOGIN": "登陆",
+            "LOGIN": "注销",
             "PASS": "修改密码"
         }
     },
@@ -10,7 +10,7 @@
         "TITLE": "登陆",
         "USERNAME": {
             "LABEL": "工号",
-            "PLEASE_ENTER": "请输入你的密码"
+            "PLEASE_ENTER": "请输入你的工号"
         },
         "PASSWORD": {
             "LABEL": "密码",

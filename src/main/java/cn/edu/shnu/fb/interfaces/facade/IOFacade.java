@@ -63,7 +63,6 @@ public class IOFacade {
 
     @RequestMapping(value = "/o/i/m/{majorId}/t/{termCount}", method = RequestMethod.GET)
     public ModelAndView downloadImpExcel(@PathVariable Integer majorId, @PathVariable Integer termCount) {
-        //impRepository.persistImpComment(majorId,termCount,comment);
         ImpExcelDTO res = excelService.generateImpExcelDTO(majorId, termCount);
         return new ModelAndView("excelView", "impExcelDTOs", res);
     }
