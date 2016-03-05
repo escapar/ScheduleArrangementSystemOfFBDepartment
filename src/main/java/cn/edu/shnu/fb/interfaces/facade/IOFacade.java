@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import cn.edu.shnu.fb.application.LogService;
+import cn.edu.shnu.fb.domain.major.MajorRepository;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.interfaces.dto.*;
 
@@ -54,6 +55,9 @@ public class IOFacade {
 
     @Autowired
     PlanRepository planRepository;
+
+    @Autowired
+    MajorRepository majorRepository;
 
     @Autowired
     ImpRepository impRepository;

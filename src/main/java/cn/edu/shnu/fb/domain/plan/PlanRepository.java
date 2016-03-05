@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import cn.edu.shnu.fb.domain.Imp.Imp;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
+import cn.edu.shnu.fb.domain.Imp.Salary;
 import cn.edu.shnu.fb.domain.common.CourseClass;
 import cn.edu.shnu.fb.domain.common.CourseExam;
 import cn.edu.shnu.fb.domain.common.CourseType;
@@ -19,6 +20,7 @@ import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.common.LocatorRepository;
 import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.major.Major;
+import cn.edu.shnu.fb.domain.mergedClass.MergedClass;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
 import cn.edu.shnu.fb.infrastructure.persistence.CourseClassDao;
@@ -27,8 +29,10 @@ import cn.edu.shnu.fb.infrastructure.persistence.CourseExamDao;
 import cn.edu.shnu.fb.infrastructure.persistence.CourseTypeDao;
 import cn.edu.shnu.fb.infrastructure.persistence.LocatorDao;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
+import cn.edu.shnu.fb.infrastructure.persistence.MergedClassDao;
 import cn.edu.shnu.fb.infrastructure.persistence.PlanCourseDao;
 import cn.edu.shnu.fb.infrastructure.persistence.PlanSpecDao;
+import cn.edu.shnu.fb.infrastructure.persistence.SalaryDao;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 
 /**
@@ -39,6 +43,12 @@ public class PlanRepository {
 
     @Autowired
     PlanCourseDao planCourseDao;
+
+    @Autowired
+    SalaryDao salaryDao;
+
+    @Autowired
+    MergedClassDao mergedClassDao;
 
     @Autowired
     CourseExamDao courseExamDao;
@@ -243,6 +253,29 @@ public class PlanRepository {
     }
     public void updatePlansByExcelAndMajorId(int majorId,List<GridEntityDTO> geDTOs) {
         Major major = majorDao.findOne(majorId);
+        List<Locator> locators = locatorDao.findByMajor(major);
+        for(Locator locator : locators){
+            List<Imp> imps = impRepository.getImpByLocatorId(locator.getId());
+            List<PlanCourse> planCourses = planCourseDao.findByLocator(locator);
+            PlanSpec planSpec = planSpecDao.findByLocator(locator);
+            for(Imp imp : imps){
+                Salary salary = imp.getSalary();
+                if(salary!=null) {
+                    salaryDao.delete(salary);
+                }
+                MergedClass mergedClass = imp.getMergedClass();
+                if(mergedClass!=null) {
+                    mergedClassDao.delete(mergedClass);
+                }
+                impRepository.deleteImp(imp);
+            }
+            for(PlanCourse planCourse : planCourses){
+                planCourseDao.delete(planCourse);
+            }
+            if(planSpec!=null) {
+                planSpecDao.delete(planSpec);
+            }
+        }
         if (major != null) {
             for (GridEntityDTO geDTO : geDTOs) {
                 if(geDTO.getCourseClass().contains("总计")){

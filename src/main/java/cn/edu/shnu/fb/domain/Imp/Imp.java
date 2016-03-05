@@ -79,7 +79,7 @@ public class Imp implements Serializable {
 		this.teachers = teachers;
 	}
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
 	@JoinTable(
 			name = "imp_teacher",
 			joinColumns = @JoinColumn(name = "imp_id"),
