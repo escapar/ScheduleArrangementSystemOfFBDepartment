@@ -13,6 +13,7 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  */
 public class SalaryDTO {
     private String courseType;
+    private int majorId;
     private String majorType;
     private String departmentType;
     private String teacher;
@@ -50,6 +51,7 @@ public class SalaryDTO {
         //state 0 for normal , 1 for underGraduate , 2 for others(more to add..)
         //imps should be in same course , could be a set of merged course
         courseType = imps.get(0).getLocator().getCourseClass().getTitle();
+        majorId = imps.get(0).getLocator().getMajor().getId();
         this.majorType = majorType;
         departmentType = teacher.getDepartment();
         this.teacher = teacher.getName();
@@ -483,5 +485,13 @@ public class SalaryDTO {
 
     public void setSplit(String split) {
         this.split = split;
+    }
+
+    public int getMajorId() {
+        return majorId;
+    }
+
+    public void setMajorId(final int majorId) {
+        this.majorId = majorId;
     }
 }

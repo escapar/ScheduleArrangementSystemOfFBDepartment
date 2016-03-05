@@ -17,6 +17,7 @@ import cn.edu.shnu.fb.application.LogService;
 import cn.edu.shnu.fb.application.SalaryService;
 import cn.edu.shnu.fb.domain.Imp.Imp;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
+import cn.edu.shnu.fb.domain.major.MajorType;
 import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
@@ -90,11 +91,25 @@ public class SalaryFacade {
         logService.action("课程","拒绝");
     }
 
+
     @ResponseBody
-    @RequestMapping(value="/i/term/{termYear}/{termPart}/reject",method= RequestMethod.GET)
-    public List<RejectedCourseInspectionDTO> getRejectedSalaries(@PathVariable Integer termYear , @PathVariable Integer termPart){
+    @RequestMapping(value="/i/{impId}/t/{teacherId}/s/{salaryId}/reject/cancel",method= RequestMethod.POST, consumes = "application/json")
+    public void cancelrejectTeacherSalaries(@PathVariable Integer impId , @PathVariable Integer teacherId, @PathVariable Integer salaryId,@RequestBody String comment){
+        if(impId!=0) {
+            salaryService.cancelSalary(impId, teacherId, comment);
+        }else{
+            salaryService.deleteSalary(salaryId);
+        }
+        logService.action("课程","取消拒绝课程");
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/term/{termYear}/{termPart}/resId/{resId}/reject",method= RequestMethod.GET)
+    public List<RejectedCourseInspectionDTO> getRejectedSalaries(@PathVariable Integer termYear , @PathVariable Integer resId,@PathVariable Integer termPart){
         Term term = termRepository.findTermByYearAndPart(termYear , termPart);
-        return salaryService.buildRejectedDTOs(term.getId());
+        Teacher teacher = teacherDao.findOne(resId);
+        List<MajorType> mt =  teacher.getMajorTypes();
+        return salaryService.buildRejectedDTOs(term.getId(),mt);
     }
 
     @ResponseBody

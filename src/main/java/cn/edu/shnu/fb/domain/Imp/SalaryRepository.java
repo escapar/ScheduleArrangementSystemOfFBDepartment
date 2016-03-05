@@ -41,7 +41,14 @@ public class SalaryRepository {
         }
         return null;
     }
-
+    public Salary cancelRejectSalary(Salary salary , String comment){
+        if(salary!=null){
+            salary.setRejected(0);
+            salary.setRejectComment(comment);
+            return salaryDao.save(salary);
+        }
+        return null;
+    }
     public List<Salary> findRejectedSalary(){
         return salaryDao.findByRejected(1);
     }

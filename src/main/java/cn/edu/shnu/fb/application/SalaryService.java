@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import cn.edu.shnu.fb.domain.major.MajorType;
 import cn.edu.shnu.fb.interfaces.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,15 +56,17 @@ public class SalaryService {
             }
         }
     }
-    public List<RejectedCourseInspectionDTO> buildRejectedDTOs(Integer termId){
+    public List<RejectedCourseInspectionDTO> buildRejectedDTOs(Integer termId , List<MajorType> mt){
         List<RejectedCourseInspectionDTO> RCIs = new ArrayList<>();
         Term term = termRepository.findTermById(termId);
         List<Imp> imps = impRepository.getRejectedImps(term);
         for(Imp imp : imps){
-            GridEntityDTO geDTO = new GridEntityDTO(imp);
-            Salary s = imp.getSalary();
-            SalaryDTO sDTO= new SalaryDTO(s,imp.getTeachers().get(0),imp.getId());
-            RCIs.add(new RejectedCourseInspectionDTO(sDTO,geDTO));
+            if(mt.contains(imp.getLocator().getMajor().getMajorType())) {
+                GridEntityDTO geDTO = new GridEntityDTO(imp);
+                Salary s = imp.getSalary();
+                SalaryDTO sDTO = new SalaryDTO(s, imp.getTeachers().get(0), imp.getId());
+                RCIs.add(new RejectedCourseInspectionDTO(sDTO, geDTO));
+            }
         }
         return RCIs;
     }
@@ -136,6 +139,36 @@ public class SalaryService {
             }
             SalaryDTO sDTO = new SalaryDTO(imps, "本科", teacherDao.findOne(teacherId), 0);
             sDTO.setRejected(1);
+            sDTO.setComment(comment);
+            s = salaryRepository.persistSalary(sDTO);
+            for(Imp i : imps){
+                i.setSalary(s);
+                impRepository.save(i);
+            }
+        }
+
+    }
+
+    public void cancelSalary(int impId , int teacherId , String comment){
+        Imp imp = impRepository.getImpById(impId);
+        Salary s = imp.getSalary();
+        if(s!=null){
+            s = salaryRepository.cancelRejectSalary(s,comment);
+            List<Imp> imps = impRepository.findBySalary(s);
+            for(Imp i : imps){
+                i.setSalary(s);
+                impRepository.save(i);
+            }
+        }else{
+            MergedClass mc = imp.getMergedClass();
+            List<Imp> imps = new ArrayList<>();
+            if(mc!=null) {
+                imps = impRepository.findByMergedClass(mc);
+            }else{
+                imps.add(imp);
+            }
+            SalaryDTO sDTO = new SalaryDTO(imps, "本科", teacherDao.findOne(teacherId), 0);
+            sDTO.setRejected(0);
             sDTO.setComment(comment);
             s = salaryRepository.persistSalary(sDTO);
             for(Imp i : imps){
