@@ -189,9 +189,10 @@ public class PlanRepository {
         Major major = majorDao.findOne(majorId);
         if (major != null) {
             for (GridEntityDTO geDTO : geDTOs) {
+                Course course = null;
                 //COURSE
-                Course course = courseDao.findByCodeAndTitle(geDTO.getCode(), geDTO.getTitle());
-                if (course == null) {
+                List<Course> courses = courseDao.findByCodeAndTitle(geDTO.getCode(), geDTO.getTitle());
+                if (courses.size() <= 0) {
                     course = new Course();
                     if(geDTO.getCode()!=null) {
                         course.setCode(geDTO.getCode());
@@ -200,9 +201,10 @@ public class PlanRepository {
                         course.setTitle(geDTO.getTitle());
                     }
                     courseDao.save(course);
-                    course = courseDao.findByCodeAndTitle(geDTO.getCode(), geDTO.getTitle());
+                    course = courseDao.findByCodeAndTitle(geDTO.getCode(), geDTO.getTitle()).get(0);
+                }else {
+                    course = courses.get(0);
                 }
-
                 //COURSECLASS COURSETYPE
                 String cc = geDTO.getCourseClass();
                 CourseType courseType = null;
@@ -284,11 +286,12 @@ public class PlanRepository {
                 String title = geDTO.getTitle().replace("*","");
                     List<CourseClass> ccs = courseClassDao.findByTitleLike(geDTO.getCourseClass());
 
-                    if (ccs.size() > 0) {
+                    if (ccs.size() > 0 && !geDTO.getTitle().isEmpty()) {
                         CourseClass cc = ccs.get(0);
                         if (!geDTO.getCourseClass().contains("选修")) { //必修
-                            Course course = courseDao.findByCodeAndTitle(geDTO.getCode(), title);
-                            if (course == null) {
+                            Course course = null;
+                            List<Course> courses = courseDao.findByCodeAndTitle(geDTO.getCode(), title);
+                            if (courses.size()<=0) {
                                 course = new Course();
                                 if(geDTO.getCode()!=null) {
                                     course.setCode(geDTO.getCode());
@@ -297,7 +300,9 @@ public class PlanRepository {
                                     course.setTitle(title);
                                 }
                                 courseDao.save(course);
-                                course = courseDao.findByCodeAndTitle(geDTO.getCode(), title);
+                                course = courseDao.findByCodeAndTitle(geDTO.getCode(), title).get(0);
+                            }else{
+                                course = courses.get(0);
                             }
                             for (int i = 0; i < 9; i++) {
                                 if (geDTO.getPeriod()[i] != 0 || geDTO.getCredits()[i] != 0) {
