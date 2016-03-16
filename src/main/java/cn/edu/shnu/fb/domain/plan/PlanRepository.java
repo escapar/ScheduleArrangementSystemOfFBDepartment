@@ -286,7 +286,7 @@ public class PlanRepository {
                 String title = geDTO.getTitle().replace("*","");
                     List<CourseClass> ccs = courseClassDao.findByTitleLike(geDTO.getCourseClass());
 
-                    if (ccs.size() > 0 && !geDTO.getTitle().isEmpty()) {
+                    if (ccs.size() > 0) {
                         CourseClass cc = ccs.get(0);
                         if (!geDTO.getCourseClass().contains("选修")) { //必修
                             Course course = null;
