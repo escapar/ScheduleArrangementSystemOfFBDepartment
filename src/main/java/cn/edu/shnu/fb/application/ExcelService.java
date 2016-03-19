@@ -443,7 +443,9 @@ public class ExcelService {
             imps.addAll(impRepository.getImpByLocatorId(locator.getId()));
         }
         for(Imp imp : imps){
-            impcredits=impcredits+imp.getCredits();
+            if(!imp.getCourse().getTitle().contains("毕业论文")) {
+                impcredits = impcredits + imp.getCredits();
+            }
         }
         return impcredits;
     }
