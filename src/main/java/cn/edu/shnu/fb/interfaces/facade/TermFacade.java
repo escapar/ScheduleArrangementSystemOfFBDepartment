@@ -25,4 +25,11 @@ public class TermFacade {
     public Term initMajor (@PathVariable Integer grade){
         return termRepository.findTermByGradeAndTermCount(grade,1);
     }
+
+    @ResponseBody
+    @RequestMapping(value="/t/available",method= RequestMethod.GET)
+    public Iterable<Term> getTerms (){
+        return termRepository.findAll();
+    }
+
 }

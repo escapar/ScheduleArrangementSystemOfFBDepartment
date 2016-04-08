@@ -22,9 +22,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import cn.edu.shnu.fb.domain.common.SystemInfo;
+import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.user.User;
 import cn.edu.shnu.fb.domain.user.UserRepository;
 import cn.edu.shnu.fb.infrastructure.persistence.SystemInfoDao;
+import cn.edu.shnu.fb.infrastructure.persistence.TermDao;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -40,6 +42,9 @@ public class AuthFacade {
 
     @Autowired
     SystemInfoDao systemInfoDao;
+
+    @Autowired
+    TermDao termDao;
 
     public AuthFacade() {
 
@@ -63,14 +68,14 @@ public class AuthFacade {
         }
         Long d = null;
 
-        if(user.getRole() !=2) {
+        if(user.getRole() !=2 && user.getRole() !=3) {
             Calendar c = Calendar.getInstance();
             SystemInfo si = systemInfoDao.findAll().iterator().next();
             if (si != null) {
                 d = si.getDeadline().getTime();
-                if (c.getTime().after(new Date(d))) {
+       /*         if (c.getTime().after(new Date(d))) {
                     throw new ServletException("System Closed");
-                }
+                }*/
             }
         }else{
             d = new Date(2600,10,1).getTime();
@@ -147,6 +152,22 @@ public class AuthFacade {
         si.setDeadline(date);
         systemInfoDao.save(si);
         return si.getDeadline();
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/t/update/{id}", method = RequestMethod.GET)
+    public void updateCurrentTerm(@PathVariable Integer id) {
+        SystemInfo si = systemInfoDao.findAll().iterator().next();
+        Term t = termDao.findOne(id);
+        si.setTerm(t);
+        systemInfoDao.save(si);
+    }
+
+    @ResponseBody
+    @RequestMapping(value = "/t", method = RequestMethod.GET)
+    public Term getCurrentTerm() {
+        SystemInfo si = systemInfoDao.findAll().iterator().next();
+        return si.getTerm();
     }
 
     @SuppressWarnings("unchecked")

@@ -69,20 +69,32 @@ public class ImpExcelGridDTO {
         this.weeks = weeks;
         this.hours = hours;
         this.deg = deg;
-        for(String tc : tcs){
-            if(!this.tc.isEmpty()){
-                this.tc += (',' + tc);
-            } else{this.tc = tc;}
+        if(tcs!=null) {
+            for (String tc : tcs) {
+                if (!this.tc.isEmpty()) {
+                    this.tc += (',' + tc);
+                } else {
+                    this.tc = tc;
+                }
+            }
         }
-        for(String tn : tns){
-            if(!this.tn.isEmpty()){
-                this.tn += (',' + tn);
-            } else{this.tn = tn;}
+        if(tns!=null) {
+            for (String tn : tns) {
+                if (!this.tn.isEmpty()) {
+                    this.tn += (',' + tn);
+                } else {
+                    this.tn = tn;
+                }
+            }
         }
-        for(String tt : tts){
-            if(!this.tt.isEmpty()){
-                this.tt += (',' + tt);
-            } else{this.tt = tt;}
+        if(tts!=null) {
+            for (String tt : tts) {
+                if (!this.tt.isEmpty()) {
+                    this.tt += (',' + tt);
+                } else {
+                    this.tt = tt;
+                }
+            }
         }
         this.comment = comment;
     }

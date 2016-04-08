@@ -11,10 +11,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.shnu.fb.domain.common.SystemInfo;
 import cn.edu.shnu.fb.domain.major.Major;
 import cn.edu.shnu.fb.domain.major.MajorRepository;
 import cn.edu.shnu.fb.domain.major.MajorType;
+import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
+import cn.edu.shnu.fb.infrastructure.persistence.SystemInfoDao;
+import cn.edu.shnu.fb.infrastructure.persistence.TermDao;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 
 /**
@@ -28,6 +32,8 @@ public class MajorFacade {
     MajorRepository majorRepository;
     @Autowired
     LogService logService;
+    @Autowired
+    SystemInfoDao systemInfoDao;
     @ResponseBody
     @RequestMapping(value="/m/init",method= RequestMethod.POST)
     public void initMajor (@RequestBody Major major){
@@ -79,6 +85,7 @@ public class MajorFacade {
     public Iterable<Major> getAvailableMajors(@PathVariable Integer respId){
         return majorRepository.findByResponsableTeacherId(respId);
     }
+
 
     @ResponseBody
     @RequestMapping(value="/mt/t/{respId}",method= RequestMethod.GET)

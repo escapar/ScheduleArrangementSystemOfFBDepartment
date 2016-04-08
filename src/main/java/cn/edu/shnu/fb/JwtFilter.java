@@ -46,7 +46,7 @@ public class JwtFilter extends GenericFilterBean {
             }
             Date d = new Date(date);
             Calendar c = Calendar.getInstance();
-            if(d.before(c.getTime())){
+            if(d.before(c.getTime()) && ((HttpServletRequest) req).getMethod().equals("POST")){
                 throw new ServletException("System Closed");
             }
             MDC.put("name", claims.get("name"));

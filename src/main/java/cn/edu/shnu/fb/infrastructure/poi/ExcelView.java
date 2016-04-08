@@ -70,8 +70,12 @@ public class ExcelView extends AbstractXlsView {
         }
 
         List<ImpExcelGridDTO> ieRedtos = imp.getRedtos();
+
+        if(mtidto.getTermCount() == 3 || mtidto.getTermCount() == 4){
+            ieRedtos.add(new ImpExcelGridDTO("","综合素质类课程","考查",2,16,2,"否",null,null,null,""));
+        }
         ArrayList<Map> remapList = new ArrayList<>();
-        for(ImpExcelGridDTO dto : ieRedtos) {
+            for(ImpExcelGridDTO dto : ieRedtos) {
             map = new HashMap<>();
             IOAssembler.flushParams(map, dto);
             remapList.add(map);

@@ -4,6 +4,7 @@ package cn.edu.shnu.fb.domain.common;
         import javax.persistence.*;
         import java.util.Date;
 
+        import cn.edu.shnu.fb.domain.term.Term;
 
 /**
  * The persistent class for the system_info database table.
@@ -19,6 +20,10 @@ public class SystemInfo implements Serializable {
 
     @Temporal(TemporalType.DATE)
     private Date deadline;
+
+    @ManyToOne
+    @JoinColumn(name="term_id")
+    private Term term;
 
     public SystemInfo() {
     }
@@ -39,4 +44,11 @@ public class SystemInfo implements Serializable {
         this.deadline = deadline;
     }
 
+    public Term getTerm() {
+        return term;
+    }
+
+    public void setTerm(final Term term) {
+        this.term = term;
+    }
 }
