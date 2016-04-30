@@ -9,7 +9,6 @@ import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.plan.PlanSpec;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.user.Teacher;
-import jdk.nashorn.internal.ir.TernaryNode;
 
 /**
  * Created by bytenoob on 15/11/1.
