@@ -1,6 +1,9 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
@@ -29,9 +33,16 @@ import cn.edu.shnu.fb.domain.Imp.ImpComment;
 import cn.edu.shnu.fb.domain.Imp.ImpRepository;
 import cn.edu.shnu.fb.domain.common.Locator;
 import cn.edu.shnu.fb.domain.Imp.Imp;
+import cn.edu.shnu.fb.domain.common.LocatorRepository;
+import cn.edu.shnu.fb.domain.course.Course;
+import cn.edu.shnu.fb.domain.major.Major;
+import cn.edu.shnu.fb.domain.major.MajorRepository;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.term.TermRepository;
+import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.infrastructure.persistence.LocatorDao;
+import cn.edu.shnu.fb.infrastructure.persistence.MajorDao;
+import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.interfaces.assembler.ImpAssembler;
 import cn.edu.shnu.fb.interfaces.dto.CreditsDTO;
 import cn.edu.shnu.fb.interfaces.dto.CreditsGridDTO;
@@ -59,6 +70,12 @@ public class ImpFacade {
     LogService logService;
     @Autowired
     TermRepository termRepository;
+    @Autowired
+    TeacherDao teacherDao;
+    @Autowired
+    MajorDao majorDao;
+    @Autowired
+    LocatorDao locatorDao;
     @ResponseBody
     @RequestMapping(value="/i/o/m/{majorId}/t/{termCount}/grid",method=RequestMethod.GET) // o for oblige
     public List<GridEntityDTO> getImpOblige(@PathVariable Integer majorId,@PathVariable Integer termCount){
@@ -125,9 +142,26 @@ public class ImpFacade {
     @ResponseBody
     @RequestMapping(value="/i/update/t/{termCount}",method=RequestMethod.POST , consumes = "application/json")  //  l for location
     public GridEntityDTO updateImp(@RequestBody GridEntityDTO grid , @PathVariable Integer termCount){
-         GridEntityDTO res = impRepository.updateImpByGridEntity(grid,termCount);
+         GridEntityDTO res = impRepository.updateImpByGridEntity(grid, termCount);
          logService.action("执行计划", "调整");
          return res;
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/delete/{impId}",method=RequestMethod.GET)  //  l for location
+    public void delImp(@PathVariable Integer impId){
+        Imp imp = impRepository.getImpById(impId);
+        impRepository.deleteImp(imp);
+        logService.action("执行计划", "删除");
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/i/create/m/{majorId}/t/{termCount}",method=RequestMethod.POST , consumes = "application/json")  //  l for location
+    public GridEntityDTO createImp(@RequestBody GridEntityDTO grid , @PathVariable Integer majorId , @PathVariable Integer termCount){
+        Major major = majorDao.findOne(majorId);
+        GridEntityDTO res = impRepository.newImpByGridEntity(grid, termCount, major);
+        logService.action("执行计划", "调整");
+        return res;
     }
 
     @ResponseBody
@@ -233,4 +267,46 @@ public class ImpFacade {
         impRepository.verifyMergeImps(mergeDTO);
         logService.action("合并班级","审核");
     }
+
+    private List<GridEntityDTO> genGridEntityDTOs(List<Imp> imps){
+        List<GridEntityDTO> res = new ArrayList<>();
+        for(Imp imp : imps){
+            res.add(new GridEntityDTO(imp));
+        }
+        return res;
+    }
+    @ResponseBody
+    @RequestMapping(value="/i/c/t/{tId}/m/{mId}",method=RequestMethod.GET)
+    public HashMap<Integer,List<GridEntityDTO>> verifyCourseExist(@PathVariable Integer tId,@PathVariable Integer mId){
+        Teacher teacher = teacherDao.findOne(tId);
+        Major major = majorDao.findOne(mId);
+        List<Locator> locators = locatorDao.findByMajor(major);
+        List<Imp> imps = new ArrayList<>();
+        HashMap<Integer,List<Imp>> map= new HashMap<>();
+        HashMap<Integer,List<GridEntityDTO>> res= new HashMap<>();
+
+        for(Locator l : locators){
+            imps.addAll(impRepository.getImpByLocatorId(l.getId()));
+        }
+        for(Imp i : imps){
+            if(map.containsKey(i.getCourse().getId())){
+                map.get(i.getCourse().getId()).add(i);
+            }else{
+                List<Imp> arr = new ArrayList<>();
+                arr.add(i);
+                map.put(i.getCourse().getId(),arr);
+            }
+        }
+        Set<Integer> coursesExistes = map.keySet();
+        List<Course> coursesToVerify = teacher.getCoursesInCharge();
+        for(Course c : coursesToVerify){
+            if(coursesExistes.contains(c.getId())){
+                if(!res.containsKey(c.getId())){
+                    res.put(c.getId(),genGridEntityDTOs(map.get(c.getId())));
+                }
+            }
+        }
+        return res;
+    }
 }
+

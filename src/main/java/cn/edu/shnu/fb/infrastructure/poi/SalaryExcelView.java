@@ -54,6 +54,7 @@ public class SalaryExcelView extends AbstractXlsView {
 
 
         workbook = template.getWorkbook();
+        workbook.setSheetName(0,header.getFromyear() + "-" + header.getToyear() + "学年第"+header.getPart()+"学期商学院教师课时费明细(核对稿)");
         OutputStream ouputStream = response.getOutputStream();
         workbook.write(ouputStream);
         ouputStream.flush();

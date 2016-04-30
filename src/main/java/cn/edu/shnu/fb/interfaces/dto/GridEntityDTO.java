@@ -9,6 +9,7 @@ import cn.edu.shnu.fb.domain.plan.PlanCourse;
 import cn.edu.shnu.fb.domain.plan.PlanSpec;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.domain.user.Teacher;
+import jdk.nashorn.internal.ir.TernaryNode;
 
 /**
  * Created by bytenoob on 15/11/1.
@@ -19,9 +20,12 @@ public class GridEntityDTO {
     private int id;
     private int courseId;
     private int courseExamId;
+    private int courseClassId;
+    private int courseTypeId;
 
     // CourseParams
     private String courseClass="";
+    private String courseType="";
 
     private String code="";
     private String title="";
@@ -37,6 +41,7 @@ public class GridEntityDTO {
     private String courseComment="";
     private int isDegCourse;
 
+    private int termCount;
 
     private String teacherName="";
     private String teacherProTitle="";
@@ -70,6 +75,22 @@ public class GridEntityDTO {
                 this.courseExamId = planCourse.getCourseExam().getId();
             }
         }
+    }
+
+    public String getCourseType() {
+        return courseType;
+    }
+
+    public void setCourseType(final String courseType) {
+        this.courseType = courseType;
+    }
+
+    public int getTermCount() {
+        return termCount;
+    }
+
+    public void setTermCount(final int termCount) {
+        this.termCount = termCount;
     }
 
     public GridEntityDTO(PlanCourse planCourse,boolean isMono){
@@ -121,12 +142,19 @@ public class GridEntityDTO {
             this.credits[0]= imp.getCredits();
             this.period[0]= imp.getPeriodHours();
             this.periodWeeks= imp.getPeriodWeeks();
-            this.code= imp.getCourse().getCode();
+            this.code = imp.getCourse().getCode();
             this.title= imp.getCourse().getTitle();
             this.courseId = imp.getCourse().getId();
             this.courseClass= imp.getLocator().getCourseClass().getTitle();
+            this.courseClassId= imp.getLocator().getCourseClass().getId();
+            if(imp.getLocator().getCourseType()!=null) {
+                this.courseType = imp.getLocator().getCourseType().getTitle();
+                this.courseTypeId= imp.getLocator().getCourseType().getId();
+            }
+
             this.isDegCourse = imp.getIsDegCourse();
             this.courseComment=imp.getCourseComment();
+            this.termCount = calculateTermCount(imp.getLocator().getTerm(),imp.getLocator().getMajor());
             if(imp.getCourseExam()!=null) {
                 this.courseExam=imp.getCourseExam().getTitle();
                 this.courseExamId=imp.getCourseExam().getId();
@@ -156,6 +184,10 @@ public class GridEntityDTO {
                 this.comment = imp.getCourseComment();
             }
         }
+    }
+
+    private int calculateTermCount(Term t , Major m){
+        return (t.getYear() - m.getGrade())*2 + t.getPart();
     }
 
     public void setPeriodAndCredits(Major major,PlanCourse planCourse){ // for a full grid of 8 terms
@@ -294,6 +326,21 @@ public class GridEntityDTO {
         this.code = code;
     }
 
+    public int getCourseClassId() {
+        return courseClassId;
+    }
+
+    public void setCourseClassId(final int courseClassId) {
+        this.courseClassId = courseClassId;
+    }
+
+    public int getCourseTypeId() {
+        return courseTypeId;
+    }
+
+    public void setCourseTypeId(final int courseTypeId) {
+        this.courseTypeId = courseTypeId;
+    }
 
     public String getComment() {
         return comment;

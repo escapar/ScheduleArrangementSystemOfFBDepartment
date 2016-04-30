@@ -26,6 +26,7 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import org.springframework.context.annotation.Lazy;
 
 import cn.edu.shnu.fb.domain.Imp.Imp;
+import cn.edu.shnu.fb.domain.course.Course;
 import cn.edu.shnu.fb.domain.major.MajorType;
 
 /**
@@ -73,6 +74,20 @@ public class Teacher implements Serializable {
 	}
 	)
 	private List<MajorType> majorTypes;
+
+
+	//bi-directional many-to-many association to MajorType
+	@ManyToMany
+	@JoinTable(
+			name="teacher_course"
+			, joinColumns={
+			@JoinColumn(name="teacher_id")
+	}
+			, inverseJoinColumns={
+			@JoinColumn(name="course_id")
+	}
+	)
+	private List<Course> coursesInCharge;
 
 	public Teacher() {
 	}
@@ -153,4 +168,11 @@ public class Teacher implements Serializable {
 		this.majorTypes = majorTypes;
 	}
 
+	public List<Course> getCoursesInCharge() {
+		return coursesInCharge;
+	}
+
+	public void setCoursesInCharge(final List<Course> coursesInCharge) {
+		this.coursesInCharge = coursesInCharge;
+	}
 }

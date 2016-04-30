@@ -77,7 +77,7 @@ public class SalaryService {
         List<Integer> impSalaryIds = new ArrayList<>();
         if(teacher!=null) {
             List<Imp> imps = impRepository.getImpByTeacherIdAndTermId(teacherId, termId);
-            if(imps.size()<=0 && exportExcel){
+            if(imps.size()<=0){
                 return null;
             }
             Map<String, List<Imp>> groupedImp = groupByCategoryType(imps);

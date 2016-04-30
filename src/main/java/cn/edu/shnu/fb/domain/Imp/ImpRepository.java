@@ -219,13 +219,14 @@ public class ImpRepository {
 
     public GridEntityDTO updateImpByGridEntity(GridEntityDTO entity , Integer termCount){
         Imp res ;
+        PlanCourse pc = null;
         if(termCount>0 && termCount<9) {
             if (entity != null) {
                 Imp imp = impDao.findOne(entity.getId());
                 Locator locator;
                 if(imp==null || imp.getCourse().getId()!=entity.getCourseId()) {
                     imp=new Imp();
-                    PlanCourse pc = planCourseDao.findOne(entity.getId());
+                    pc = planCourseDao.findOne(entity.getId());
                     locator = pc.getLocator();
                     imp.setCourse(pc.getCourse());
                 }else{
@@ -264,6 +265,53 @@ public class ImpRepository {
                 return new GridEntityDTO(res);
                 }
             }
+        return entity;
+    }
+
+    public GridEntityDTO newImpByGridEntity(GridEntityDTO entity , Integer termCount,Major major){
+        Imp res ;
+        if(termCount>0 && termCount<9) {
+            if (entity != null) {
+                Imp imp = new Imp();
+                CourseClass cc = courseClassDao.findOne(entity.getCourseClassId());
+                CourseType ct = courseTypeDao.findOne(entity.getCourseTypeId());
+                Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
+                Locator locator = locatorDao.findByMajorAndTermAndCourseClassAndCourseType(major, term, cc, ct);
+                if(locator == null){
+                    locator = new Locator();
+                    locator.setCourseClass(cc);
+                    locator.setCourseType(ct);
+                    locator.setTerm(term);
+                    locator.setMajor(major);
+                }
+                imp.setCourse(courseDao.findOne(entity.getCourseId()));
+                imp.setLocator(locator);
+                imp.setCredits(entity.getCredits()[0]);
+                imp.setPeriodHours(entity.getPeriod()[0]);
+                imp.setPeriodWeeks(entity.getPeriodWeeks());
+                imp.setIsDegCourse(entity.getIsDegCourse());
+                CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
+                imp.setCourseExam(courseExam);
+                int[] teacherIds = entity.getTeacherIds();
+                List<Teacher> teacherList = new ArrayList<>();
+                for (Integer tId : teacherIds) {
+                    if(tId!=0) {
+                        Teacher teacher = teacherDao.findOne(tId);
+                        if (teacher != null) {
+                            teacherList.add(teacher);
+                        }
+                    }
+                }
+                imp.setTeachers(teacherList);
+
+                if(entity.getComment()!=null && !entity.getComment().isEmpty()) {
+                    imp.setCourseComment(entity.getComment());
+                }
+
+                res = impDao.save(imp);
+                return new GridEntityDTO(res);
+            }
+        }
         return entity;
     }
 

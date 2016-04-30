@@ -16,9 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cn.edu.shnu.fb.domain.course.Course;
+import cn.edu.shnu.fb.domain.major.MajorType;
 import cn.edu.shnu.fb.domain.plan.PlanSpec;
 import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.domain.user.User;
+import cn.edu.shnu.fb.infrastructure.persistence.CourseDao;
+import cn.edu.shnu.fb.infrastructure.persistence.CourseExamDao;
 import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.infrastructure.persistence.UserDao;
 import cn.edu.shnu.fb.interfaces.assembler.PlanAssembler;
@@ -34,16 +38,40 @@ public class TeacherFacade {
     TeacherDao teacherDao;
     @Autowired
     UserDao userDao;
+
+    @Autowired
+    CourseDao courseDao;
+
     @ResponseBody
     @RequestMapping(value="/t",method= RequestMethod.POST)
     public List<Teacher> getByName(@RequestBody String name){
         return teacherDao.findByNameLike("%"+name+"%");
     }
 
+    @ResponseBody
+    @RequestMapping(value="/c",method= RequestMethod.POST)
+    public List<Course> getByNameC(@RequestBody String name){
+        return courseDao.findByTitleLike("%"+name+"%");
+    }
+
     @RequestMapping(value="/t/resp",method= RequestMethod.GET)
     public List<Teacher> getResponsable(){
         List<Teacher> res = new ArrayList<>();
         List<User> users = userDao.findByRole(4);
+        for(User user : users) {
+            Teacher teacher = user.getTeacher();
+            if(teacher!=null) {
+                res.add(teacher);
+            }
+        }
+        return res;
+    }
+
+
+    @RequestMapping(value="/t/resp/c",method= RequestMethod.GET)
+    public List<Teacher> getCourseResponsable(){
+        List<Teacher> res = new ArrayList<>();
+        List<User> users = userDao.findByRole(7);
         for(User user : users) {
             Teacher teacher = user.getTeacher();
             if(teacher!=null) {
@@ -90,8 +118,27 @@ public class TeacherFacade {
         return 0;
     }
 
+
+    @ResponseBody
+    @RequestMapping(value="/t/{tId}/charge",method= RequestMethod.POST)
+    public void teacherInChargeOfCourseUpdate(@PathVariable Integer tId , @RequestBody List<Course> courses){
+        Teacher teacher = teacherDao.findOne(tId);
+        teacher.setCoursesInCharge(courses);
+        teacherDao.save(teacher);
+    }
+
+    @ResponseBody
+    @RequestMapping(value="/t/get/{tId}",method= RequestMethod.GET)
+    public Teacher teacherInChargeOfCourse(@PathVariable Integer tId) {
+        return teacherDao.findOne(tId);
+    }
+
+
+
     @RequestMapping(value="/t/all",method= RequestMethod.GET)
     public Iterable<Teacher> getAll(){
         return teacherDao.findByNameIsNotNullOrderByIdCode();
     }
+
+
 }

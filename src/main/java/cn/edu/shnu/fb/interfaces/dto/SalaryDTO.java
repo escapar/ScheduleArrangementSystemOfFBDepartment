@@ -39,6 +39,7 @@ public class SalaryDTO {
     private int rejected;
     private String rejectComment;
     private String split;
+    private String mergedStatus="否";
 
     private int teacherId;
     private int id;
@@ -68,10 +69,14 @@ public class SalaryDTO {
             }
             majorTitle = appendString(majorTitle, Integer.toString(imp.getLocator().getMajor().getGrade()) + '级' + imp.getLocator().getMajor().getMajorType().getTitle());
             majorPopulation += imp.getLocator().getMajor().getPopulation();
-            periodHours += imp.getPeriodHours();
+            //periodHours += imp.getPeriodHours();
             /*if(imp.getRejected()==1){
                 rejected = true;
             }*/
+        }
+        periodHours = imps.get(0).getPeriodHours();
+        if(imps.get(0).getMergedClass()!=null){
+            mergedStatus = "是";
         }
         if(imps.get(0).getLocator().getMajor().getSuburb() == 1 ) {
             location = "奉贤";
@@ -177,6 +182,9 @@ public class SalaryDTO {
         monthlySalaryRound = salaryDTO.getMonthlySalaryRound();
         comment = salaryDTO.getComment();
         split=salaryDTO.getSplit();
+        if(majorTitle!=null && majorTitle.contains(",")){
+            mergedStatus = "是";
+        }
         if(split == null || split.isEmpty()){
             split = " ";
         }
@@ -494,4 +502,10 @@ public class SalaryDTO {
     public void setMajorId(final int majorId) {
         this.majorId = majorId;
     }
+
+    public String getMergedStatus() {
+        return mergedStatus;
+    }
+
+
 }
