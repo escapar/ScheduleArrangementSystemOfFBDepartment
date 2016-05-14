@@ -106,6 +106,31 @@ public class ExcelTemplate {
     }
 
 
+    public static ExcelTemplate newInstance2(InputStream is){
+        try {
+            ExcelTemplate excel = new ExcelTemplate();
+            POIFSFileSystem fs = new POIFSFileSystem(is);
+            //            Thread.currentThread().getContextClassLoader()
+            //                   ExcelTemplate.class.getResourceAsStream(templates));
+
+            excel.workbook = new HSSFWorkbook(fs);
+            excel.sheet = excel.workbook.getSheetAt(0);
+
+            //查找配置
+            excel.initConfig();
+
+            //查找其它样式配置
+
+            //删除配置行
+            //excel.sheet.removeRow( excel.sheet.getRow(excel.initrow) );
+
+            return excel;
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.trace("创建Excel对象出现异常",e);
+            throw new RuntimeException("创建Excel对象出现异常");
+        }
+    }
     /**
      * 设置特定的单元格样式，此样式可以通过在模板文件中定义"#STYLE_XX"来得到，如：
      * #STYLE_1，传入的参数就是"STYLE_1"

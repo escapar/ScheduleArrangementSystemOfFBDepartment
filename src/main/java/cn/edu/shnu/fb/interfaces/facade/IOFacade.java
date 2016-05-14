@@ -1,14 +1,24 @@
 package cn.edu.shnu.fb.interfaces.facade;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.servlet.ServletContext;
+import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,6 +27,7 @@ import cn.edu.shnu.fb.domain.major.MajorRepository;
 import cn.edu.shnu.fb.domain.term.Term;
 import cn.edu.shnu.fb.interfaces.dto.*;
 
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -69,6 +80,55 @@ public class IOFacade {
     public ModelAndView downloadImpExcel(@PathVariable Integer majorId, @PathVariable Integer termCount) {
         ImpExcelDTO res = excelService.generateImpExcelDTO(majorId, termCount);
         return new ModelAndView("excelView", "impExcelDTOs", res);
+    }
+
+    public class CopyStream extends ByteArrayOutputStream {
+        public CopyStream(int size) { super(size); }
+
+        /**
+         * Get an input stream based on the contents of this output stream.
+         * Do not use the output stream after calling this method.
+         * @return an {@link InputStream}
+         */
+        public InputStream toInputStream() {
+            return new ByteArrayInputStream(this.buf, 0, this.count);
+        }
+    }
+
+    @RequestMapping(value = "/o/i/t/{termYear}/{termPart}", method = RequestMethod.GET)
+    public void downloadAllImpExcel(@PathVariable Integer termYear, @PathVariable Integer termPart,OutputStream os, HttpServletRequest r) throws IOException{
+        Iterable<Major> majors = majorRepository.findAll();
+        ZipOutputStream zip = new ZipOutputStream(os);
+        Term term = termRepository.findTermByYearAndPart(termYear, termPart);
+        for(Major m : majors){
+            int termCount = (term.getYear() - m.getGrade())*2 + term.getPart();
+            if(termCount<=0) continue;
+            File file = new File(m.getGrade()+"级"+m.getMajorType().getTitle()+".xls");
+            CopyStream osf = new CopyStream(20480);
+            ImpExcelDTO ieDTO = excelService.generateImpExcelDTO(m.getId(), termCount);
+            excelService.generateImpWorkbook(ieDTO,r.getContextPath()+ "/impTemplate.xls").write(osf);
+            zip.putNextEntry(new ZipEntry(file.getName()));
+            InputStream is = osf.toInputStream();
+            int length;
+
+            byte[] b = new byte[2048];
+
+            while((length = is.read(b)) > 0) {
+                zip.write(b, 0, length);
+            }
+            zip.closeEntry();
+            is.close();
+            osf.close();
+        }
+        zip.close();
+        try {
+            os.flush();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+        finally{
+            os.close();
+        }
     }
 
     @RequestMapping(value = "/i/p/m/{majorId}", method = RequestMethod.POST)

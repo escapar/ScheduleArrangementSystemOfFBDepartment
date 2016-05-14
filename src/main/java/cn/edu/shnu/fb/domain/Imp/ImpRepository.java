@@ -375,6 +375,20 @@ public class ImpRepository {
         return res;
     }
 
+    public List<Imp> getTeacherImpsForMerge(Term term,Integer teacherId){
+        Teacher T = teacherDao.findOne(teacherId);
+            Iterable<Imp> impT = T.getImps();
+            List<Imp> imps = new ArrayList<>();
+            for(Iterator<Imp> it=impT.iterator();it.hasNext();){
+                Imp imp = it.next();
+                if(imp.getMergedClass() == null && imp.getLocator().getTerm().getId() == term.getId()) {
+                    imps.add(imp); // ignore all merged Imps
+                }
+            }
+
+        return imps;
+    }
+
     public List<MergePageEntityDTO> getImpsForMerge(Term term){
         List<MergePageEntityDTO> res = new ArrayList<>();
         Iterable<Teacher> teachers = teacherDao.findAll();

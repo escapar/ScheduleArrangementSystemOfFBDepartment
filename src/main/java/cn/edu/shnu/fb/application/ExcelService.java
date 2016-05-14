@@ -11,6 +11,8 @@ import cn.edu.shnu.fb.domain.term.TermRepository;
 import cn.edu.shnu.fb.domain.user.User;
 import cn.edu.shnu.fb.infrastructure.persistence.TeacherDao;
 import cn.edu.shnu.fb.infrastructure.persistence.UserDao;
+
+import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +31,7 @@ import cn.edu.shnu.fb.domain.plan.PlanSpec;
 import cn.edu.shnu.fb.domain.user.Teacher;
 import cn.edu.shnu.fb.infrastructure.persistence.ImpDao;
 import cn.edu.shnu.fb.infrastructure.poi.ExcelTemplate;
+import cn.edu.shnu.fb.interfaces.assembler.IOAssembler;
 import cn.edu.shnu.fb.interfaces.dto.GridEntityDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelDTO;
 import cn.edu.shnu.fb.interfaces.dto.ImpExcelGridDTO;
@@ -113,7 +116,79 @@ public class ExcelService {
         return template.getSalaryDTOs(type,teachers);
 
     }
+    public Workbook generateImpWorkbook(ImpExcelDTO imp,String path){
+        InputStream is = this.getClass().getResourceAsStream(path);
+        ExcelTemplate template = ExcelTemplate.newInstance(is);
 
+        //替换Header
+        ImpExcelHeaderDTO headerDTO = imp.getHeader();
+        Map<String,Object> map = new HashMap<>();
+        IOAssembler.flushParams(map, headerDTO);
+        template.replaceParametersBykeyword(map,"#");
+
+        //替换模板中的majorCode,termCount和impComment
+        MajAndTmAndImpComDTO mtidto=imp.getmtidto();
+        Map<String,Object> mtimap = new HashMap<>();
+        IOAssembler.flushParams(mtimap, mtidto);
+        template.replaceParametersBykeyword(mtimap,"#");
+
+        //替换模板中的执行计划下的各类课程
+        List<ImpExcelGridDTO> iePodtos = imp.getPodtos();
+        ArrayList<Map> pomapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : iePodtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            pomapList.add(map);
+        }
+
+        List<ImpExcelGridDTO> ieModtos = imp.getModtos();
+        ArrayList<Map> momapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieModtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            momapList.add(map);
+        }
+
+        List<ImpExcelGridDTO> ieRedtos = imp.getRedtos();
+
+        if(mtidto.getTermCount() == 3 || mtidto.getTermCount() == 4){
+            ieRedtos.add(new ImpExcelGridDTO("","综合素质类课程","考查",2,16,2,"否",null,null,null,""));
+        }
+        ArrayList<Map> remapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieRedtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            remapList.add(map);
+        }
+
+        List<ImpExcelGridDTO> ieFedtos = imp.getFedtos();
+        ArrayList<Map> femapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieFedtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            femapList.add(map);
+        }
+
+        List<ImpExcelGridDTO> ieTdtos = imp.getTdtos();
+        ArrayList<Map> tmapList = new ArrayList<>();
+        for(ImpExcelGridDTO dto : ieTdtos) {
+            map = new HashMap<>();
+            IOAssembler.flushParams(map, dto);
+            tmapList.add(map);
+        }
+
+        template.createRowByHashMap(pomapList, "#PO",1);
+        template.createRowByHashMap(momapList, "#MO",1);
+        template.createRowByHashMap(remapList, "#RE",1);
+        template.createRowByHashMap(femapList,"#FE",1);
+        template.createRowByHashMap(tmapList, "#T", 1);
+
+
+
+        Workbook workbook = template.getWorkbook();
+        workbook.setSheetName(0,mtidto.getWorkBookName());
+        return workbook;
+    }
     public ImpExcelDTO generateImpExcelDTO(int  majorId, int termCount){
 
         float  planpoc, planmoc ,planrec, planfec, plantc,planSumC=0 ;

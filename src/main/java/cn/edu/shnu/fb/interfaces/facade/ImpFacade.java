@@ -256,6 +256,13 @@ public class ImpFacade {
     }
 
     @ResponseBody
+    @RequestMapping(value="/i/term/{termYear}/{termPart}/t/{teacherId}/merge/dto",method=RequestMethod.GET)
+    public List<Imp> getImpsForMerge(@PathVariable Integer termYear,@PathVariable Integer termPart,@PathVariable Integer teacherId){
+        Term term = termRepository.findTermByYearAndPart(termYear , termPart);
+        return impRepository.getTeacherImpsForMerge(term,teacherId);
+    }
+
+    @ResponseBody
     @RequestMapping(value="/i/merge/dto/verify",method=RequestMethod.GET)
     public List<MergePageEntityDTO> getImpsMergeForVerify(){
         return impRepository.getMergedImps(true);
