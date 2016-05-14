@@ -40,7 +40,7 @@ public class SalaryDTO {
     private String rejectComment;
     private String split;
     private String mergedStatus="否";
-
+    private int generatedSalaryId;
     private int teacherId;
     private int id;
     private List<Integer> impId = new ArrayList<>();
@@ -48,6 +48,15 @@ public class SalaryDTO {
     public SalaryDTO(){
 
     }
+
+    public int getGeneratedSalaryId() {
+        return generatedSalaryId;
+    }
+
+    public void setGeneratedSalaryId(final int generatedSalaryId) {
+        this.generatedSalaryId = generatedSalaryId;
+    }
+
     public SalaryDTO(List<Imp> imps , String majorType , Teacher teacher , int state){
         //state 0 for normal , 1 for underGraduate , 2 for others(more to add..)
         //imps should be in same course , could be a set of merged course

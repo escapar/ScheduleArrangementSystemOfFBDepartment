@@ -76,8 +76,10 @@ public class SalaryFacade {
     @ResponseBody
     @RequestMapping(value="/s/update",method= RequestMethod.POST, consumes = "application/json")
     public void saveTeacherSalaries(@RequestBody FrontEndSalaryDTO fesDTO){
-        salaryService.saveSalariesFromDTOS(fesDTO.getSalaryDTOs(), fesDTO.getSalaryAdjustments());
-        logService.action("工作量","更新");
+        if(fesDTO.getSalaryDTOs().size()>0) {
+            salaryService.saveSalariesFromDTOS(fesDTO.getSalaryDTOs(), fesDTO.getSalaryAdjustments());
+            logService.action("工作量", "更新");
+        }
     }
 
     @ResponseBody

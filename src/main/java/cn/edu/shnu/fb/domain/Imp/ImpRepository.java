@@ -390,9 +390,9 @@ public class ImpRepository {
             if(imps.size() <= 1){
                 continue;
             }
-            Map<Integer , List<Imp>> groupedImp = groupByCategoryType(imps);
+            Map<String , List<Imp>> groupedImp = groupByCategoryType(imps);
             MergePageEntityDTO mpeDTO = new MergePageEntityDTO(T);
-            for(Map.Entry<Integer, List<Imp>> entry: groupedImp.entrySet()) {
+            for(Map.Entry<String, List<Imp>> entry: groupedImp.entrySet()) {
                 List<Imp> impGrouped = entry.getValue();
                 if(impGrouped.size()>1) {
                     mpeDTO.addImpList(impGrouped);
@@ -417,13 +417,13 @@ public class ImpRepository {
         }
         mergedClassDao.delete(mergedClass);
     }
-    public Map<Integer, List<Imp>> groupByCategoryType(List<Imp> list) {
-        Map<Integer, List<Imp>> map = new TreeMap<Integer, List<Imp>>();
+    public Map<String, List<Imp>> groupByCategoryType(List<Imp> list) {
+        Map<String, List<Imp>> map = new TreeMap<String, List<Imp>>();
         for (Imp o : list) {
-            List<Imp> group = map.get(o.getCourse().getId());
+            List<Imp> group = map.get(o.getCourse().getTitle());
             if (group == null) {
                 group = new ArrayList();
-                map.put(o.getCourse().getId(), group);
+                map.put(o.getCourse().getTitle(), group);
             }
             group.add(o);
         }
@@ -494,9 +494,9 @@ public class ImpRepository {
             if(imps.size() <= 1){
                 continue;
             }
-            Map<Integer , List<Imp>> groupedImp = groupByCategoryType(imps);
+            Map<String , List<Imp>> groupedImp = groupByCategoryType(imps);
             MergePageEntityDTO mpeDTO = new MergePageEntityDTO(T);
-            for(Map.Entry<Integer, List<Imp>> entry: groupedImp.entrySet()) {
+            for(Map.Entry<String, List<Imp>> entry: groupedImp.entrySet()) {
                 List<Imp> impGrouped = entry.getValue();
                 if(impGrouped.size()>1) {
                     mpeDTO.addImpList(impGrouped);

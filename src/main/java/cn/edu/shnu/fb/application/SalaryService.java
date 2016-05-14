@@ -89,7 +89,9 @@ public class SalaryService {
                         salaryDTOs.add(new SalaryDTO(impGrouped, "本科", teacher, 0));
                     }else{
                         //Override
-                        salaryDTOs.add(new SalaryDTO(impGrouped.get(0).getSalary(),teacher,impGrouped.get(0).getId()));
+                        SalaryDTO sDTO = new SalaryDTO(impGrouped.get(0).getSalary(),teacher,impGrouped.get(0).getId());
+                        sDTO.setGeneratedSalaryId(impGrouped.get(0).getSalary().getId());
+                        salaryDTOs.add(sDTO);
                         impSalaryIds.add(impGrouped.get(0).getSalary().getId());
                     }
                 }
@@ -100,7 +102,9 @@ public class SalaryService {
             if(salaries.size()!=impSalaryIds.size()){
                 for(Salary salary : salaries){
                     if(impSalaryIds.indexOf(salary.getId()) == -1){
-                        salaryDTOs.add(new SalaryDTO(salary,teacher,0));
+                        SalaryDTO sDTO = new SalaryDTO(salary,teacher,0);
+                        sDTO.setGeneratedSalaryId(salary.getId());
+                        salaryDTOs.add(sDTO);
                     }
                 }
             }
