@@ -157,13 +157,13 @@ public class ImpRepository {
             Major major = majorDao.findOne(majorId);
 
             Term term = termRepository.findTermByGradeAndTermCount(major.getGrade(), termCount);
-                if (major != null && term != null) {
-                    List<Locator> locators = locatorDao.findByMajorAndTerm(major, term);
-                    for (Locator locator : locators){
-                        resList.addAll(impDao.findByLocator(locator));
-                    }
-                    return resList;
+            if (major != null && term != null) {
+                List<Locator> locators = locatorDao.findByMajorAndTerm(major, term);
+                for (Locator locator : locators){
+                    resList.addAll(impDao.findByLocator(locator));
                 }
+                return resList;
+            }
         }
         return null;
     }
@@ -189,9 +189,21 @@ public class ImpRepository {
                 course.setCode(entity.getCode());
                 course = courseDao.save(course);
             }
-            Imp imp = impDao.findByLocatorAndCourse(locator, course);
-            if (imp == null) {
+            Integer impId = entity.getImpId();
+            Imp imp = impDao.findOne(impId);
+            if(imp == null) {
                 imp = new Imp();
+                /*
+                if (impId != 0 && imps.size() == 1) {
+                    imp = imps.get(0);
+                } else {*/
+                    //               if (entity.getSplitted() != null && entity.getSplitted()) {
+                   // imp = new Imp();
+                    //             }
+                //}
+            }
+            if(entity.getSplitted()){
+                imp.setSplit(1);
             }
             imp.setCredits(entity.getCredits()[0]);
             imp.setPeriodHours(entity.getPeriod()[0]);
@@ -226,45 +238,51 @@ public class ImpRepository {
                 Locator locator;
                 if(imp==null || imp.getCourse().getId()!=entity.getCourseId()) {
                     imp=new Imp();
-                    pc = planCourseDao.findOne(entity.getId());
+                    pc = planCourseDao.findOne(entity.getPlanCourseId());
+                    if(pc == null){
+                        pc = planCourseDao.findOne(entity.getId());
+                    }
                     locator = pc.getLocator();
                     imp.setCourse(pc.getCourse());
                 }else{
                     locator = imp.getLocator();
                 }
-                    imp.setCredits(entity.getCredits()[0]);
-                    imp.setPeriodHours(entity.getPeriod()[0]);
-                    imp.setPeriodWeeks(entity.getPeriodWeeks());
-                    imp.setIsDegCourse(entity.getIsDegCourse());
-                    Integer ctId = 0;
-                    if (locator.getCourseType() != null) {
-                        ctId = locator.getCourseType().getId();
-                    }
-                    Locator newLocator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(locator.getMajor().getId(), termCount, locator.getCourseClass().getId(), ctId);
-                    newLocator.setModified(1);
-                    imp.setLocator(newLocator);
-                    CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
-                    imp.setCourseExam(courseExam);
-                    int[] teacherIds = entity.getTeacherIds();
-                    List<Teacher> teacherList = new ArrayList<>();
-                    for (Integer tId : teacherIds) {
-                        if(tId!=0) {
-                            Teacher teacher = teacherDao.findOne(tId);
-                            if (teacher != null) {
-                                teacherList.add(teacher);
-                            }
+                if(entity.getSplitted()){
+                    imp.setSplit(1);
+                }
+                imp.setCredits(entity.getCredits()[0]);
+                imp.setPeriodHours(entity.getPeriod()[0]);
+                imp.setPeriodWeeks(entity.getPeriodWeeks());
+                imp.setIsDegCourse(entity.getIsDegCourse());
+                Integer ctId = 0;
+                if (locator.getCourseType() != null) {
+                    ctId = locator.getCourseType().getId();
+                }
+                Locator newLocator = locatorRepository.getLocatorByMajorIdAndTermCountAndCourseClassIdAndCourseTypeId(locator.getMajor().getId(), termCount, locator.getCourseClass().getId(), ctId);
+                newLocator.setModified(1);
+                imp.setLocator(newLocator);
+                CourseExam courseExam = courseExamDao.findOne(entity.getCourseExamId());
+                imp.setCourseExam(courseExam);
+                int[] teacherIds = entity.getTeacherIds();
+                List<Teacher> teacherList = new ArrayList<>();
+                for (Integer tId : teacherIds) {
+                    if(tId!=0) {
+                        Teacher teacher = teacherDao.findOne(tId);
+                        if (teacher != null) {
+                            teacherList.add(teacher);
                         }
                     }
-                    imp.setTeachers(teacherList);
+                }
+                imp.setTeachers(teacherList);
 
                 if(entity.getComment()!=null && !entity.getComment().isEmpty()) {
-                        imp.setCourseComment(entity.getComment());
-                    }
+                    imp.setCourseComment(entity.getComment());
+                }
 
                 res = impDao.save(imp);
                 return new GridEntityDTO(res);
-                }
             }
+        }
         return entity;
     }
 
@@ -377,14 +395,14 @@ public class ImpRepository {
 
     public List<Imp> getTeacherImpsForMerge(Term term,Integer teacherId){
         Teacher T = teacherDao.findOne(teacherId);
-            Iterable<Imp> impT = T.getImps();
-            List<Imp> imps = new ArrayList<>();
-            for(Iterator<Imp> it=impT.iterator();it.hasNext();){
-                Imp imp = it.next();
-                if(imp.getMergedClass() == null && imp.getLocator().getTerm().getId() == term.getId()) {
-                    imps.add(imp); // ignore all merged Imps
-                }
+        Iterable<Imp> impT = T.getImps();
+        List<Imp> imps = new ArrayList<>();
+        for(Iterator<Imp> it=impT.iterator();it.hasNext();){
+            Imp imp = it.next();
+            if(imp.getMergedClass() == null && imp.getLocator().getTerm().getId() == term.getId()) {
+                imps.add(imp); // ignore all merged Imps
             }
+        }
 
         return imps;
     }
@@ -449,7 +467,11 @@ public class ImpRepository {
     public Imp getImpByCourseIdAndLocatorId(Integer courseId,Integer locatorId){
         Locator locator = locatorDao.findOne(locatorId);
         Course course = courseDao.findOne(courseId);
-        return impDao.findByLocatorAndCourse(locator, course);
+        List<Imp> imps = impDao.findByLocatorAndCourse(locator, course);
+        if(imps.size()>0){
+            return imps.get(0);
+        }
+        return null;
     }
 
     public void save(Imp imp){

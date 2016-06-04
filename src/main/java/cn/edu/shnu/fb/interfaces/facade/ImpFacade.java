@@ -119,11 +119,17 @@ public class ImpFacade {
     public void updateImpByLocator(@RequestBody List<GridEntityDTO> gridEntityDTOs,@PathVariable Integer locatorId){
 
         //add
+        List<Imp> imps = impRepository.getImpByLocatorId(locatorId);
+
+        for(Imp i : imps) {
+            impRepository.deleteImp(i);
+        }
+
         for(GridEntityDTO entity : gridEntityDTOs) {
             impRepository.updateImpByGridEntityAndLocatorId(entity, locatorId);
         }
 
-        //delete
+/*
         List<Imp> currentImps = impRepository.getImpByLocatorId(locatorId);
         Iterable<Imp> differedImps ;
         if(currentImps.size() != gridEntityDTOs.size()) {
@@ -135,7 +141,7 @@ public class ImpFacade {
             for(Imp dImp :differedImps){
                 impRepository.deleteImp(dImp);
             }
-        }
+        }*/
         logService.action("执行计划","调整");
     }
 

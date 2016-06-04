@@ -60,6 +60,9 @@ public class Imp implements Serializable {
 	@Column(name="period_hours")
 	private float periodHours;
 
+	@Column(name="split")
+	private int split;
+
 	@Lob
 	@Column(name="merge_comment")
 	private String mergeComment;
@@ -205,5 +208,13 @@ public class Imp implements Serializable {
 
 	public void setSalary(final Salary salary) {
 		this.salary = salary;
+	}
+
+	public int getSplit() {
+		return split;
+	}
+
+	public void setSplit(final int split) {
+		this.split = split;
 	}
 }

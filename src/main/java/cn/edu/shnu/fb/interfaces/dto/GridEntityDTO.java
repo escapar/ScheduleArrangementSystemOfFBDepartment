@@ -56,12 +56,19 @@ public class GridEntityDTO {
 
     private int[] teacherIds = new int[5];
     private String comment;
+
+    private Boolean splitted;
+    private int planCourseId;
+    private int impId;
+    private int locatorId;
+
     public GridEntityDTO(){
 
     }
     public GridEntityDTO(PlanCourse planCourse){
         if(planCourse!=null) {
             this.id = planCourse.getId();
+            this.planCourseId = planCourse.getId();
             this.code = planCourse.getCourse().getCode();
             this.title = planCourse.getCourse().getTitle();
             this.courseId = planCourse.getCourse().getId();
@@ -95,6 +102,7 @@ public class GridEntityDTO {
     public GridEntityDTO(PlanCourse planCourse,boolean isMono){
         if(planCourse!=null) {
             this.id = planCourse.getId();
+            this.planCourseId = planCourse.getId();
             this.code = planCourse.getCourse().getCode();
             this.title = planCourse.getCourse().getTitle();
             this.courseId = planCourse.getCourse().getId();
@@ -138,6 +146,7 @@ public class GridEntityDTO {
     public GridEntityDTO(Imp imp){
         if(imp !=null){
             this.id= imp.getId();
+            this.impId = imp.getId();
             this.credits[0]= imp.getCredits();
             this.period[0]= imp.getPeriodHours();
             this.periodWeeks= imp.getPeriodWeeks();
@@ -146,6 +155,10 @@ public class GridEntityDTO {
             this.courseId = imp.getCourse().getId();
             this.courseClass= imp.getLocator().getCourseClass().getTitle();
             this.courseClassId= imp.getLocator().getCourseClass().getId();
+            this.locatorId = imp.getLocator().getId();
+            if(imp.getSplit() == 1){
+                this.splitted = true;
+            }
             if(imp.getLocator().getCourseType()!=null) {
                 this.courseType = imp.getLocator().getCourseType().getTitle();
                 this.courseTypeId= imp.getLocator().getCourseType().getId();
@@ -347,5 +360,37 @@ public class GridEntityDTO {
 
     public void setComment(final String comment) {
         this.comment = comment;
+    }
+
+    public Boolean getSplitted() {
+        return splitted;
+    }
+
+    public void setSplitted(final Boolean splitted) {
+        this.splitted = splitted;
+    }
+
+    public int getPlanCourseId() {
+        return planCourseId;
+    }
+
+    public void setPlanCourseId(final int planCourseId) {
+        this.planCourseId = planCourseId;
+    }
+
+    public int getImpId() {
+        return impId;
+    }
+
+    public void setImpId(final int impId) {
+        this.impId = impId;
+    }
+
+    public int getLocatorId() {
+        return locatorId;
+    }
+
+    public void setLocatorId(final int locatorId) {
+        this.locatorId = locatorId;
     }
 }

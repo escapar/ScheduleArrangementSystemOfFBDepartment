@@ -102,7 +102,7 @@ public class SalaryDTO {
             foreignLanguageFactor = 0;
             firstCourseAllowance = 0;
             float finalFactor = 1 + underGraduateFactor + overseaStudentFactor + hanFactor + foreignLanguageFactor + populationFactor;
-            termSalary = ((salaryPerHour) * (periodHours)) * finalFactor + suburbAllowance;
+            termSalary = (salaryPerHour * finalFactor) * periodHours * 18 + suburbAllowance + firstCourseAllowance - basicSalaryDeduction;
             monthlySalary = termSalary / 5;
             monthlySalaryRound = getRound(monthlySalary);
         }
@@ -234,7 +234,7 @@ public class SalaryDTO {
             return 0;
         }else{
             int factor = (population-50)/10;
-            float res = (float) (0.2 + 0.12* factor);
+            float res = (float) (0.12 + 0.12* factor);
             return (float)(res > 0.8 ? 0.8 : res);
         }
     }

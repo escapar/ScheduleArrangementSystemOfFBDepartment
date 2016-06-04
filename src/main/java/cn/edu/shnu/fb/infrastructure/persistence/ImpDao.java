@@ -21,7 +21,7 @@ import cn.edu.shnu.fb.domain.user.Teacher;
  */
 public interface ImpDao extends PagingAndSortingRepository<Imp,Integer> {
     List<Imp> findByLocator(Locator locator);
-    Imp findByLocatorAndCourse(Locator locator , Course course);
+    List<Imp> findByLocatorAndCourse(Locator locator , Course course);
     List<Imp> findByLocatorMajor(Major major);
     List<Imp> findByLocatorMajorAndLocatorTerm(Major major,Term term);
     List<Imp> findByLocatorMajorAndLocatorTermAndLocatorCourseClass(Major major,Term term,CourseClass courseClass); // 只单独拿限选的时候用
