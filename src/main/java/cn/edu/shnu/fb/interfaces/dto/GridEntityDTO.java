@@ -156,7 +156,7 @@ public class GridEntityDTO {
             this.courseClass= imp.getLocator().getCourseClass().getTitle();
             this.courseClassId= imp.getLocator().getCourseClass().getId();
             this.locatorId = imp.getLocator().getId();
-            if(imp.getSplit() == 1){
+            if(imp.getSplit()!=null && imp.getSplit() == 1){
                 this.splitted = true;
             }
             if(imp.getLocator().getCourseType()!=null) {

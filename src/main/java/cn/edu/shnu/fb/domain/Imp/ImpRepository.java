@@ -202,7 +202,7 @@ public class ImpRepository {
                     //             }
                 //}
             }
-            if(entity.getSplitted()){
+            if(entity.getSplitted()!=null && entity.getSplitted()){
                 imp.setSplit(1);
             }
             imp.setCredits(entity.getCredits()[0]);
@@ -247,7 +247,7 @@ public class ImpRepository {
                 }else{
                     locator = imp.getLocator();
                 }
-                if(entity.getSplitted()){
+                if(entity.getSplitted()!=null && entity.getSplitted()){
                     imp.setSplit(1);
                 }
                 imp.setCredits(entity.getCredits()[0]);

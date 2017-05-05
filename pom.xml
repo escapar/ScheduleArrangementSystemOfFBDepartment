@@ -6,7 +6,7 @@
 	<groupId>cn.edu.shnu.fb</groupId>
 	<artifactId>sa</artifactId>
 	<version>1.0</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 
 	<name>ScheduleArrangement</name>
 	<description>ScheduleArrangement for fb SHNU</description>
@@ -26,19 +26,9 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId> 
-          <exclusions>
-           	<exclusion>
-           		<groupId>org.springframework.boot</groupId>
-        		<artifactId>spring-boot-starter-tomcat</artifactId>
-           	</exclusion>
-           </exclusions> 
+
         </dependency>
-        <dependency>
-            <groupId>org.apache.tomcat</groupId>
-            <artifactId>tomcat-servlet-api</artifactId>
-            <version>7.0.56</version>
-            <scope>provided</scope>
-        </dependency>
+
 
 		<dependency>
 			<groupId>org.apache.poi</groupId>

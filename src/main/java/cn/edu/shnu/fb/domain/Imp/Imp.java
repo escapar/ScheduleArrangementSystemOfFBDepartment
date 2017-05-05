@@ -61,7 +61,7 @@ public class Imp implements Serializable {
 	private float periodHours;
 
 	@Column(name="split")
-	private int split;
+	private Integer split;
 
 	@Lob
 	@Column(name="merge_comment")
@@ -210,11 +210,11 @@ public class Imp implements Serializable {
 		this.salary = salary;
 	}
 
-	public int getSplit() {
+	public Integer getSplit() {
 		return split;
 	}
 
-	public void setSplit(final int split) {
+	public void setSplit(final Integer split) {
 		this.split = split;
 	}
 }

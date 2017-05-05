@@ -13,7 +13,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
+import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.filter.GenericFilterBean;
 
 import cn.edu.shnu.fb.domain.common.SystemInfo;
@@ -56,6 +58,14 @@ public class JwtFilter extends GenericFilterBean {
         }
 
         chain.doFilter(req, res);
+    }
+
+    @Bean
+    CharacterEncodingFilter characterEncodingFilter() {
+        CharacterEncodingFilter filter = new CharacterEncodingFilter();
+        filter.setEncoding("UTF-8");
+        filter.setForceEncoding(true);
+        return filter;
     }
 
 }
